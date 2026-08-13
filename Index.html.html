@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#10151A">
+<title>CAP Delivery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#10151A;--s:#1A2129;--s2:#222B35;--s3:#2A3541;--line:#2E3944;--ink:#EDF1F5;--dim:#8FA0AF;--faint:#5C6B78;--amber:#F2A93B;--green:#33C481;--red:#F0553F;--blue:#4C9BE8;--violet:#9D7FE8;--r:12px}
+*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--bg);color:var(--ink);font-family:Inter,sans-serif}body{min-height:100vh;display:flex;justify-content:center}button,input,select,textarea{font:inherit}button{cursor:pointer}
+#login{width:100%;max-width:480px;min-height:100vh;display:flex;align-items:center;padding:24px}#app{width:100%;max-width:1180px;min-height:100vh;display:none;flex-direction:column}
+.loginbox{width:100%}.logo{text-align:center;margin-bottom:28px}.mark{display:inline-block;width:13px;height:13px;background:var(--amber);border-radius:3px;margin-bottom:10px}.logo h1,.brand{font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase}.logo h1{font-size:30px}.sub{font-size:11px;color:var(--faint);margin-top:4px}
+.notice{border-left:2px solid var(--amber);padding-left:12px;color:var(--dim);font-size:11px;line-height:1.5;margin:20px 0}
+label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin:13px 0 6px}
+input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:11px 12px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:700}.primary{background:var(--amber);color:#3D2B04;width:100%}.ghost{background:var(--s2);color:var(--ink);border:1px solid var(--line)}.danger{background:transparent;color:var(--red);border:1px solid var(--red)}
+.error{color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:18px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 18px}.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:23px}.brand small{display:block;font-family:Inter;font-size:9px;color:var(--faint);letter-spacing:.08em}.who{text-align:right;font-size:10px;color:var(--dim)}.who b{color:var(--ink)}
+.status{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.dot.bad{background:var(--red)}.ticker{margin-top:10px;border:1px solid var(--red);border-left:4px solid var(--red);border-radius:8px;padding:8px 10px;font-size:11px;background:var(--s2)}
+.main{padding:16px 18px 100px;flex:1}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.kpi,.card{background:var(--s);border:1px solid var(--line);border-radius:14px}.kpi{padding:13px}.kl{font-size:9px;text-transform:uppercase;color:var(--faint)}.kv{font:700 26px "JetBrains Mono";margin-top:5px}.kf{font-size:10px;color:var(--dim);margin-top:5px}.amber{color:var(--amber)}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:22px 0 9px;font:700 16px "Barlow Condensed";text-transform:uppercase}.add{font:600 11px Inter;color:var(--amber);text-transform:none}
+.card{padding:13px;margin-bottom:9px}.row{display:flex;align-items:center;gap:10px}.avatar{width:38px;height:38px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font:700 14px "Barlow Condensed";color:var(--dim);flex:none}.grow{flex:1;min-width:0}.name{font-size:14px;font-weight:600}.meta{font-size:10.5px;color:var(--faint);margin-top:3px}.plate{font:700 14px "JetBrains Mono"}.badge{font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:6px;white-space:nowrap}.ok{background:#04291A;color:var(--green)}.warn{background:#3D2B04;color:var(--amber)}.badgebad{background:#3D0D06;color:var(--red)}.neutral{background:#394552;color:var(--dim)}.vio{background:#1D1440;color:var(--violet)}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1180px,100%);display:flex;background:var(--s);border-top:1px solid var(--line);z-index:30;padding-bottom:env(safe-area-inset-bottom)}.nav div{flex:1;text-align:center;padding:11px 2px 9px;font-size:8px;text-transform:uppercase;color:var(--faint)}.nav .on{color:var(--amber)}
+.overlay{position:fixed;inset:0;background:rgba(5,8,10,.78);z-index:50;display:none;align-items:flex-end}.overlay.open{display:flex}.sheet{width:100%;max-height:90vh;overflow:auto;background:var(--s);border-radius:20px 20px 0 0;padding:18px}.sheet h2{font:700 21px "Barlow Condensed";text-transform:uppercase}.sheet .close{float:right;font-size:24px;color:var(--faint)}.formgrid{display:grid;grid-template-columns:1fr;gap:8px}.actions{display:flex;gap:8px;margin-top:15px}.actions button{flex:1}.empty{text-align:center;color:var(--faint);font-size:12px;padding:25px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--s3);border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:11px;opacity:0;transition:.2s;z-index:70;max-width:90%;text-align:center}.toast.show{opacity:1}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar button{font-size:11px}.importbox{background:var(--s);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
+@media(min-width:760px){.top{padding:20px 28px}.main{padding:22px 28px 110px}.kpis{grid-template-columns:repeat(4,1fr)}.formgrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="login">
+  <div class="loginbox">
+    <div class="logo"><span class="mark"></span><h1>CAP Delivery</h1><div class="sub">Console operativa</div></div>
+    <div class="notice">Accesso collegato al backend CAP Delivery. Le modifiche vengono salvate nel database centrale.</div>
+    <label>Utente</label>
+    <select id="login-name"><option>Amministratore</option><option>Dispatcher Turno</option></select>
+    <label>PIN</label><input id="login-pin" type="password" inputmode="numeric" maxlength="12" placeholder="••••">
+    <button class="btn primary" style="margin-top:14px" onclick="login()">Accedi</button>
+    <div id="login-error" class="error"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="top">
+    <div class="toprow"><div class="brand"><span class="mark" style="width:9px;height:9px;margin:0 8px 0 0"></span>CAP Delivery<small>Console operativa · produzione MVP</small></div><div class="who"><b id="who"></b><br><span id="today"></span><div class="status"><span id="api-dot" class="dot"></span><span id="api-status">Backend online</span></div><span onclick="logout()" style="color:var(--amber);cursor:pointer">Esci</span></div></div>
+    <div id="ticker" class="ticker" style="display:none"></div>
+  </div>
+  <div id="main" class="main"></div>
+  <div class="nav" id="nav">
+    <div data-tab="dashboard" onclick="go('dashboard')">Dashboard</div>
+    <div data-tab="turni" onclick="go('turni')">Turni</div>
+    <div data-tab="giri" onclick="go('giri')">Giri</div>
+    <div data-tab="emergenze" onclick="go('emergenze')">Emergenze</div>
+    <div data-tab="autisti" onclick="go('autisti')">Autisti</div>
+    <div data-tab="flotta" onclick="go('flotta')">Flotta</div>
+    <div data-tab="admin" id="admin-nav" onclick="go('admin')">Admin</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target.id==='overlay')closeSheet()"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API='https://cap-backend-tpue.onrender.com';
+let token=sessionStorage.getItem('cap_token')||'';
+let user=JSON.parse(sessionStorage.getItem('cap_user')||'null');
+let state={drivers:[],vans:[],routes:[],emergencies:[],activity:[],users:[],tab:'dashboard'};
+
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+async function api(path,opt={}){
+  const headers={'Content-Type':'application/json',...(opt.headers||{})};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch(API+path,{...opt,headers});
+  if(r.status===204)return null;
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok){if(r.status===401&&token){logout();throw new Error('Sessione scaduta')}throw new Error(data.error||('Errore '+r.status))}
+  return data;
+}
+async function login(){
+  const name=document.getElementById('login-name').value,pin=document.getElementById('login-pin').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  try{
+    const x=await api('/api/auth/login',{method:'POST',body:JSON.stringify({name,pin})});
+    token=x.token;user=x.user;sessionStorage.setItem('cap_token',token);sessionStorage.setItem('cap_user',JSON.stringify(user));showApp();
+  }catch(e){er.textContent=e.message.includes('Failed to fetch')?'Connessione bloccata: abilita CORS_ORIGINS su Render.':e.message}
+}
+function logout(){token='';user=null;sessionStorage.clear();document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
+async function showApp(){
+  document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';
+  document.getElementById('who').textContent=user.name+' · '+(user.role==='admin'?'Admin':'Dispatcher');
+  document.getElementById('today').textContent=new Date().toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+  document.getElementById('admin-nav').style.display=user.role==='admin'?'block':'none';
+  await refresh();go('dashboard');
+}
+async function refresh(){
+  try{
+    [state.drivers,state.vans,state.routes,state.emergencies]=await Promise.all([api('/api/drivers'),api('/api/vans'),api('/api/routes'),api('/api/emergencies')]);
+    document.getElementById('api-dot').className='dot';document.getElementById('api-status').textContent='Database sincronizzato';
+  }catch(e){document.getElementById('api-dot').className='dot bad';document.getElementById('api-status').textContent=e.message;throw e}
+}
+function go(tab){state.tab=tab;document.querySelectorAll('.nav div').forEach(n=>n.classList.toggle('on',n.dataset.tab===tab));render()}
+function badgeStatus(s){return s==='operativo'||s==='in_corso'?'ok':s==='guasto'||s==='scoperto'||s==='MALATTIA'?'badgebad':s==='manutenzione'?'warn':s==='DOPPIO'?'vio':'neutral'}
+function driverName(id){return state.drivers.find(d=>d.id===id)?.name||''}
+function ticker(){
+  const o=state.emergencies.filter(e=>e.is_open),el=document.getElementById('ticker');
+  if(!o.length){el.style.display='none';return}el.style.display='block';el.innerHTML='<b style="color:var(--red)">'+o.length+' emergenze aperte</b> — '+esc(o[0].description);
+}
+function render(){ticker();const m=document.getElementById('main');if(state.tab==='dashboard')m.innerHTML=dashboard();if(state.tab==='turni')m.innerHTML=drivers(true);if(state.tab==='autisti')m.innerHTML=drivers(false);if(state.tab==='giri')m.innerHTML=routes();if(state.tab==='emergenze')m.innerHTML=emergencies();if(state.tab==='flotta')m.innerHTML=vans();if(state.tab==='admin')admin()}
+function dashboard(){
+  const active=state.routes.filter(r=>['in_corso','programmato'].includes(r.status)).length,avail=state.drivers.filter(d=>d.status==='disponibile').length,op=state.vans.filter(v=>v.status==='operativo').length,em=state.emergencies.filter(e=>e.is_open).length;
+  let h=`<div class="kpis"><div class="kpi"><div class="kl">Giri operativi</div><div class="kv amber">${active}</div><div class="kf">${state.routes.length} totali</div></div><div class="kpi"><div class="kl">Autisti disponibili</div><div class="kv green">${avail}</div><div class="kf">${state.drivers.length} in organico</div></div><div class="kpi"><div class="kl">Furgoni operativi</div><div class="kv blue">${op}/${state.vans.length}</div><div class="kf">${state.vans.length-op} non operativi</div></div><div class="kpi"><div class="kl">Emergenze</div><div class="kv ${em?'red':'green'}">${em}</div><div class="kf">${em?'richiedono azione':'nessuna criticità'}</div></div></div>`;
+  const sc=state.routes.filter(r=>r.status==='scoperto');h+=`<div class="section">Giri scoperti <span class="add" onclick="go('giri')">Vedi tutti ›</span></div>`+(sc.length?sc.slice(0,3).map(routeCard).join(''):'<div class="card meta">Tutti i giri sono coperti.</div>');
+  const eo=state.emergencies.filter(e=>e.is_open);h+=`<div class="section">Emergenze <span class="add" onclick="go('emergenze')">Vedi tutte ›</span></div>`+(eo.length?eo.slice(0,3).map(emCard).join(''):'<div class="card meta">Nessuna emergenza aperta.</div>');
+  return h;
+}
+function drivers(turni){
+  const a=[...state.drivers].sort(turni?(a,b)=>({AM:0,PM:1,DOPPIO:2,RIPOSO:3,FERIE:4,MALATTIA:5}[a.shift]??9)-({AM:0,PM:1,DOPPIO:2,RIPOSO:3,FERIE:4,MALATTIA:5}[b.shift]??9):(a,b)=>a.name.localeCompare(b.name));
+  return `<div class="section">${turni?'Turni di oggi':'Anagrafica autisti'} <span class="add" onclick="driverSheet()">+ Aggiungi ›</span></div>`+a.map(d=>`<div class="card" onclick="driverSheet('${d.id}')"><div class="row"><div class="avatar">${esc(d.initials||d.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div class="grow"><div class="name">${esc(d.name)}</div><div class="meta">${esc(d.phone||'')} · Extra ${Number(d.extra_hours||0)} h${d.double_ok?' · doppio ok':''}</div></div><span class="badge ${badgeStatus(d.shift)}">${esc(d.shift)}</span></div></div>`).join('');
+}
+function routeCard(r){return `<div class="card" onclick="routeSheet('${r.id}')"><div class="row"><div class="grow"><div class="plate">${esc(r.code)}</div><div class="name">${esc(r.zone)}</div><div class="meta">${esc(r.time_window||'')} · ${r.driver_id?esc(driverName(r.driver_id)):'Nessun autista'}</div></div><span class="badge ${badgeStatus(r.status)}">${esc(r.status.replace('_',' '))}</span></div></div>`}
+function routes(){return `<button class="btn primary" onclick="routeSheet()">+ Aggiungi giro</button><div class="section">Giri</div>`+state.routes.map(routeCard).join('')}
+function emCard(e){return `<div class="card" onclick="emSheet('${e.id}')"><div class="row"><div class="grow"><div class="name">${esc(e.title)}</div><div class="meta">${esc(e.description)}</div></div><span class="badge ${e.is_open?'badgebad':'ok'}">${e.is_open?'Aperta':'Chiusa'}</span></div></div>`}
+function emergencies(){return `<button class="btn primary" onclick="emSheet()">+ Nuova emergenza</button><div class="section">Emergenze aperte</div>`+state.emergencies.filter(e=>e.is_open).map(emCard).join('')+`<div class="section">Chiuse</div>`+state.emergencies.filter(e=>!e.is_open).map(emCard).join('')}
+function vans(){return `<div class="section">Anagrafica mezzi <span class="add" onclick="vanSheet()">+ Aggiungi ›</span></div>`+state.vans.map(v=>`<div class="card" onclick="vanSheet('${v.id}')"><div class="row"><div class="avatar">🚚</div><div class="grow"><div class="plate">${esc(v.plate)}</div><div class="meta">${esc((v.brand||'')+' '+(v.model||''))} · ${Number(v.km||0).toLocaleString('it-IT')} km${v.note?' · '+esc(v.note):''}</div></div><span class="badge ${badgeStatus(v.status)}">${esc(v.status)}</span></div></div>`).join('')}
+
+function openSheet(h){document.getElementById('sheet').innerHTML='<span class="close" onclick="closeSheet()">×</span>'+h;document.getElementById('overlay').classList.add('open')}
+function closeSheet(){document.getElementById('overlay').classList.remove('open')}
+function val(id){return document.getElementById(id).value}
+function chk(id){return document.getElementById(id).checked}
+
+function driverSheet(id){
+ const d=state.drivers.find(x=>x.id===id);
+ openSheet(`<h2>${d?'Modifica':'Nuovo'} autista</h2><div class="formgrid"><div><label>Nome</label><input id="d-name" value="${esc(d?.name||'')}"></div><div><label>Telefono</label><input id="d-phone" value="${esc(d?.phone||'')}"></div><div><label>Email</label><input id="d-email" value="${esc(d?.email||'')}"></div><div><label>Turno</label><select id="d-shift">${['AM','PM','DOPPIO','RIPOSO','FERIE','MALATTIA'].map(x=>`<option ${d?.shift===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Stato</label><select id="d-status">${['in_servizio','disponibile','assente'].map(x=>`<option ${d?.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Ore extra</label><input id="d-extra" type="number" step=".5" value="${Number(d?.extra_hours||0)}"></div></div><label><input id="d-double" style="width:auto" type="checkbox" ${d?.double_ok?'checked':''}> Disponibile a doppio turno</label><label>Note</label><textarea id="d-notes">${esc(d?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveDriver('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/drivers/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveDriver(id){
+ const name=val('d-name').trim();if(!name)return toast('Nome obbligatorio');
+ const body={name,initials:name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase(),phone:val('d-phone'),email:val('d-email'),shift:val('d-shift'),status:val('d-status'),extra_hours:Number(val('d-extra')||0),double_ok:chk('d-double'),notes:val('d-notes')};
+ await saveEntity('/api/drivers',id,body);
+}
+function vanSheet(id){
+ const v=state.vans.find(x=>x.id===id);
+ openSheet(`<h2>${v?'Modifica':'Nuovo'} mezzo</h2><div class="formgrid"><div><label>Targa</label><input id="v-plate" value="${esc(v?.plate||'')}"></div><div><label>Marca</label><input id="v-brand" value="${esc(v?.brand||'')}"></div><div><label>Modello</label><input id="v-model" value="${esc(v?.model||'')}"></div><div><label>Anno</label><input id="v-year" type="number" value="${v?.year||''}"></div><div><label>Km</label><input id="v-km" type="number" value="${Number(v?.km||0)}"></div><div><label>Stato</label><select id="v-status">${['operativo','guasto','manutenzione','fermo'].map(x=>`<option ${v?.status===x?'selected':''}>${x}</option>`).join('')}</select></div></div><label>Note</label><textarea id="v-note">${esc(v?.note||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveVan('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/vans/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveVan(id){await saveEntity('/api/vans',id,{plate:val('v-plate').trim().toUpperCase(),brand:val('v-brand'),model:val('v-model'),year:val('v-year')?Number(val('v-year')):null,km:Number(val('v-km')||0),status:val('v-status'),note:val('v-note')})}
+function routeSheet(id){
+ const r=state.routes.find(x=>x.id===id);
+ openSheet(`<h2>${r?'Modifica':'Nuovo'} giro</h2><div class="formgrid"><div><label>Codice</label><input id="r-code" value="${esc(r?.code||'GR-')}"></div><div><label>Zona</label><input id="r-zone" value="${esc(r?.zone||'')}"></div><div><label>Orario</label><input id="r-time" value="${esc(r?.time_window||'')}"></div><div><label>Stato</label><select id="r-status">${['scoperto','in_corso','programmato','completato'].map(x=>`<option ${r?.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Autista</label><select id="r-driver"><option value="">— Nessuno —</option>${state.drivers.map(d=>`<option value="${d.id}" ${r?.driver_id===d.id?'selected':''}>${esc(d.name)}</option>`).join('')}</select></div><div><label>Data</label><input id="r-date" type="date" value="${(r?.service_date||new Date().toISOString().slice(0,10)).slice(0,10)}"></div></div><label>Note</label><textarea id="r-notes">${esc(r?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveRoute('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/routes/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveRoute(id){await saveEntity('/api/routes',id,{code:val('r-code'),zone:val('r-zone'),time_window:val('r-time'),status:val('r-status'),driver_id:val('r-driver')||null,service_date:val('r-date'),notes:val('r-notes')})}
+function emSheet(id){
+ const e=state.emergencies.find(x=>x.id===id);
+ openSheet(`<h2>${e?'Modifica':'Nuova'} emergenza</h2><div class="formgrid"><div><label>Titolo</label><input id="e-title" value="${esc(e?.title||'')}"></div><div><label>Tipo</label><select id="e-type">${['guasto','giro','assenza','incidente','altro'].map(x=>`<option ${e?.type===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Priorità</label><select id="e-priority">${['alta','media','bassa'].map(x=>`<option ${e?.priority===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Stato</label><select id="e-open"><option value="true" ${e?.is_open!==false?'selected':''}>Aperta</option><option value="false" ${e?.is_open===false?'selected':''}>Chiusa</option></select></div></div><label>Descrizione</label><textarea id="e-desc">${esc(e?.description||'')}</textarea><label>Note</label><textarea id="e-notes">${esc(e?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveEm('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/emergencies/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveEm(id){await saveEntity('/api/emergencies',id,{title:val('e-title'),type:val('e-type'),priority:val('e-priority'),is_open:val('e-open')==='true',description:val('e-desc'),notes:val('e-notes'),closed_at:val('e-open')==='false'?new Date().toISOString():null})}
+async function saveEntity(base,id,body){try{await api(base+(id?'/'+id:''),{method:id?'PATCH':'POST',body:JSON.stringify(body)});closeSheet();await refresh();render();toast('Salvato nel database')}catch(e){toast(e.message)}}
+async function del(path){if(!confirm('Confermi eliminazione?'))return;try{await api(path,{method:'DELETE'});closeSheet();await refresh();render();toast('Eliminato')}catch(e){toast(e.message)}}
+
+async function admin(){
+ if(user.role!=='admin'){go('dashboard');return}
+ try{[state.users,state.activity]=await Promise.all([api('/api/users'),api('/api/activity?limit=40')])}catch(e){}
+ document.getElementById('main').innerHTML=`<div class="section">Utenti</div>${state.users.map(u=>`<div class="card"><div class="row"><div class="avatar">${esc(u.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div class="grow"><div class="name">${esc(u.name)}</div><div class="meta">${esc(u.role)} · ${u.active?'attivo':'disattivato'}</div></div></div></div>`).join('')}<div class="section">Import Excel / CSV</div><div class="importbox"><label>Tipo dati</label><select id="imp-entity"><option value="drivers">Autisti</option><option value="vans">Mezzi</option><option value="routes">Giri</option><option value="emergencies">Emergenze</option></select><label>File</label><input id="imp-file" type="file" accept=".xlsx,.xls,.csv"><button class="btn primary" style="margin-top:12px" onclick="importFile()">Importa nel database</button></div><div class="section">Log attività</div><div class="card">${state.activity.map(x=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:11px">${esc(x.action)}<div class="meta">${esc(x.user_name||'')} · ${new Date(x.created_at).toLocaleString('it-IT')}</div></div>`).join('')||'<div class="meta">Nessuna attività</div>'}</div>`;
+}
+function nk(k){return String(k||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
+function fv(row,names){const m={};Object.keys(row).forEach(k=>m[nk(k)]=row[k]);for(const n of names)if(m[nk(n)]!==undefined&&String(m[nk(n)]).trim()!=='')return m[nk(n)];return ''}
+async function importFile(){
+ const f=document.getElementById('imp-file').files[0],entity=val('imp-entity');if(!f)return toast('Seleziona un file');
+ try{
+   const ab=await f.arrayBuffer(),wb=XLSX.read(ab,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});let out=[];
+   if(entity==='drivers')out=rows.map(r=>({name:String(fv(r,['nome','autista','nome e cognome'])),phone:String(fv(r,['telefono','cellulare'])),shift:String(fv(r,['turno'])||'AM').toUpperCase(),extra_hours:Number(fv(r,['extra','ore extra'])||0),double_ok:['si','sì','true','1','ok'].includes(String(fv(r,['doppio','doppio turno'])).toLowerCase()),status:String(fv(r,['stato'])||'in_servizio')})).filter(x=>x.name);
+   if(entity==='vans')out=rows.map(r=>({plate:String(fv(r,['targa'])).toUpperCase(),brand:String(fv(r,['marca'])),model:String(fv(r,['modello'])),km:Number(fv(r,['km','chilometri'])||0),status:String(fv(r,['stato'])||'operativo').toLowerCase(),note:String(fv(r,['note']))})).filter(x=>x.plate);
+   if(entity==='routes')out=rows.map(r=>({code:String(fv(r,['codice','giro'])),zone:String(fv(r,['zona','destinazione'])),time_window:String(fv(r,['orario','fascia oraria'])),status:String(fv(r,['stato'])||'programmato').toLowerCase(),service_date:new Date().toISOString().slice(0,10)})).filter(x=>x.code&&x.zone);
+   if(entity==='emergencies')out=rows.map(r=>({title:String(fv(r,['titolo','emergenza'])||'Emergenza'),description:String(fv(r,['descrizione','testo','note'])),type:String(fv(r,['tipo'])||'altro').toLowerCase(),priority:String(fv(r,['priorita'])||'media').toLowerCase(),is_open:true})).filter(x=>x.description);
+   const x=await api('/api/import/'+entity,{method:'POST',body:JSON.stringify({rows:out})});toast('Importati '+x.processed+' record');await refresh();admin();
+ }catch(e){toast(e.message)}
+}
+
+(async()=>{
+  try{const h=await fetch(API+'/health').then(r=>r.json());if(!h.ok)throw 0}catch(e){}
+  if(token&&user){try{await api('/api/me');showApp()}catch(e){logout()}}
+})();
+</script>
+</body>
+</html>
