@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>CAP Delivery — V2 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#10151A;
+  --surface:#1A2129;
+  --surface-2:#222B35;
+  --surface-3:#2A3541;
+  --line:#2E3944;
+  --ink:#EDF1F5;
+  --ink-dim:#8FA0AF;
+  --ink-faint:#5C6B78;
+  --amber:#F2A93B;
+  --amber-ink:#3D2B04;
+  --green:#33C481;
+  --green-ink:#04291A;
+  --red:#F0553F;
+  --red-ink:#3D0D06;
+  --blue:#4C9BE8;
+  --blue-ink:#052034;
+  --violet:#9D7FE8;
+  --violet-ink:#1D1440;
+  --gray-chip:#3A4552;
+  --radius:10px;
+  --radius-lg:16px;
+  font-size:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+body{min-height:100vh;display:flex;justify-content:center;background:var(--bg);}
+h1,h2,h3,.disp{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.01em;}
+.mono{font-family:'JetBrains Mono',monospace;}
+#app{width:100%;max-width:1180px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative;border-left:1px solid var(--line);border-right:1px solid var(--line);}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;} }
+
+/* TOPBAR */
+.topbar{padding:18px 18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:20;}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:baseline;gap:8px;}
+.brand .mark{width:10px;height:10px;border-radius:2px;background:var(--amber);display:inline-block;}
+.brand-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:0.03em;}
+.brand-sub{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.08em;}
+.date-chip{font-size:12px;color:var(--ink-dim);text-align:right;line-height:1.4;}
+.date-chip b{color:var(--ink);font-weight:600;}
+
+/* SYNC INDICATOR */
+.sync-chip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink-faint);margin-top:4px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.sync-dot.saving{background:var(--amber);animation:pulse 1s infinite;}
+.sync-dot.error{background:var(--red);}
+
+/* EMERGENCY TICKER */
+.ticker{margin-top:12px;background:var(--surface-2);border:1px solid var(--red);border-left:4px solid var(--red);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.ticker.hidden{display:none;}
+.ticker-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.6s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.ticker-text{font-size:12.5px;color:var(--ink);flex:1;}
+.ticker-text b{color:var(--red);}
+.ticker-arrow{color:var(--ink-faint);font-size:16px;}
+
+/* SCROLL AREA */
+.screen{flex:1;overflow-y:auto;padding:16px 18px 100px;}
+.screen::-webkit-scrollbar{display:none;}
+
+/* LOADING */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink-faint);gap:12px;}
+.spinner{width:26px;height:26px;border-radius:50%;border:3px solid var(--surface-3);border-top-color:var(--amber);animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.kpi-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px 14px 12px;}
+.kpi-label{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+.kpi-value{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;line-height:1;color:var(--ink);}
+.kpi-value.amber{color:var(--amber);}
+.kpi-value.green{color:var(--green);}
+.kpi-value.red{color:var(--red);}
+.kpi-value.blue{color:var(--blue);}
+.kpi-foot{font-size:11px;color:var(--ink-dim);margin-top:6px;}
+
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink);margin:22px 0 10px;display:flex;align-items:center;justify-content:space-between;}
+.section-title .see-all{font-family:'Inter',sans-serif;font-weight:500;font-size:12px;color:var(--amber);text-transform:none;letter-spacing:0;cursor:pointer;}
+
+/* CARDS COMMON */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:13px 14px;margin-bottom:9px;}
+.card:active{background:var(--surface-2);}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:3px 8px;border-radius:6px;}
+.badge-am{background:#3D2B04;color:var(--amber);}
+.badge-pm{background:#052034;color:var(--blue);}
+.badge-riposo{background:#232B32;color:var(--ink-dim);}
+.badge-ferie{background:#1D1440;color:var(--violet);}
+.badge-malattia{background:#3D0D06;color:var(--red);}
+.badge-doppio{background:#1D1440;color:var(--violet);}
+.badge-ok{background:#04291A;color:var(--green);}
+.badge-warn{background:#3D2B04;color:var(--amber);}
+.badge-danger{background:#3D0D06;color:var(--red);}
+.badge-neutral{background:var(--gray-chip);color:var(--ink-dim);}
+
+/* DRIVER CARD (turni) */
+.driver-row{display:flex;align-items:center;gap:11px;}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--ink-dim);flex-shrink:0;}
+.driver-info{flex:1;min-width:0;}
+.driver-name{font-size:14.5px;font-weight:600;color:var(--ink);}
+.driver-meta{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+.driver-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+
+.extra-bar-wrap{width:56px;height:4px;background:var(--surface-3);border-radius:2px;overflow:hidden;margin-top:3px;}
+.extra-bar{height:100%;border-radius:2px;}
+
+/* ROUTE CARD */
+.route-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.route-code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-faint);}
+.route-zone{font-size:14.5px;font-weight:600;margin-top:2px;}
+.route-time{font-size:11.5px;color:var(--ink-dim);margin-top:4px;}
+.route-driver{font-size:12px;color:var(--ink-dim);margin-top:7px;padding-top:7px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.route-driver b{color:var(--ink);font-weight:600;}
+.assign-btn{font-size:11.5px;font-weight:600;color:var(--amber);cursor:pointer;}
+
+/* VAN CARD */
+.van-row{display:flex;align-items:center;gap:11px;}
+.van-icon{width:38px;height:38px;border-radius:9px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-dim);}
+.van-plate{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:var(--ink);}
+.van-meta{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+
+/* BUTTONS */
+.btn{border:none;border-radius:var(--radius);padding:11px 16px;font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;text-align:center;}
+.btn-primary{background:var(--amber);color:var(--amber-ink);width:100%;}
+.btn-primary:active{opacity:0.85;}
+.btn-ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);}
+.btn-block{width:100%;margin-top:14px;}
+.btn-sm{padding:7px 11px;font-size:12px;border-radius:8px;}
+.btn-danger-outline{background:transparent;border:1px solid var(--red);color:var(--red);}
+.btn:disabled{opacity:0.5;cursor:default;}
+
+/* BOTTOM NAV */
+.bottomnav{position:sticky;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--line);display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom);}
+.navitem{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 9px;cursor:pointer;color:var(--ink-faint);}
+.navitem.active{color:var(--amber);}
+.navitem svg{width:20px;height:20px;}
+.navitem span{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;}
+
+/* SHEET / MODAL */
+.overlay{position:absolute;inset:0;background:rgba(8,11,14,0.72);z-index:40;display:none;align-items:flex-end;}
+.overlay.open{display:flex;}
+.sheet{background:var(--surface);border-top-left-radius:20px;border-top-right-radius:20px;border:1px solid var(--line);border-bottom:none;width:100%;max-height:88%;overflow-y:auto;padding:8px 18px 26px;}
+.sheet-handle{width:36px;height:4px;background:var(--line);border-radius:2px;margin:8px auto 14px;}
+.sheet-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase;margin-bottom:4px;}
+.sheet-sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:16px;}
+.sheet-close{position:absolute;top:14px;right:16px;color:var(--ink-faint);font-size:20px;cursor:pointer;}
+
+.shift-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.shift-opt{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:10px 8px;text-align:center;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-dim);}
+.shift-opt.sel{border-color:var(--amber);color:var(--amber);background:#241C0B;}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.toggle-row .t-label{font-size:13px;font-weight:600;}
+.toggle-row .t-sub{font-size:11px;color:var(--ink-faint);margin-top:2px;}
+.switch{width:40px;height:23px;border-radius:12px;background:var(--surface-3);position:relative;cursor:pointer;flex-shrink:0;border:1px solid var(--line);}
+.switch.on{background:var(--amber);border-color:var(--amber);}
+.switch .knob{width:17px;height:17px;border-radius:50%;background:var(--ink);position:absolute;top:2px;left:2px;transition:left 0.15s;}
+.switch.on .knob{left:20px;background:var(--bg);}
+
+.suggest-list{margin-top:10px;}
+.suggest-item{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.suggest-rank{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-faint);width:16px;}
+.suggest-name{font-size:13.5px;font-weight:600;flex:1;}
+.suggest-tags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+
+.empty{text-align:center;padding:30px 10px;color:var(--ink-faint);font-size:13px;}
+
+.field-label{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;margin:14px 0 6px;}
+select,input[type=text]{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;}
+
+.toast{position:absolute;left:50%;transform:translateX(-50%);bottom:90px;background:var(--surface-3);border:1px solid var(--line);color:var(--ink);font-size:12.5px;font-weight:500;padding:9px 16px;border-radius:20px;z-index:60;opacity:0;pointer-events:none;transition:opacity 0.2s, bottom 0.2s;white-space:nowrap;}
+.toast.show{opacity:1;bottom:100px;}
+.toast.error{border-color:var(--red);color:var(--red);}
+
+/* LOGIN */
+.login-screen{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:32px 24px;}
+.login-brand{text-align:center;margin-bottom:28px;}
+.login-brand .mark{width:14px;height:14px;border-radius:3px;background:var(--amber);display:inline-block;margin-bottom:10px;}
+.login-brand h1{font-size:26px;text-transform:uppercase;}
+.login-warn{background:transparent;border:none;border-left:2px solid var(--ink-faint);border-radius:0;padding:2px 0 2px 12px;font-size:11px;color:var(--ink-faint);margin-bottom:24px;line-height:1.5;}
+.user-pick{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.user-opt{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 13px;cursor:pointer;}
+.user-opt.sel{border-color:var(--amber);background:#241C0B;}
+.user-opt .role-tag{margin-left:auto;font-size:10px;}
+.login-error{color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:16px;}
+
+/* ROLE / USER BAR */
+.role-badge{font-size:9.5px;padding:2px 6px;}
+.userbar{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
+.userbar-name{font-size:11px;color:var(--ink-dim);}
+.logout-link{font-size:11px;color:var(--ink-faint);cursor:pointer;text-decoration:underline;}
+
+/* ADMIN */
+.admin-warn{background:transparent;border:none;border-left:2px solid var(--ink-faint);border-radius:0;padding:2px 0 2px 12px;font-size:11px;color:var(--ink-faint);margin-bottom:20px;line-height:1.5;}
+.log-item{border-bottom:1px solid var(--line);padding:9px 0;font-size:12px;color:var(--ink-dim);}
+.log-item:last-child{border-bottom:none;}
+.log-item .log-meta{font-size:10.5px;color:var(--ink-faint);margin-top:2px;}
+.pin-row{display:flex;gap:8px;}
+.pin-row input{flex:1;}
+
+/* CAP DELIVERY V2 — responsive operational layout */
+@media (min-width: 760px){
+  #app{border-left:0;border-right:0;box-shadow:0 0 0 1px var(--line);}
+  .topbar{padding:20px 28px 14px;}
+  .screen{padding:22px 28px 110px;max-width:1180px;margin:0 auto;width:100%;}
+  .kpi-grid{grid-template-columns:repeat(4,1fr);}
+  .card{padding:15px 16px;}
+  .bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(1180px,100%);border-left:1px solid var(--line);border-right:1px solid var(--line);}
+}
+.operational-strip{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin:0 0 14px;padding:9px 11px;
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  font-size:11.5px;color:var(--ink-dim);
+}
+.operational-strip .live{
+  display:inline-flex;align-items:center;gap:5px;color:var(--green);font-weight:700;
+}
+.operational-strip .live:before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--green);
+}
+
+</style>
+</head>
+<body>
+<div id="login-root" style="width:100%;max-width:480px;"></div>
+<div id="app" style="display:none;">
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <span class="mark"></span>
+        <div>
+          <div class="brand-title">CAP Delivery</div>
+          <div class="brand-sub">Console operativa · V2 · DEMO</div>
+        </div>
+      </div>
+      <div class="date-chip">
+        <b id="today-date"></b><br>Turno corrente: <span id="current-shift-label">AM</span>
+        <div class="userbar"><span class="userbar-name" id="userbar-name"></span><span class="logout-link" onclick="logout()">Esci</span></div>
+        <div class="sync-chip" id="sync-chip"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Sincronizzato</span></div>
+      </div>
+    </div>
+    <div class="ticker" id="ticker" onclick="goTo('giri')">
+      <span class="ticker-dot"></span>
+      <span class="ticker-text" id="ticker-text"></span>
+      <span class="ticker-arrow">›</span>
+    </div>
+  </div>
+
+  <div class="operational-strip" id="operational-strip">
+  <span class="live">OPERATIVO</span>
+  <span>·</span>
+  <span>Vista giornaliera</span>
+  <span>·</span>
+  <span>Turni, giri e flotta in un unico posto</span>
+</div>
+<div class="screen" id="screen">
+    <div class="loading-wrap"><div class="spinner"></div><div>Caricamento dati…</div></div>
+  </div>
+
+  <div class="bottomnav" id="bottomnav">
+    <div class="navitem" data-tab="dashboard" onclick="goTo('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="navitem" data-tab="turni" onclick="goTo('turni')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+      <span>Turni</span>
+    </div>
+    <div class="navitem" data-tab="giri" onclick="goTo('giri')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h13"/><path d="M12 6l6 6-6 6"/><circle cx="19" cy="19" r="2"/></svg>
+      <span>Giri</span>
+    </div>
+    <div class="navitem" data-tab="autisti" onclick="goTo('autisti')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="18" cy="8" r="2.4"/><path d="M15.5 14.2c2.6.3 4.5 2.5 4.5 5.8"/></svg>
+      <span>Autisti</span>
+    </div>
+    <div class="navitem" data-tab="flotta" onclick="goTo('flotta')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16V9a1 1 0 0 1 1-1h9l4 4h3a1 1 0 0 1 1 1v3"/><circle cx="7.5" cy="17" r="2"/><circle cx="17.5" cy="17" r="2"/></svg>
+      <span>Flotta</span>
+    </div>
+    <div class="navitem" data-tab="admin" id="admin-navitem" onclick="goTo('admin')" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg>
+      <span>Admin</span>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeSheetOnBackdrop(event)">
+    <div class="sheet" id="sheet"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+/* ---------------- DATA MODEL ---------------- */
+const STORAGE_KEY = 'dispatch-state-v1';
+const STATE_SHARED = true; // console condivisa tra i dispatcher dell'azienda
+
+function defaultState(){
+  return {
+    tab: 'dashboard',
+    drivers: [
+      {id:'d1', name:'Marco Bellini', initials:'MB', shift:'AM', doubleOK:true, extra:6, status:'in_servizio', phone:'333 100 2001'},
+      {id:'d2', name:'Sara Conti', initials:'SC', shift:'AM', doubleOK:false, extra:2, status:'in_servizio', phone:'333 100 2002'},
+      {id:'d3', name:'Luca Ferri', initials:'LF', shift:'PM', doubleOK:true, extra:11, status:'in_servizio', phone:'333 100 2003'},
+      {id:'d4', name:'Giulia Moro', initials:'GM', shift:'MALATTIA', doubleOK:false, extra:0, status:'assente', phone:'333 100 2004'},
+      {id:'d5', name:'Andrea Ricci', initials:'AR', shift:'RIPOSO', doubleOK:true, extra:1, status:'disponibile', phone:'333 100 2005'},
+      {id:'d6', name:'Elena Fabbri', initials:'EF', shift:'PM', doubleOK:false, extra:8, status:'in_servizio', phone:'333 100 2006'},
+      {id:'d7', name:'Davide Greco', initials:'DG', shift:'FERIE', doubleOK:false, extra:0, status:'assente', phone:'333 100 2007'},
+      {id:'d8', name:'Chiara Villa', initials:'CV', shift:'RIPOSO', doubleOK:false, extra:4, status:'disponibile', phone:'333 100 2008'},
+      {id:'d9', name:'Paolo Neri', initials:'PN', shift:'DOPPIO', doubleOK:true, extra:14, status:'in_servizio', phone:'333 100 2009'},
+      {id:'d10', name:'Federica Rossi', initials:'FR', shift:'AM', doubleOK:true, extra:3, status:'in_servizio', phone:'333 100 2010'}
+    ],
+    routes: [
+      {id:'g1', code:'GR-014', zone:'Milano Nord — Bicocca / Niguarda', time:'08:00 – 12:30', driver:'d1', status:'in_corso'},
+      {id:'g2', code:'GR-015', zone:'Milano Centro — Duomo / Brera', time:'08:00 – 12:00', driver:'d2', status:'in_corso'},
+      {id:'g3', code:'GR-018', zone:'Milano Sud — Ripamonti', time:'14:00 – 18:30', driver:'d3', status:'programmato'},
+      {id:'g4', code:'GR-021', zone:'Sesto San Giovanni', time:'14:00 – 18:00', driver:null, status:'scoperto'},
+      {id:'g5', code:'GR-022', zone:'Cinisello Balsamo', time:'14:30 – 19:00', driver:'d6', status:'programmato'},
+      {id:'g6', code:'GR-023', zone:'Monza centro', time:'16:00 – 20:00', driver:'d9', status:'programmato'}
+    ],
+    vans: [
+      {id:'v1', plate:'FN 442 GT', status:'operativo', driver:'d1', km:81200, note:''},
+      {id:'v2', plate:'FN 118 BR', status:'operativo', driver:'d2', km:64300, note:''},
+      {id:'v3', plate:'FN 903 CL', status:'guasto', driver:null, km:112500, note:'Perdita liquido freni — officina Rota'},
+      {id:'v4', plate:'FN 227 DK', status:'manutenzione', driver:null, km:97800, note:'Tagliando programmato, rientro ore 17:00'},
+      {id:'v5', plate:'FN 560 PW', status:'operativo', driver:'d3', km:45200, note:''},
+      {id:'v6', plate:'FN 335 QE', status:'fermo', driver:null, km:73100, note:'Nessun autista disponibile per il turno'}
+    ],
+    emergencies: [
+      {id:'e1', type:'guasto', text:'FN 903 CL — guasto freni, autista rientrato in deposito', open:true, ts:'09:14'},
+      {id:'e2', type:'giro', text:'GR-021 Sesto S.G. scoperto per il turno pomeridiano', open:true, ts:'11:02'}
+    ],
+    users: [
+      {id:'u1', name:'Amministratore', role:'admin', pin:'1234'},
+      {id:'u2', name:'Dispatcher Turno', role:'dispatcher', pin:'0000'}
+    ],
+    activityLog: []
+  };
+}
+
+let state = defaultState();
+let currentUser = null;
+const CURRENT_USER_KEY = 'dispatch-current-user';
+
+const SHIFT_LABELS = {AM:'Mattina', PM:'Pomeriggio', RIPOSO:'Riposo', FERIE:'Ferie', MALATTIA:'Malattia', DOPPIO:'Doppio turno'};
+const SHIFT_BADGE_CLASS = {AM:'badge-am', PM:'badge-pm', RIPOSO:'badge-riposo', FERIE:'badge-ferie', MALATTIA:'badge-malattia', DOPPIO:'badge-doppio'};
+
+function driverById(id){ return state.drivers.find(d=>d.id===id); }
+function fmtDate(){
+  const d = new Date();
+  return d.toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long'});
+}
+document.getElementById('today-date').textContent = fmtDate().charAt(0).toUpperCase()+fmtDate().slice(1);
+
+function showToast(msg, isError){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1900);
+}
+
+/* ---------------- LOG ATTIVITÀ ---------------- */
+function logAction(desc){
+  const entry = {ts:new Date().toISOString(), user:currentUser?currentUser.name:'—', role:currentUser?currentUser.role:'—', desc:desc};
+  state.activityLog = state.activityLog || [];
+  state.activityLog.unshift(entry);
+  if(state.activityLog.length>150) state.activityLog = state.activityLog.slice(0,150);
+}
+
+/* ---------------- PERSISTENZA (window.storage) ---------------- */
+function setSyncStatus(mode){
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  if(!dot) return;
+  dot.classList.remove('saving','error');
+  if(mode==='saving'){ dot.classList.add('saving'); label.textContent='Salvataggio…'; }
+  else if(mode==='error'){ dot.classList.add('error'); label.textContent='Non salvato'; }
+  else if(mode==='offline'){ dot.classList.add('error'); label.textContent='Storage non disponibile'; }
+  else { label.textContent='Sincronizzato'; }
+}
+
+async function loadState(){
+  try{
+    const result = await window.storage.get(STORAGE_KEY, STATE_SHARED);
+    if(result && result.value){
+      const parsed = JSON.parse(result.value);
+      state = Object.assign(defaultState(), parsed);
+    } else {
+      state = defaultState();
+      await saveState(true);
+    }
+    setSyncStatus('ok');
+  }catch(err){
+    console.error('Errore nel caricamento dello stato:', err);
+    state = defaultState();
+    setSyncStatus('offline');
+    showToast('Impossibile caricare i dati salvati — avviato con dati di esempio', true);
+  }
+}
+
+let saveTimer = null;
+async function saveState(immediate){
+  clearTimeout(saveTimer);
+  const doSave = async ()=>{
+    setSyncStatus('saving');
+    try{
+      const toSave = Object.assign({}, state);
+      const result = await window.storage.set(STORAGE_KEY, JSON.stringify(toSave), STATE_SHARED);
+      if(!result){ throw new Error('set ha restituito null'); }
+      setSyncStatus('ok');
+    }catch(err){
+      console.error('Errore nel salvataggio dello stato:', err);
+      setSyncStatus('error');
+      showToast('Modifica non salvata — controlla la connessione', true);
+    }
+  };
+  if(immediate){ await doSave(); }
+  else { saveTimer = setTimeout(doSave, 350); }
+}
+
+/* ---------------- LOGIN (demo — non è un sistema di sicurezza reale) ---------------- */
+let loginSelectedUser = null;
+
+function renderLogin(){
+  const root = document.getElementById('login-root');
+  let opts = '<div class="user-pick">';
+  state.users.forEach(u=>{
+    opts += '<div class="user-opt '+(loginSelectedUser===u.id?'sel':'')+'" onclick="selectLoginUser(\''+u.id+'\')">'
+      + '<div class="avatar">'+u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()+'</div>'
+      + '<div>'+u.name+'</div>'
+      + '<span class="badge '+(u.role==='admin'?'badge-danger':'badge-neutral')+' role-tag">'+(u.role==='admin'?'Admin':'Dispatcher')+'</span>'
+    + '</div>';
+  });
+  opts += '</div>';
+  root.innerHTML = '<div class="login-screen">'
+    + '<div class="login-brand"><span class="mark"></span><h1>CAP Delivery</h1></div>'
+    + '<div class="login-warn">DEMO: dati e accesso sono locali al prototipo. Non inserire dati aziendali reali. La versione di produzione userà autenticazione e database server-side.</div>'
+    + '<div class="field-label">Seleziona utente</div>'
+    + opts
+    + '<div class="field-label">PIN</div>'
+    + '<input type="text" inputmode="numeric" id="login-pin" placeholder="····" maxlength="4">'
+    + '<button class="btn btn-primary btn-block" onclick="attemptLogin()">Accedi</button>'
+    + '<div class="login-error" id="login-error"></div>'
+  + '</div>';
+}
+
+function selectLoginUser(id){
+  loginSelectedUser = id;
+  renderLogin();
+}
+
+async function attemptLogin(){
+  const pin = document.getElementById('login-pin').value.trim();
+  const u = state.users.find(u=>u.id===loginSelectedUser);
+  const err = document.getElementById('login-error');
+  if(!u){ err.textContent = 'Seleziona un utente.'; return; }
+  if(u.pin !== pin){ err.textContent = 'PIN non corretto.'; return; }
+  currentUser = u;
+  try{ await window.storage.set(CURRENT_USER_KEY, JSON.stringify({id:u.id}), false); }catch(e){ /* non bloccante */ }
+  logAction('Accesso effettuato');
+  saveState();
+  showApp();
+}
+
+function logout(){
+  logAction('Disconnessione effettuata');
+  saveState(true);
+  currentUser = null;
+  try{ window.storage.delete(CURRENT_USER_KEY, false); }catch(e){}
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-root').style.display = 'flex';
+  loginSelectedUser = null;
+  renderLogin();
+}
+
+function showApp(){
+  document.getElementById('login-root').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('userbar-name').textContent = currentUser.name+' · '+(currentUser.role==='admin'?'Admin':'Dispatcher');
+  document.getElementById('admin-navitem').style.display = currentUser.role==='admin' ? 'flex' : 'none';
+  goTo(state.tab && state.tab!=='admin' ? state.tab : 'dashboard');
+}
+
+/* ---------------- NAV ---------------- */
+function goTo(tab){
+  if(tab==='admin' && (!currentUser || currentUser.role!=='admin')) return;
+  state.tab = tab;
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active', n.dataset.tab===tab));
+  render();
+  document.getElementById('screen').scrollTop = 0;
+  saveState();
+}
+
+/* ---------------- RENDER ROOT ---------------- */
+function render(){
+  renderTicker();
+  const screen = document.getElementById('screen');
+  if(state.tab==='dashboard') screen.innerHTML = renderDashboard();
+  if(state.tab==='turni') screen.innerHTML = renderTurni();
+  if(state.tab==='giri') screen.innerHTML = renderGiri();
+  if(state.tab==='autisti') screen.innerHTML = renderAutisti();
+  if(state.tab==='flotta') screen.innerHTML = renderFlotta();
+  if(state.tab==='admin') screen.innerHTML = renderAdmin();
+}
+
+function renderTicker(){
+  const openEm = state.emergencies.filter(e=>e.open);
+  const wrap = document.getElementById('ticker');
+  const txt = document.getElementById('ticker-text');
+  if(openEm.length===0){ wrap.classList.add('hidden'); return; }
+  wrap.classList.remove('hidden');
+  txt.innerHTML = '<b>'+openEm.length+' emergenz'+(openEm.length===1?'a':'e')+' aperte</b> — ' + openEm[0].text;
+}
+
+/* ---------------- DASHBOARD ---------------- */
+function renderDashboard(){
+  const giriAttivi = state.routes.filter(r=>r.status==='in_corso'||r.status==='programmato').length;
+  const disponibili = state.drivers.filter(d=>d.status==='disponibile').length;
+  const furgOperativi = state.vans.filter(v=>v.status==='operativo').length;
+  const emergenzeAperte = state.emergencies.filter(e=>e.open).length;
+
+  let html = '<div class="kpi-grid">';
+  html += kpi('Giri operativi', giriAttivi, 'amber', state.routes.length+' totali pianificati');
+  html += kpi('Autisti disponibili', disponibili, 'green', 'su '+state.drivers.length+' in organico');
+  html += kpi('Furgoni disponibili', furgOperativi+'/'+state.vans.length, 'blue', (state.vans.length-furgOperativi)+' fermi o in officina');
+  html += kpi('Emergenze aperte', emergenzeAperte, emergenzeAperte>0?'red':'green', emergenzeAperte>0?'richiedono azione':'nessuna criticità');
+  html += '</div>';
+
+  html += '<div class="section-title">Copertura giri <span class="see-all" onclick="goTo(\'giri\')">Vedi tutti ›</span></div>';
+  const scoperti = state.routes.filter(r=>r.status==='scoperto');
+  if(scoperti.length===0){
+    html += '<div class="card"><div style="font-size:13px;color:var(--ink-dim)">Tutti i giri di oggi sono coperti.</div></div>';
+  } else {
+    scoperti.forEach(r=>{ html += routeCard(r); });
+  }
+
+  html += '<div class="section-title">Assenze di oggi <span class="see-all" onclick="goTo(\'turni\')">Vedi tutti ›</span></div>';
+  const assenti = state.drivers.filter(d=>d.shift==='MALATTIA'||d.shift==='FERIE');
+  if(assenti.length===0){
+    html += '<div class="card"><div style="font-size:13px;color:var(--ink-dim)">Nessuna assenza registrata.</div></div>';
+  } else {
+    assenti.forEach(d=>{ html += driverCard(d); });
+  }
+
+  html += '<div class="section-title">Flotta — stato rapido <span class="see-all" onclick="goTo(\'flotta\')">Vedi tutti ›</span></div>';
+  const critVans = state.vans.filter(v=>v.status==='guasto'||v.status==='manutenzione'||v.status==='fermo');
+  if(critVans.length===0){
+    html += '<div class="card"><div style="font-size:13px;color:var(--ink-dim)">Tutti i furgoni sono operativi.</div></div>';
+  } else {
+    critVans.forEach(v=>{ html += vanCard(v); });
+  }
+
+  return html;
+}
+
+function kpi(label, value, color, foot){
+  return '<div class="kpi-card"><div class="kpi-label">'+label+'</div><div class="kpi-value '+color+'">'+value+'</div><div class="kpi-foot">'+foot+'</div></div>';
+}
+
+/* ---------------- TURNI ---------------- */
+function renderTurni(){
+  let html = '<div class="section-title">Turni di oggi</div>';
+  const order = {AM:0,PM:1,DOPPIO:2,RIPOSO:3,FERIE:4,MALATTIA:5};
+  const sorted = [...state.drivers].sort((a,b)=>order[a.shift]-order[b.shift]);
+  sorted.forEach(d=>{ html += driverCard(d, true); });
+  return html;
+}
+
+function driverCard(d, clickable){
+  const bar = Math.min(100, Math.round((d.extra/16)*100));
+  const barColor = d.extra>=10?'var(--red)':(d.extra>=5?'var(--amber)':'var(--green)');
+  return '<div class="card" '+(clickable?'onclick="openShiftSheet(\''+d.id+'\')"':'')+'>'
+    + '<div class="driver-row">'
+      + '<div class="avatar">'+d.initials+'</div>'
+      + '<div class="driver-info">'
+        + '<div class="driver-name">'+d.name+'</div>'
+        + '<div class="driver-meta">Extra mese: '+d.extra+' h'+(d.doubleOK?' · disponibile a doppio turno':'')+'</div>'
+        + '<div class="extra-bar-wrap"><div class="extra-bar" style="width:'+bar+'%;background:'+barColor+'"></div></div>'
+      + '</div>'
+      + '<div class="driver-right">'
+        + '<span class="badge '+SHIFT_BADGE_CLASS[d.shift]+'">'+SHIFT_LABELS[d.shift]+'</span>'
+      + '</div>'
+    + '</div>'
+  + '</div>';
+}
+
+function openShiftSheet(id){
+  const d = driverById(id);
+  const shifts = ['AM','PM','DOPPIO','RIPOSO','FERIE','MALATTIA'];
+  let grid = '<div class="shift-grid">';
+  shifts.forEach(s=>{
+    grid += '<div class="shift-opt '+(d.shift===s?'sel':'')+'" onclick="setShift(\''+id+'\',\''+s+'\')">'+SHIFT_LABELS[s]+'</div>';
+  });
+  grid += '</div>';
+
+  let html = '<div class="sheet-close" onclick="closeSheet()">&times;</div>'
+    + '<div class="sheet-handle"></div>'
+    + '<div class="sheet-title">'+d.name+'</div>'
+    + '<div class="sheet-sub"><a href="tel:'+d.phone.replace(/\s/g,'')+'" style="color:inherit;text-decoration:underline">'+d.phone+'</a> · extra mese '+d.extra+' h</div>'
+    + '<div class="field-label">Assegna turno</div>'
+    + grid
+    + '<div class="toggle-row">'
+      + '<div><div class="t-label">Disponibile a doppio turno</div><div class="t-sub">Priorità nelle proposte last-minute, senza escludere gli altri</div></div>'
+      + '<div class="switch '+(d.doubleOK?'on':'')+'" onclick="toggleDouble(\''+id+'\')"><div class="knob"></div></div>'
+    + '</div>';
+
+  if(d.shift==='MALATTIA'){
+    html += '<div class="field-label">Sostituzione consigliata</div>' + renderSuggestions(id, 'malattia');
+  }
+
+  html += '<button class="btn btn-primary btn-block" onclick="closeSheet()">Fatto</button>';
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function setShift(id, shift){
+  const d = driverById(id);
+  const wasSick = d.shift==='MALATTIA';
+  d.shift = shift;
+  d.status = (shift==='RIPOSO') ? 'disponibile' : (shift==='FERIE'||shift==='MALATTIA' ? 'assente' : 'in_servizio');
+  if(shift==='MALATTIA' && !wasSick){
+    state.emergencies.unshift({id:'e'+Date.now(), type:'malattia', text:d.name+' segnalat'+(d.name.split(' ')[0].endsWith('a')?'a':'o')+' malattia — turno '+ (d.shift) +' da coprire', open:true, ts:nowHM()});
+    showToast('Assenza registrata — proposta sostituto pronta');
+  }
+  logAction('Turno di '+d.name+' impostato su '+SHIFT_LABELS[shift]);
+  openShiftSheet(id);
+  render();
+  saveState();
+}
+
+function toggleDouble(id){
+  const d = driverById(id);
+  d.doubleOK = !d.doubleOK;
+  logAction('Disponibilità doppio turno di '+d.name+' impostata su '+(d.doubleOK?'sì':'no'));
+  openShiftSheet(id);
+  saveState();
+}
+
+function nowHM(){
+  const n = new Date();
+  return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+}
+
+/* ---------------- SUGGESTION ENGINE ---------------- */
+// Regola: propone autisti disponibili (riposo/disponibili), priorità a chi
+// accetta il doppio turno senza escludere gli altri, poi riequilibrio in base
+// alle ore extra accumulate nel mese (chi ne ha meno viene proposto prima).
+function suggestDrivers(excludeId){
+  return state.drivers
+    .filter(d => d.id!==excludeId && (d.status==='disponibile' || (d.status==='in_servizio' && d.shift!=='DOPPIO')))
+    .filter(d => d.shift!=='FERIE' && d.shift!=='MALATTIA')
+    .sort((a,b)=>{
+      if(a.doubleOK!==b.doubleOK) return a.doubleOK? -1: 1;
+      return a.extra-b.extra;
+    })
+    .slice(0,4);
+}
+
+function renderSuggestions(excludeId, context){
+  const list = suggestDrivers(excludeId);
+  if(list.length===0) return '<div class="empty">Nessun autista disponibile al momento.</div>';
+  let html = '<div class="suggest-list">';
+  list.forEach((d,i)=>{
+    html += '<div class="suggest-item">'
+      + '<span class="suggest-rank">'+(i+1)+'</span>'
+      + '<span class="suggest-name">'+d.name+'</span>'
+      + '<div class="suggest-tags">'
+        + (d.doubleOK?'<span class="badge badge-doppio">Doppio ok</span>':'')
+        + '<span class="badge badge-neutral">'+d.extra+' h extra</span>'
+      + '</div>'
+      + '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();assignSuggestion(\''+d.id+'\',\''+context+'\')">Assegna</button>'
+    + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+let pendingRouteForAssign = null;
+function assignSuggestion(driverId, context){
+  const d = driverById(driverId);
+  if(context==='malattia'){
+    logAction('Sostituto proposto per assenza: '+d.name);
+    showToast(d.name+' proposto/a come sostituto — conferma il cambio turno');
+  } else if(context==='giro' && pendingRouteForAssign){
+    const r = state.routes.find(r=>r.id===pendingRouteForAssign);
+    r.driver = driverId;
+    r.status = 'programmato';
+    if(d.shift!=='RIPOSO' && d.status!=='disponibile'){ d.shift='DOPPIO'; d.extra += 3; }
+    state.emergencies.forEach(e=>{ if(e.text.includes(r.code)) e.open=false; });
+    logAction('Giro '+r.code+' assegnato a '+d.name);
+    showToast('Giro '+r.code+' assegnato a '+d.name);
+    closeSheet();
+    render();
+    saveState();
+  }
+}
+
+/* ---------------- GIRI ---------------- */
+function renderGiri(){
+  let html = '<button class="btn btn-primary btn-block" style="margin:0 0 16px" onclick="openUrgentRouteSheet()">+ Aggiungi giro urgente</button>';
+
+  const groups = [
+    {key:'scoperto', label:'Scoperti'},
+    {key:'in_corso', label:'In corso'},
+    {key:'programmato', label:'Programmati'},
+    {key:'completato', label:'Completati'}
+  ];
+  groups.forEach(g=>{
+    const items = state.routes.filter(r=>r.status===g.key);
+    if(items.length===0) return;
+    html += '<div class="section-title">'+g.label+'</div>';
+    items.forEach(r=>{ html += routeCard(r); });
+  });
+  return html;
+}
+
+function routeCard(r){
+  const statusBadge = {
+    scoperto: '<span class="badge badge-danger">Scoperto</span>',
+    in_corso: '<span class="badge badge-ok">In corso</span>',
+    programmato: '<span class="badge badge-neutral">Programmato</span>',
+    completato: '<span class="badge badge-neutral">Completato</span>'
+  }[r.status];
+  const d = r.driver ? driverById(r.driver) : null;
+  return '<div class="card">'
+    + '<div class="route-top">'
+      + '<div><div class="route-code">'+r.code+'</div><div class="route-zone">'+r.zone+'</div><div class="route-time">'+r.time+'</div></div>'
+      + statusBadge
+    + '</div>'
+    + '<div class="route-driver">'
+      + (d? 'Autista: <b>'+d.name+'</b>' : '<span style="color:var(--red)">Nessun autista assegnato</span>')
+      + (r.status==='scoperto' || !d ? '<span class="assign-btn" onclick="openAssignRouteSheet(\''+r.id+'\')">Assegna ›</span>' : '')
+    + '</div>'
+  + '</div>';
+}
+
+function openUrgentRouteSheet(){
+  let html = '<div class="sheet-close" onclick="closeSheet()">&times;</div>'
+    + '<div class="sheet-handle"></div>'
+    + '<div class="sheet-title">Giro urgente last-minute</div>'
+    + '<div class="sheet-sub">Incremento giri richiesto — proponi un autista in base a disponibilità al doppio turno e riequilibrio ore extra</div>'
+    + '<div class="field-label">Zona</div>'
+    + '<input type="text" id="urg-zone" placeholder="Es. Bresso / Cormano">'
+    + '<div class="field-label">Fascia oraria</div>'
+    + '<input type="text" id="urg-time" placeholder="Es. 18:00 – 21:00">'
+    + '<div class="field-label">Autisti proposti</div>'
+    + '<div id="urg-suggestions"></div>'
+    + '<button class="btn btn-ghost btn-block" onclick="closeSheet()">Annulla</button>';
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+
+  pendingRouteForAssign = null;
+  document.getElementById('urg-suggestions').innerHTML = suggestForNewRoute();
+}
+
+function suggestForNewRoute(){
+  const list = suggestDrivers(null);
+  if(list.length===0) return '<div class="empty">Nessun autista disponibile per un giro extra.</div>';
+  let html = '<div class="suggest-list">';
+  list.forEach((d,i)=>{
+    html += '<div class="suggest-item">'
+      + '<span class="suggest-rank">'+(i+1)+'</span>'
+      + '<span class="suggest-name">'+d.name+'</span>'
+      + '<div class="suggest-tags">'
+        + (d.doubleOK?'<span class="badge badge-doppio">Doppio ok</span>':'<span class="badge badge-neutral">No doppio</span>')
+        + '<span class="badge badge-neutral">'+d.extra+' h extra</span>'
+      + '</div>'
+      + '<button class="btn btn-sm btn-primary" onclick="createUrgentRoute(\''+d.id+'\')">Assegna</button>'
+    + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function nextRouteCode(){
+  // codice progressivo basato sul numero più alto tra i giri esistenti, non sulla lunghezza dell'array
+  const nums = state.routes.map(r=>{
+    const m = r.code.match(/GR-0*(\d+)/);
+    return m ? parseInt(m[1],10) : 0;
+  });
+  const next = (nums.length ? Math.max(...nums) : 0) + 1;
+  return 'GR-'+String(next).padStart(3,'0');
+}
+
+function createUrgentRoute(driverId){
+  const zone = document.getElementById('urg-zone').value.trim() || 'Zona da definire';
+  const time = document.getElementById('urg-time').value.trim() || 'Da definire';
+  const d = driverById(driverId);
+  const code = nextRouteCode();
+  state.routes.push({id:'g'+Date.now(), code:code, zone:zone, time:time, driver:driverId, status:'programmato'});
+  if(d.status==='disponibile'){ d.shift='DOPPIO'; d.status='in_servizio'; }
+  else if(d.shift!=='DOPPIO'){ d.shift='DOPPIO'; }
+  d.extra += 3;
+  logAction('Giro urgente '+code+' creato e assegnato a '+d.name);
+  showToast('Giro '+code+' creato e assegnato a '+d.name);
+  closeSheet();
+  render();
+  saveState();
+}
+
+function openAssignRouteSheet(routeId){
+  pendingRouteForAssign = routeId;
+  const r = state.routes.find(r=>r.id===routeId);
+  let html = '<div class="sheet-close" onclick="closeSheet()">&times;</div>'
+    + '<div class="sheet-handle"></div>'
+    + '<div class="sheet-title">Assegna '+r.code+'</div>'
+    + '<div class="sheet-sub">'+r.zone+' · '+r.time+'</div>'
+    + '<div class="field-label">Autisti proposti</div>'
+    + renderSuggestions(r.driver, 'giro')
+    + '<button class="btn btn-ghost btn-block" onclick="closeSheet()">Annulla</button>';
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+
+/* ---------------- AUTISTI ---------------- */
+function renderAutisti(){
+  let html = '<div class="section-title">Autisti — riequilibrio ore extra</div>';
+  const sorted = [...state.drivers].sort((a,b)=>b.extra-a.extra);
+  sorted.forEach(d=>{ html += driverCard(d, true); });
+  return html;
+}
+
+/* ---------------- FLOTTA ---------------- */
+function renderFlotta(){
+  let html = '';
+  const groups = [
+    {key:'guasto', label:'Guasti'},
+    {key:'manutenzione', label:'In manutenzione'},
+    {key:'fermo', label:'Fermi'},
+    {key:'operativo', label:'Operativi'}
+  ];
+  groups.forEach(g=>{
+    const items = state.vans.filter(v=>v.status===g.key);
+    if(items.length===0) return;
+    html += '<div class="section-title">'+g.label+' ('+items.length+')</div>';
+    items.forEach(v=>{ html += vanCard(v, true); });
+  });
+  return html;
+}
+
+function vanCard(v, clickable){
+  const badge = {
+    operativo: '<span class="badge badge-ok">Operativo</span>',
+    guasto: '<span class="badge badge-danger">Guasto</span>',
+    manutenzione: '<span class="badge badge-warn">Manutenzione</span>',
+    fermo: '<span class="badge badge-neutral">Fermo</span>'
+  }[v.status];
+  const d = v.driver ? driverById(v.driver) : null;
+  return '<div class="card" '+(clickable?'onclick="openVanSheet(\''+v.id+'\')"':'')+'>'
+    + '<div class="van-row">'
+      + '<div class="van-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16V9a1 1 0 0 1 1-1h9l4 4h3a1 1 0 0 1 1 1v3"/><circle cx="7.5" cy="17" r="2"/><circle cx="17.5" cy="17" r="2"/></svg></div>'
+      + '<div class="driver-info">'
+        + '<div class="van-plate">'+v.plate+'</div>'
+        + '<div class="van-meta">'+v.km.toLocaleString('it-IT')+' km'+(d?' · '+d.name:'')+(v.note?' · '+v.note:'')+'</div>'
+      + '</div>'
+      + badge
+    + '</div>'
+  + '</div>';
+}
+
+function openVanSheet(id){
+  const v = state.vans.find(v=>v.id===id);
+  const statuses = ['operativo','guasto','manutenzione','fermo'];
+  const labels = {operativo:'Operativo', guasto:'Guasto', manutenzione:'Manutenzione', fermo:'Fermo'};
+  let grid = '<div class="shift-grid">';
+  statuses.forEach(s=>{
+    grid += '<div class="shift-opt '+(v.status===s?'sel':'')+'" onclick="setVanStatus(\''+id+'\',\''+s+'\')">'+labels[s]+'</div>';
+  });
+  grid += '</div>';
+  let html = '<div class="sheet-close" onclick="closeSheet()">&times;</div>'
+    + '<div class="sheet-handle"></div>'
+    + '<div class="sheet-title">'+v.plate+'</div>'
+    + '<div class="sheet-sub">'+v.km.toLocaleString('it-IT')+' km percorsi</div>'
+    + '<div class="field-label">Stato mezzo</div>'
+    + grid
+    + '<div class="field-label">Nota</div>'
+    + '<input type="text" id="van-note" value="'+(v.note||'')+'" placeholder="Es. In attesa di ricambio">'
+    + '<button class="btn btn-primary btn-block" onclick="saveVanNote(\''+id+'\')">Salva</button>';
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function setVanStatus(id, status){
+  const v = state.vans.find(v=>v.id===id);
+  const wasOperativo = v.status==='operativo';
+  v.status = status;
+  if(status==='guasto' && wasOperativo){
+    state.emergencies.unshift({id:'e'+Date.now(), type:'guasto', text:v.plate+' — segnalato guasto, verificare copertura giri', open:true, ts:nowHM()});
+    showToast('Guasto registrato per '+v.plate);
+  }
+  logAction('Stato furgone '+v.plate+' impostato su '+status);
+  openVanSheet(id);
+  render();
+  saveState();
+}
+
+function saveVanNote(id){
+  const v = state.vans.find(v=>v.id===id);
+  v.note = document.getElementById('van-note').value.trim();
+  logAction('Nota furgone '+v.plate+' aggiornata');
+  closeSheet();
+  render();
+  saveState();
+}
+
+/* ---------------- ADMIN ---------------- */
+function renderAdmin(){
+  let html = '<div class="admin-warn">AREA AMMINISTRAZIONE — DEMO. In produzione utenti, ruoli, sessioni e audit saranno controllati esclusivamente dal backend.</div>';
+
+  html += '<div class="section-title">Utenti <span class="see-all" onclick="openUserSheet(null)">+ Aggiungi ›</span></div>';
+  state.users.forEach(u=>{
+    html += '<div class="card" onclick="openUserSheet(\''+u.id+'\')">'
+      + '<div class="driver-row">'
+        + '<div class="avatar">'+u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()+'</div>'
+        + '<div class="driver-info"><div class="driver-name">'+u.name+'</div><div class="driver-meta">PIN ····</div></div>'
+        + '<span class="badge '+(u.role==='admin'?'badge-danger':'badge-neutral')+'">'+(u.role==='admin'?'Admin':'Dispatcher')+'</span>'
+      + '</div>'
+    + '</div>';
+  });
+
+  html += '<div class="section-title">Log attività</div>';
+  const log = (state.activityLog||[]).slice(0,30);
+  if(log.length===0){
+    html += '<div class="card"><div style="font-size:13px;color:var(--ink-dim)">Nessuna attività registrata.</div></div>';
+  } else {
+    html += '<div class="card">';
+    log.forEach(l=>{
+      const d = new Date(l.ts);
+      const time = isNaN(d) ? '' : d.toLocaleString('it-IT');
+      html += '<div class="log-item">'+l.desc+'<div class="log-meta">'+l.user+' ('+(l.role==='admin'?'Admin':'Dispatcher')+') · '+time+'</div></div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div class="section-title">Dati</div>'
+    + '<div class="card"><button class="btn btn-danger-outline btn-block" onclick="resetData()">Ripristina dati di esempio</button></div>';
+
+  return html;
+}
+
+function openUserSheet(id){
+  const u = id ? state.users.find(u=>u.id===id) : null;
+  const html = '<div class="sheet-close" onclick="closeSheet()">&times;</div>'
+    + '<div class="sheet-handle"></div>'
+    + '<div class="sheet-title">'+(u?u.name:'Nuovo utente')+'</div>'
+    + '<div class="sheet-sub">Accesso demo — non usare credenziali reali</div>'
+    + '<div class="field-label">Nome</div>'
+    + '<input type="text" id="user-name" value="'+(u?u.name:'')+'" placeholder="Es. Mario Rossi">'
+    + '<div class="field-label">Ruolo</div>'
+    + '<div class="shift-grid">'
+      + '<div class="shift-opt '+(u&&u.role==='admin'?'sel':'')+'" id="role-admin" onclick="pickRole(\'admin\')">Admin</div>'
+      + '<div class="shift-opt '+(!u||u.role==='dispatcher'?'sel':'')+'" id="role-dispatcher" onclick="pickRole(\'dispatcher\')">Dispatcher</div>'
+    + '</div>'
+    + '<div class="field-label">PIN (4 cifre)</div>'
+    + '<input type="text" inputmode="numeric" id="user-pin" maxlength="4" value="'+(u?u.pin:'')+'" placeholder="0000">'
+    + '<button class="btn btn-primary btn-block" onclick="saveUser(\''+(u?u.id:'')+'\')">Salva</button>'
+    + (u && u.id!==currentUser.id ? '<button class="btn btn-danger-outline btn-block" style="margin-top:8px" onclick="deleteUser(\''+u.id+'\')">Elimina utente</button>' : '');
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+  pickedRole = u ? u.role : 'dispatcher';
+}
+
+let pickedRole = 'dispatcher';
+function pickRole(role){
+  pickedRole = role;
+  document.getElementById('role-admin').classList.toggle('sel', role==='admin');
+  document.getElementById('role-dispatcher').classList.toggle('sel', role==='dispatcher');
+}
+
+function saveUser(id){
+  const name = document.getElementById('user-name').value.trim();
+  const pin = document.getElementById('user-pin').value.trim();
+  if(!name || !/^\d{4}$/.test(pin)){ showToast('Nome obbligatorio e PIN di 4 cifre', true); return; }
+  if(id){
+    const u = state.users.find(u=>u.id===id);
+    u.name = name; u.role = pickedRole; u.pin = pin;
+    logAction('Utente modificato: '+name);
+  } else {
+    state.users.push({id:'u'+Date.now(), name:name, role:pickedRole, pin:pin});
+    logAction('Utente creato: '+name);
+  }
+  closeSheet();
+  render();
+  saveState();
+  showToast('Utente salvato');
+}
+
+function deleteUser(id){
+  const u = state.users.find(u=>u.id===id);
+  state.users = state.users.filter(u=>u.id!==id);
+  logAction('Utente eliminato: '+(u?u.name:id));
+  closeSheet();
+  render();
+  saveState();
+  showToast('Utente eliminato');
+}
+
+/* ---------------- SHEET HELPERS ---------------- */
+function closeSheet(){
+  document.getElementById('overlay').classList.remove('open');
+  pendingRouteForAssign = null;
+}
+function closeSheetOnBackdrop(e){
+  if(e.target.id==='overlay') closeSheet();
+}
+
+/* ---------------- RESET DATI (per test) ---------------- */
+async function resetData(){
+  if(!currentUser || currentUser.role!=='admin'){ showToast('Solo un Admin può ripristinare i dati', true); return; }
+  const keepUsers = state.users;
+  state = defaultState();
+  state.users = keepUsers;
+  logAction('Dati ripristinati ai valori iniziali');
+  await saveState(true);
+  render();
+  showToast('Dati ripristinati ai valori iniziali');
+}
+
+/* ---------------- INIT ---------------- */
+(async function init(){
+  await loadState();
+  let restoredUserId = null;
+  try{
+    const res = await window.storage.get(CURRENT_USER_KEY, false);
+    if(res && res.value){ restoredUserId = JSON.parse(res.value).id; }
+  }catch(e){ /* nessuna sessione precedente */ }
+  const restoredUser = restoredUserId ? state.users.find(u=>u.id===restoredUserId) : null;
+  if(restoredUser){
+    currentUser = restoredUser;
+    showApp();
+  } else {
+    document.getElementById('login-root').style.display = 'flex';
+    renderLogin();
+  }
+})();
+</script>
+</body>
+</html>
