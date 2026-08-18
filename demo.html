@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#10151A"><meta name="description" content="CAP Delivery Control — gestione operativa transit point"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>CAP Delivery Control — Presentazione</title>
+<style>
+:root{--bg:#10151A;--s:#1A2129;--s2:#222B35;--s3:#2A3541;--line:#2E3944;--ink:#EDF1F5;--dim:#8FA0AF;--faint:#5C6B78;--amber:#F2A93B;--green:#33C481;--red:#F0553F;--blue:#4C9BE8;--violet:#9D7FE8;--r:12px}
+*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}body{min-height:100vh;display:flex;justify-content:center}button,input,select,textarea{font:inherit}button{cursor:pointer}
+#login{width:100%;max-width:480px;min-height:100vh;display:flex;align-items:center;padding:24px}#app{width:100%;max-width:1180px;min-height:100vh;display:none;flex-direction:column}
+.loginbox{width:100%}.logo{text-align:center;margin-bottom:28px}.mark{display:inline-block;width:13px;height:13px;background:var(--amber);border-radius:3px;margin-bottom:10px}.logo h1,.brand{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-weight:700;text-transform:uppercase}.logo h1{font-size:30px}.sub{font-size:11px;color:var(--faint);margin-top:4px}
+.notice{border-left:2px solid var(--amber);padding-left:12px;color:var(--dim);font-size:11px;line-height:1.5;margin:20px 0}
+label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin:13px 0 6px}
+input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:11px 12px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:700}.primary{background:var(--amber);color:#3D2B04;width:100%}.ghost{background:var(--s2);color:var(--ink);border:1px solid var(--line)}.danger{background:transparent;color:var(--red);border:1px solid var(--red)}
+.error{color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:18px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 18px}.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:23px}.brand small{display:block;font-family:Inter;font-size:9px;color:var(--faint);letter-spacing:.08em}.who{text-align:right;font-size:10px;color:var(--dim)}.who b{color:var(--ink)}
+.status{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.dot.bad{background:var(--red)}.ticker{margin-top:10px;border:1px solid var(--red);border-left:4px solid var(--red);border-radius:8px;padding:8px 10px;font-size:11px;background:var(--s2)}
+.main{padding:16px 18px 100px;flex:1}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.kpi,.card{background:var(--s);border:1px solid var(--line);border-radius:14px}.kpi{padding:13px}.kl{font-size:9px;text-transform:uppercase;color:var(--faint)}.kv{font:700 26px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin-top:5px}.kf{font-size:10px;color:var(--dim);margin-top:5px}.amber{color:var(--amber)}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:22px 0 9px;font:700 16px "Barlow Condensed";text-transform:uppercase}.add{font:600 11px Inter;color:var(--amber);text-transform:none}
+.card{padding:13px;margin-bottom:9px}.row{display:flex;align-items:center;gap:10px}.avatar{width:38px;height:38px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font:700 14px "Barlow Condensed";color:var(--dim);flex:none}.grow{flex:1;min-width:0}.name{font-size:14px;font-weight:600}.meta{font-size:10.5px;color:var(--faint);margin-top:3px}.plate{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.badge{font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:6px;white-space:nowrap}.ok{background:#04291A;color:var(--green)}.warn{background:#3D2B04;color:var(--amber)}.badgebad{background:#3D0D06;color:var(--red)}.neutral{background:#394552;color:var(--dim)}.vio{background:#1D1440;color:var(--violet)}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1180px,100%);display:flex;background:var(--s);border-top:1px solid var(--line);z-index:30;padding-bottom:env(safe-area-inset-bottom)}.nav div{flex:1;text-align:center;padding:11px 2px 9px;font-size:8px;text-transform:uppercase;color:var(--faint)}.nav .on{color:var(--amber)}
+.overlay{position:fixed;inset:0;background:rgba(5,8,10,.78);z-index:50;display:none;align-items:flex-end}.overlay.open{display:flex}.sheet{width:100%;max-height:90vh;overflow:auto;background:var(--s);border-radius:20px 20px 0 0;padding:18px}.sheet h2{font:700 21px "Barlow Condensed";text-transform:uppercase}.sheet .close{float:right;font-size:24px;color:var(--faint)}.formgrid{display:grid;grid-template-columns:1fr;gap:8px}.actions{display:flex;gap:8px;margin-top:15px}.actions button{flex:1}.empty{text-align:center;color:var(--faint);font-size:12px;padding:25px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--s3);border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:11px;opacity:0;transition:.2s;z-index:70;max-width:90%;text-align:center}.toast.show{opacity:1}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar button{font-size:11px}.importbox{background:var(--s);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
+
+.controlbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
+.refreshbtn{background:var(--s2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:8px 10px;font-size:10.5px;font-weight:700}
+.refreshbtn:disabled{opacity:.5}
+.updated{font-size:10px;color:var(--faint)}
+.situation{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:700;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--s)}
+.situation .sdot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.situation.att .sdot{background:var(--amber)}.situation.crit .sdot{background:var(--red)}
+.suggestbox{margin-top:12px}
+.suggestrow{display:flex;align-items:center;gap:9px;background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
+.rank{font:700 11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--faint);width:16px}
+.reason{font-size:9.5px;color:var(--dim);margin-top:3px;line-height:1.35}
+.smallbtn{border:0;border-radius:8px;padding:7px 9px;font-size:10px;font-weight:700;background:var(--amber);color:#3D2B04}
+
+
+:root{--shadow:0 10px 28px rgba(0,0,0,.18)}
+body{background:linear-gradient(180deg,#0f1419 0%,#10151A 100%)}
+.top{backdrop-filter:saturate(1.1) blur(8px);box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.kpi,.card,.importbox{box-shadow:var(--shadow)}
+.kpi{transition:transform .15s ease,border-color .15s ease}.kpi:active{transform:scale(.99)}
+.card{transition:border-color .15s ease,background .15s ease}.card:hover{border-color:#3a4753}
+.section{letter-spacing:.02em}
+.nav{box-shadow:0 -8px 24px rgba(0,0,0,.14)}
+.nav div{transition:color .15s ease,background .15s ease}.nav div.on{background:rgba(242,169,59,.06)}
+.searchbar{display:flex;gap:8px;margin:0 0 12px}.searchbar input{flex:1}.searchbar select{width:auto;min-width:105px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--line);background:var(--s2);border-radius:999px;font-size:9.5px;color:var(--dim)}
+.version{font-size:9px;color:var(--faint);margin-top:3px}
+.healthgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.healthitem{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.healthitem b{display:block;font-size:11px}.healthitem span{font-size:9.5px;color:var(--dim)}
+.dangerzone{border:1px dashed rgba(240,85,63,.5);padding:12px;border-radius:12px;margin-top:12px}
+.muted{color:var(--faint)}
+.readonly-banner{display:none;margin:10px 0 0;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--s);font-size:10px;color:var(--dim)}
+.sessionbar{font-size:9.5px;color:var(--faint);margin-top:3px;text-align:right}
+
+.testreport{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.testline{display:flex;justify-content:space-between;gap:10px;padding:9px 11px;border-bottom:1px solid var(--line);font-size:10.5px;background:var(--s2)}
+.testline:last-child{border-bottom:0}.testok{color:var(--green);font-weight:700}.testbad{color:var(--red);font-weight:700}.testwait{color:var(--amber);font-weight:700}
+.field-error{font-size:10px;color:var(--red);margin-top:5px;display:none}
+
+
+details.diag{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+details.diag summary{cursor:pointer;font-size:10px;color:var(--faint);user-select:none}
+details.diag[open] summary{color:var(--amber)}
+.stale{color:var(--amber)!important}
+
+
+:root{
+  --tap:52px;
+  --tap-sm:46px;
+}
+button,.btn,.smallbtn,.refreshbtn,.nav div,.add,.close,.pill,.shift-opt{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.btn,.refreshbtn{
+  min-height:var(--tap);
+  padding:14px 16px;
+  font-size:14px;
+}
+.smallbtn{
+  min-height:var(--tap-sm);
+  padding:10px 12px;
+  font-size:11px;
+}
+input,select,textarea{
+  min-height:48px;
+  font-size:16px; /* evita zoom iOS */
+}
+textarea{min-height:96px}
+.nav{
+  overflow-x:auto;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav div{
+  min-width:72px;
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 8px calc(9px + env(safe-area-inset-bottom));
+  flex:1 0 72px;
+}
+.top{
+  padding-top:calc(16px + env(safe-area-inset-top));
+}
+.main{
+  padding-bottom:calc(110px + env(safe-area-inset-bottom));
+}
+.sheet{
+  padding-bottom:calc(22px + env(safe-area-inset-bottom));
+}
+.resilience-banner{
+  display:none;
+  margin:10px 0 0;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--amber);
+  background:rgba(242,169,59,.08);
+  color:var(--amber);
+  font-size:10.5px;
+  line-height:1.4;
+}
+.resilience-banner.bad{
+  border-color:var(--red);
+  background:rgba(240,85,63,.08);
+  color:var(--red);
+}
+.queue-chip{
+  display:none;
+  font-size:9.5px;
+  border:1px solid var(--amber);
+  color:var(--amber);
+  border-radius:999px;
+  padding:5px 8px;
+}
+.queue-chip.show{display:inline-flex}
+@media(max-width:520px){
+  .top{padding-left:14px;padding-right:14px}
+  .main{padding-left:14px;padding-right:14px}
+  .controlbar{align-items:stretch}
+  .controlbar .refreshbtn{flex:1 1 145px}
+  .situation{min-height:42px}
+  .sheet{padding-left:14px;padding-right:14px}
+  .actions{flex-direction:column}
+  .actions button{width:100%}
+  .searchbar{flex-direction:column}
+  .searchbar select{width:100%}
+  .kpis{grid-template-columns:1fr 1fr}
+  .card{padding:14px}
+  .row{align-items:flex-start}
+}
+@media(max-width:380px){
+  .kpis{grid-template-columns:1fr}
+  .brand{font-size:18px}
+  .who{font-size:9px}
+  .nav div{min-width:68px;flex-basis:68px}
+}
+
+@media(max-width:520px){.brand{font-size:20px}.who{max-width:48%}.controlbar{gap:6px}.refreshbtn{padding:7px 8px}.kpi{padding:12px}.kv{font-size:23px}}
+
+@media(min-width:760px){.top{padding:20px 28px}.main{padding:22px 28px 110px}.kpis{grid-template-columns:repeat(4,1fr)}.formgrid{grid-template-columns:1fr 1fr}}
+
+/* Ultimate Mobile Bar Fix */
+.nav{
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  min-height:82px;
+  align-items:stretch;
+}
+.nav div{
+  min-height:68px;
+  min-width:78px;
+  flex:1 0 78px;
+  padding:14px 10px calc(14px + env(safe-area-inset-bottom));
+  font-size:10px;
+  font-weight:700;
+  line-height:1.15;
+  border-radius:10px 10px 0 0;
+}
+.main{
+  padding-bottom:calc(140px + env(safe-area-inset-bottom));
+}
+@media(max-width:520px){
+  .nav{
+    min-height:88px;
+    padding-bottom:calc(14px + env(safe-area-inset-bottom));
+  }
+  .nav div{
+    min-height:72px;
+    min-width:82px;
+    flex-basis:82px;
+    padding:16px 11px calc(16px + env(safe-area-inset-bottom));
+    font-size:10.5px;
+  }
+  .main{
+    padding-bottom:calc(152px + env(safe-area-inset-bottom));
+  }
+}
+@media(max-width:390px){
+  .nav div{
+    min-width:78px;
+    flex-basis:78px;
+    font-size:10px;
+  }
+}
+
+
+/* Final Production 5.0 — mobile/timeline/navigation */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:none}
+body{overflow-x:hidden}
+.main,.sheet{-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+button,.nav div{touch-action:manipulation}
+.datebar{display:flex;align-items:center;gap:6px;margin:0 0 5px;padding:7px;background:var(--s);border:1px solid var(--line);border-radius:12px}
+.datebar button{width:43px;height:43px;flex:none;border:1px solid var(--line);background:var(--s2);color:var(--ink);border-radius:10px;font-weight:800;font-size:20px}
+.datebar .todaybtn{width:auto;padding:0 11px;font-size:10px;color:var(--amber)}
+.datebar input[type=date]{height:43px;min-width:0;flex:1;background:var(--s2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:7px 9px;font-size:16px}
+.datecaption{font-size:10px;color:var(--dim);margin:6px 2px 12px}.datecaption b{color:var(--ink)}
+.nav{gap:2px;overflow:visible}.nav div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:58px;min-height:58px;padding:5px 5px!important;font-size:9px!important;line-height:1.05}
+.nav .navico{width:21px;height:21px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav div.on{color:var(--amber);background:rgba(242,169,59,.08);border-radius:10px}
+.import-status{font-size:10px;color:var(--dim);line-height:1.4;margin-top:9px;min-height:14px}
+@media(max-width:600px){.main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}.nav{padding-bottom:calc(7px + env(safe-area-inset-bottom));min-height:72px}.top{padding-left:12px;padding-right:12px}.main{padding-left:12px;padding-right:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+</style>
+</head>
+<body>
+<div id="login" style="display:none">
+  <div class="loginbox">
+    <div class="logo"><span class="mark"></span><h1>CAP Delivery Control</h1><div class="sub">Control Center</div></div>
+    <div class="notice">Accesso collegato al backend CAP Delivery. Le modifiche vengono salvate nel database centrale.</div>
+    <label>Utente</label>
+    <input id="login-name" type="text" autocomplete="username" placeholder="Nome utente" value="Amministratore">
+    <label>PIN</label><input id="login-pin" type="password" inputmode="numeric" maxlength="12" autocomplete="current-password" placeholder="••••">
+    <button id="login-btn" class="btn primary" style="margin-top:14px" onclick="login()">Accedi</button>
+    <div id="login-error" class="error"></div>
+  </div>
+</div>
+
+<div id="app" style="display:flex">
+  <div class="top">
+    <div class="toprow"><div class="brand"><span class="mark" style="width:9px;height:9px;margin:0 8px 0 0"></span>CAP Delivery<small>Control Center · produzione MVP</small></div><div class="who"><b id="who"></b><br><span id="today"></span><div class="status"><span id="api-dot" class="dot"></span><span id="api-status">Backend online</span></div><div class="sessionbar" id="sessionbar"></div><span onclick="logout()" style="color:var(--amber);cursor:pointer">Esci</span></div></div>
+    <div class="version">Presentation Final · Dati Fittizi</div><div class="notice" style="margin-top:8px">DEMO AZIENDALE · dati 100% fittizi · nessun collegamento alla produzione</div>
+    <div class="readonly-banner" id="readonly-banner">Modalità sola lettura: puoi consultare i dati ma non modificarli.</div>
+    <div class="controlbar">
+      <button class="refreshbtn" id="refresh-btn" onclick="manualRefresh()">↻ Aggiorna ora</button>
+      <span class="updated" id="last-updated">Ultimo aggiornamento: —</span>
+      <span class="situation" id="situation"><span class="sdot"></span><span id="situation-label">Situazione OK</span></span>
+      <span class="queue-chip" id="queue-chip">0 modifiche in coda</span>
+    </div>
+    <div class="resilience-banner" id="resilience-banner"></div>
+    <div id="ticker" class="ticker" style="display:none"></div>
+  </div>
+  
+<div id="main" class="main">
+  <div class="datebar">
+    <button type="button" aria-label="Giorno precedente">‹</button>
+    <input type="date" value="2026-08-18">
+    <button type="button" aria-label="Giorno successivo">›</button>
+    <button class="todaybtn" type="button">Oggi</button>
+  </div>
+  <div class="datecaption"><b>martedì 18 agosto 2026</b> · Oggi</div>
+  <div class="kpis">
+    <div class="kpi"><div class="kl">Giri del giorno</div><div class="kv amber">8</div><div class="kf">8 totali</div></div>
+    <div class="kpi"><div class="kl">Autisti disponibili</div><div class="kv green">2</div><div class="kf">12 in organico</div></div>
+    <div class="kpi"><div class="kl">Furgoni operativi</div><div class="kv blue">5/8</div><div class="kf">3 non operativi</div></div>
+    <div class="kpi"><div class="kl">Emergenze aperte</div><div class="kv red">2</div><div class="kf">situazione attuale</div></div>
+  </div>
+  <div class="section">Giri scoperti del giorno</div>
+  <div class="card">
+    <div class="row">
+      <div class="grow"><div class="name">GR-107 · San Giuliano Terme</div><div class="meta">14:00 - 18:30 · Nessun autista assegnato</div></div>
+      <span class="badge badgebad">scoperto</span>
+    </div>
+  </div>
+  <div class="section">Emergenze attualmente aperte</div>
+  <div class="card">
+    <div class="row">
+      <div class="grow"><div class="name">Mezzo FT 908 LP fermo</div><div class="meta">Anomalia circuito freni rilevata prima dell’uscita. Giro riassegnato.</div></div>
+      <span class="badge badgebad">Aperta</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div class="grow"><div class="name">Giro scoperto</div><div class="meta">Assenza improvvisa. Proposta sostituto pronta secondo disponibilità ed equità.</div></div>
+      <span class="badge badgebad">Aperta</span>
+    </div>
+  </div>
+</div>
+
+  <div class="nav" id="nav">
+    <div data-tab="dashboard" onclick="go('dashboard')"><svg class="navico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></div>
+    <div data-tab="turni" onclick="go('turni')"><svg class="navico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M7 14h3M14 14h3M7 18h3"/></svg><span>Turni</span></div>
+    <div data-tab="giri" onclick="go('giri')"><svg class="navico" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H11a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3h-1"/></svg><span>Giri</span></div>
+    <div data-tab="emergenze" onclick="go('emergenze')"><svg class="navico" viewBox="0 0 24 24"><path d="M10.3 3.7 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span>Emergenze</span></div>
+    <div data-tab="autisti" onclick="go('autisti')"><svg class="navico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Autisti</span></div>
+    <div data-tab="flotta" onclick="go('flotta')"><svg class="navico" viewBox="0 0 24 24"><path d="M3 7h12v10H3zM15 10h3l3 3v4h-6z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Flotta</span></div>
+    <div data-tab="admin" id="admin-nav" onclick="go('admin')"><svg class="navico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg><span>Admin</span></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target.id==='overlay')closeSheet()"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+
+const DEMO_MODE=true;
+const DEMO_DB={"drivers":[{"id":"d1","name":"Luca Ferri","initials":"LF","phone":"333 100 2101","email":"demo1@example.invalid","shift":"AM","double_ok":true,"extra_hours":4,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 R.C | 19/07 PANE | 20/07 BY LIVE | 21/07 ORE | 22/07 ARI | 23/07 7:30 LOCKER 1+3 | 24/07 12:00 LOCKER-2-3 | 25/07 DISPONIBILITÀ | 26/07 GIRO AM | 27/07 GIRO PM | 28/07 DOPPIO | 29/07 R.C | 30/07 PANE | 31/07 BY LIVE | 01/08 ORE | 02/08 ARI | 03/08 7:30 LOCKER 1+3 | 04/08 12:00 LOCKER-2-3 | 05/08 DISPONIBILITÀ | 06/08 GIRO AM | 07/08 GIRO PM | 08/08 DOPPIO | 09/08 R.C | 10/08 PANE | 11/08 BY LIVE | 12/08 ORE | 13/08 ARI | 14/08 7:30 LOCKER 1+3 | 15/08 12:00 LOCKER-2-3 | 16/08 DISPONIBILITÀ | 17/08 GIRO AM | 18/08 GIRO PM | 19/08 DOPPIO | 20/08 R.C | 21/08 PANE | 22/08 BY LIVE | 23/08 ORE | 24/08 ARI | 25/08 7:30 LOCKER 1+3 | 26/08 12:00 LOCKER-2-3 | 27/08 DISPONIBILITÀ | 28/08 GIRO AM | 29/08 GIRO PM | 30/08 DOPPIO | 31/08 R.C | 01/09 PANE | 02/09 BY LIVE | 03/09 ORE | 04/09 ARI | 05/09 7:30 LOCKER 1+3 | 06/09 12:00 LOCKER-2-3 | 07/09 DISPONIBILITÀ | 08/09 GIRO AM | 09/09 GIRO PM | 10/09 DOPPIO | 11/09 R.C | 12/09 PANE | 13/09 BY LIVE | 14/09 ORE | 15/09 ARI | 16/09 7:30 LOCKER 1+3 | 17/09 12:00 LOCKER-2-3 | 18/09 DISPONIBILITÀ"},{"id":"d2","name":"Marco Belli","initials":"MB","phone":"333 100 2102","email":"demo2@example.invalid","shift":"PM","double_ok":true,"extra_hours":2,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 PANE | 19/07 BY LIVE | 20/07 ORE | 21/07 ARI | 22/07 7:30 LOCKER 1+3 | 23/07 12:00 LOCKER-2-3 | 24/07 DISPONIBILITÀ | 25/07 GIRO AM | 26/07 GIRO PM | 27/07 DOPPIO | 28/07 R.C | 29/07 PANE | 30/07 BY LIVE | 31/07 ORE | 01/08 ARI | 02/08 7:30 LOCKER 1+3 | 03/08 12:00 LOCKER-2-3 | 04/08 DISPONIBILITÀ | 05/08 GIRO AM | 06/08 GIRO PM | 07/08 DOPPIO | 08/08 R.C | 09/08 PANE | 10/08 BY LIVE | 11/08 ORE | 12/08 ARI | 13/08 7:30 LOCKER 1+3 | 14/08 12:00 LOCKER-2-3 | 15/08 DISPONIBILITÀ | 16/08 GIRO AM | 17/08 GIRO PM | 18/08 DOPPIO | 19/08 R.C | 20/08 PANE | 21/08 BY LIVE | 22/08 ORE | 23/08 ARI | 24/08 7:30 LOCKER 1+3 | 25/08 12:00 LOCKER-2-3 | 26/08 DISPONIBILITÀ | 27/08 GIRO AM | 28/08 GIRO PM | 29/08 DOPPIO | 30/08 R.C | 31/08 PANE | 01/09 BY LIVE | 02/09 ORE | 03/09 ARI | 04/09 7:30 LOCKER 1+3 | 05/09 12:00 LOCKER-2-3 | 06/09 DISPONIBILITÀ | 07/09 GIRO AM | 08/09 GIRO PM | 09/09 DOPPIO | 10/09 R.C | 11/09 PANE | 12/09 BY LIVE | 13/09 ORE | 14/09 ARI | 15/09 7:30 LOCKER 1+3 | 16/09 12:00 LOCKER-2-3 | 17/09 DISPONIBILITÀ | 18/09 GIRO AM"},{"id":"d3","name":"Simone Gori","initials":"SG","phone":"333 100 2103","email":"demo3@example.invalid","shift":"DOPPIO","double_ok":true,"extra_hours":7.5,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 BY LIVE | 19/07 ORE | 20/07 ARI | 21/07 7:30 LOCKER 1+3 | 22/07 12:00 LOCKER-2-3 | 23/07 DISPONIBILITÀ | 24/07 GIRO AM | 25/07 GIRO PM | 26/07 DOPPIO | 27/07 R.C | 28/07 PANE | 29/07 BY LIVE | 30/07 ORE | 31/07 ARI | 01/08 7:30 LOCKER 1+3 | 02/08 12:00 LOCKER-2-3 | 03/08 DISPONIBILITÀ | 04/08 GIRO AM | 05/08 GIRO PM | 06/08 DOPPIO | 07/08 R.C | 08/08 PANE | 09/08 BY LIVE | 10/08 ORE | 11/08 ARI | 12/08 7:30 LOCKER 1+3 | 13/08 12:00 LOCKER-2-3 | 14/08 DISPONIBILITÀ | 15/08 GIRO AM | 16/08 GIRO PM | 17/08 DOPPIO | 18/08 R.C | 19/08 PANE | 20/08 BY LIVE | 21/08 ORE | 22/08 ARI | 23/08 7:30 LOCKER 1+3 | 24/08 12:00 LOCKER-2-3 | 25/08 DISPONIBILITÀ | 26/08 GIRO AM | 27/08 GIRO PM | 28/08 DOPPIO | 29/08 R.C | 30/08 PANE | 31/08 BY LIVE | 01/09 ORE | 02/09 ARI | 03/09 7:30 LOCKER 1+3 | 04/09 12:00 LOCKER-2-3 | 05/09 DISPONIBILITÀ | 06/09 GIRO AM | 07/09 GIRO PM | 08/09 DOPPIO | 09/09 R.C | 10/09 PANE | 11/09 BY LIVE | 12/09 ORE | 13/09 ARI | 14/09 7:30 LOCKER 1+3 | 15/09 12:00 LOCKER-2-3 | 16/09 DISPONIBILITÀ | 17/09 GIRO AM | 18/09 GIRO PM"},{"id":"d4","name":"Andrea Neri","initials":"AN","phone":"333 100 2104","email":"demo4@example.invalid","shift":"RIPOSO","double_ok":false,"extra_hours":0,"status":"disponibile","notes":"[PLANNING AUTISTI] 18/07 ORE | 19/07 ARI | 20/07 7:30 LOCKER 1+3 | 21/07 12:00 LOCKER-2-3 | 22/07 DISPONIBILITÀ | 23/07 GIRO AM | 24/07 GIRO PM | 25/07 DOPPIO | 26/07 R.C | 27/07 PANE | 28/07 BY LIVE | 29/07 ORE | 30/07 ARI | 31/07 7:30 LOCKER 1+3 | 01/08 12:00 LOCKER-2-3 | 02/08 DISPONIBILITÀ | 03/08 GIRO AM | 04/08 GIRO PM | 05/08 DOPPIO | 06/08 R.C | 07/08 PANE | 08/08 BY LIVE | 09/08 ORE | 10/08 ARI | 11/08 7:30 LOCKER 1+3 | 12/08 12:00 LOCKER-2-3 | 13/08 DISPONIBILITÀ | 14/08 GIRO AM | 15/08 GIRO PM | 16/08 DOPPIO | 17/08 R.C | 18/08 PANE | 19/08 BY LIVE | 20/08 ORE | 21/08 ARI | 22/08 7:30 LOCKER 1+3 | 23/08 12:00 LOCKER-2-3 | 24/08 DISPONIBILITÀ | 25/08 GIRO AM | 26/08 GIRO PM | 27/08 DOPPIO | 28/08 R.C | 29/08 PANE | 30/08 BY LIVE | 31/08 ORE | 01/09 ARI | 02/09 7:30 LOCKER 1+3 | 03/09 12:00 LOCKER-2-3 | 04/09 DISPONIBILITÀ | 05/09 GIRO AM | 06/09 GIRO PM | 07/09 DOPPIO | 08/09 R.C | 09/09 PANE | 10/09 BY LIVE | 11/09 ORE | 12/09 ARI | 13/09 7:30 LOCKER 1+3 | 14/09 12:00 LOCKER-2-3 | 15/09 DISPONIBILITÀ | 16/09 GIRO AM | 17/09 GIRO PM | 18/09 DOPPIO"},{"id":"d5","name":"Davide Conti","initials":"DC","phone":"333 100 2105","email":"demo5@example.invalid","shift":"AM","double_ok":true,"extra_hours":3,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 ARI | 19/07 7:30 LOCKER 1+3 | 20/07 12:00 LOCKER-2-3 | 21/07 DISPONIBILITÀ | 22/07 GIRO AM | 23/07 GIRO PM | 24/07 DOPPIO | 25/07 R.C | 26/07 PANE | 27/07 BY LIVE | 28/07 ORE | 29/07 ARI | 30/07 7:30 LOCKER 1+3 | 31/07 12:00 LOCKER-2-3 | 01/08 DISPONIBILITÀ | 02/08 GIRO AM | 03/08 GIRO PM | 04/08 DOPPIO | 05/08 R.C | 06/08 PANE | 07/08 BY LIVE | 08/08 ORE | 09/08 ARI | 10/08 7:30 LOCKER 1+3 | 11/08 12:00 LOCKER-2-3 | 12/08 DISPONIBILITÀ | 13/08 GIRO AM | 14/08 GIRO PM | 15/08 DOPPIO | 16/08 R.C | 17/08 PANE | 18/08 BY LIVE | 19/08 ORE | 20/08 ARI | 21/08 7:30 LOCKER 1+3 | 22/08 12:00 LOCKER-2-3 | 23/08 DISPONIBILITÀ | 24/08 GIRO AM | 25/08 GIRO PM | 26/08 DOPPIO | 27/08 R.C | 28/08 PANE | 29/08 BY LIVE | 30/08 ORE | 31/08 ARI | 01/09 7:30 LOCKER 1+3 | 02/09 12:00 LOCKER-2-3 | 03/09 DISPONIBILITÀ | 04/09 GIRO AM | 05/09 GIRO PM | 06/09 DOPPIO | 07/09 R.C | 08/09 PANE | 09/09 BY LIVE | 10/09 ORE | 11/09 ARI | 12/09 7:30 LOCKER 1+3 | 13/09 12:00 LOCKER-2-3 | 14/09 DISPONIBILITÀ | 15/09 GIRO AM | 16/09 GIRO PM | 17/09 DOPPIO | 18/09 R.C"},{"id":"d6","name":"Matteo Riva","initials":"MR","phone":"333 100 2106","email":"demo6@example.invalid","shift":"FERIE","double_ok":false,"extra_hours":1,"status":"assente","notes":"[PLANNING AUTISTI] 18/07 7:30 LOCKER 1+3 | 19/07 12:00 LOCKER-2-3 | 20/07 DISPONIBILITÀ | 21/07 GIRO AM | 22/07 GIRO PM | 23/07 DOPPIO | 24/07 R.C | 25/07 PANE | 26/07 BY LIVE | 27/07 ORE | 28/07 ARI | 29/07 7:30 LOCKER 1+3 | 30/07 12:00 LOCKER-2-3 | 31/07 DISPONIBILITÀ | 01/08 GIRO AM | 02/08 GIRO PM | 03/08 DOPPIO | 04/08 R.C | 05/08 PANE | 06/08 BY LIVE | 07/08 ORE | 08/08 ARI | 09/08 7:30 LOCKER 1+3 | 10/08 12:00 LOCKER-2-3 | 11/08 DISPONIBILITÀ | 12/08 GIRO AM | 13/08 GIRO PM | 14/08 DOPPIO | 15/08 R.C | 16/08 PANE | 17/08 BY LIVE | 18/08 ORE | 19/08 ARI | 20/08 7:30 LOCKER 1+3 | 21/08 12:00 LOCKER-2-3 | 22/08 DISPONIBILITÀ | 23/08 GIRO AM | 24/08 GIRO PM | 25/08 DOPPIO | 26/08 R.C | 27/08 PANE | 28/08 BY LIVE | 29/08 ORE | 30/08 ARI | 31/08 7:30 LOCKER 1+3 | 01/09 12:00 LOCKER-2-3 | 02/09 DISPONIBILITÀ | 03/09 GIRO AM | 04/09 GIRO PM | 05/09 DOPPIO | 06/09 R.C | 07/09 PANE | 08/09 BY LIVE | 09/09 ORE | 10/09 ARI | 11/09 7:30 LOCKER 1+3 | 12/09 12:00 LOCKER-2-3 | 13/09 DISPONIBILITÀ | 14/09 GIRO AM | 15/09 GIRO PM | 16/09 DOPPIO | 17/09 R.C | 18/09 PANE"},{"id":"d7","name":"Alessio Moretti","initials":"AM","phone":"333 100 2107","email":"demo7@example.invalid","shift":"PM","double_ok":true,"extra_hours":5,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 12:00 LOCKER-2-3 | 19/07 DISPONIBILITÀ | 20/07 GIRO AM | 21/07 GIRO PM | 22/07 DOPPIO | 23/07 R.C | 24/07 PANE | 25/07 BY LIVE | 26/07 ORE | 27/07 ARI | 28/07 7:30 LOCKER 1+3 | 29/07 12:00 LOCKER-2-3 | 30/07 DISPONIBILITÀ | 31/07 GIRO AM | 01/08 GIRO PM | 02/08 DOPPIO | 03/08 R.C | 04/08 PANE | 05/08 BY LIVE | 06/08 ORE | 07/08 ARI | 08/08 7:30 LOCKER 1+3 | 09/08 12:00 LOCKER-2-3 | 10/08 DISPONIBILITÀ | 11/08 GIRO AM | 12/08 GIRO PM | 13/08 DOPPIO | 14/08 R.C | 15/08 PANE | 16/08 BY LIVE | 17/08 ORE | 18/08 ARI | 19/08 7:30 LOCKER 1+3 | 20/08 12:00 LOCKER-2-3 | 21/08 DISPONIBILITÀ | 22/08 GIRO AM | 23/08 GIRO PM | 24/08 DOPPIO | 25/08 R.C | 26/08 PANE | 27/08 BY LIVE | 28/08 ORE | 29/08 ARI | 30/08 7:30 LOCKER 1+3 | 31/08 12:00 LOCKER-2-3 | 01/09 DISPONIBILITÀ | 02/09 GIRO AM | 03/09 GIRO PM | 04/09 DOPPIO | 05/09 R.C | 06/09 PANE | 07/09 BY LIVE | 08/09 ORE | 09/09 ARI | 10/09 7:30 LOCKER 1+3 | 11/09 12:00 LOCKER-2-3 | 12/09 DISPONIBILITÀ | 13/09 GIRO AM | 14/09 GIRO PM | 15/09 DOPPIO | 16/09 R.C | 17/09 PANE | 18/09 BY LIVE"},{"id":"d8","name":"Fabio Serra","initials":"FS","phone":"333 100 2108","email":"demo8@example.invalid","shift":"MALATTIA","double_ok":false,"extra_hours":0,"status":"assente","notes":"[PLANNING AUTISTI] 18/07 DISPONIBILITÀ | 19/07 GIRO AM | 20/07 GIRO PM | 21/07 DOPPIO | 22/07 R.C | 23/07 PANE | 24/07 BY LIVE | 25/07 ORE | 26/07 ARI | 27/07 7:30 LOCKER 1+3 | 28/07 12:00 LOCKER-2-3 | 29/07 DISPONIBILITÀ | 30/07 GIRO AM | 31/07 GIRO PM | 01/08 DOPPIO | 02/08 R.C | 03/08 PANE | 04/08 BY LIVE | 05/08 ORE | 06/08 ARI | 07/08 7:30 LOCKER 1+3 | 08/08 12:00 LOCKER-2-3 | 09/08 DISPONIBILITÀ | 10/08 GIRO AM | 11/08 GIRO PM | 12/08 DOPPIO | 13/08 R.C | 14/08 PANE | 15/08 BY LIVE | 16/08 ORE | 17/08 ARI | 18/08 7:30 LOCKER 1+3 | 19/08 12:00 LOCKER-2-3 | 20/08 DISPONIBILITÀ | 21/08 GIRO AM | 22/08 GIRO PM | 23/08 DOPPIO | 24/08 R.C | 25/08 PANE | 26/08 BY LIVE | 27/08 ORE | 28/08 ARI | 29/08 7:30 LOCKER 1+3 | 30/08 12:00 LOCKER-2-3 | 31/08 DISPONIBILITÀ | 01/09 GIRO AM | 02/09 GIRO PM | 03/09 DOPPIO | 04/09 R.C | 05/09 PANE | 06/09 BY LIVE | 07/09 ORE | 08/09 ARI | 09/09 7:30 LOCKER 1+3 | 10/09 12:00 LOCKER-2-3 | 11/09 DISPONIBILITÀ | 12/09 GIRO AM | 13/09 GIRO PM | 14/09 DOPPIO | 15/09 R.C | 16/09 PANE | 17/09 BY LIVE | 18/09 ORE"},{"id":"d9","name":"Nicola Greco","initials":"NG","phone":"333 100 2109","email":"demo9@example.invalid","shift":"AM","double_ok":true,"extra_hours":1.5,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 GIRO AM | 19/07 GIRO PM | 20/07 DOPPIO | 21/07 R.C | 22/07 PANE | 23/07 BY LIVE | 24/07 ORE | 25/07 ARI | 26/07 7:30 LOCKER 1+3 | 27/07 12:00 LOCKER-2-3 | 28/07 DISPONIBILITÀ | 29/07 GIRO AM | 30/07 GIRO PM | 31/07 DOPPIO | 01/08 R.C | 02/08 PANE | 03/08 BY LIVE | 04/08 ORE | 05/08 ARI | 06/08 7:30 LOCKER 1+3 | 07/08 12:00 LOCKER-2-3 | 08/08 DISPONIBILITÀ | 09/08 GIRO AM | 10/08 GIRO PM | 11/08 DOPPIO | 12/08 R.C | 13/08 PANE | 14/08 BY LIVE | 15/08 ORE | 16/08 ARI | 17/08 7:30 LOCKER 1+3 | 18/08 12:00 LOCKER-2-3 | 19/08 DISPONIBILITÀ | 20/08 GIRO AM | 21/08 GIRO PM | 22/08 DOPPIO | 23/08 R.C | 24/08 PANE | 25/08 BY LIVE | 26/08 ORE | 27/08 ARI | 28/08 7:30 LOCKER 1+3 | 29/08 12:00 LOCKER-2-3 | 30/08 DISPONIBILITÀ | 31/08 GIRO AM | 01/09 GIRO PM | 02/09 DOPPIO | 03/09 R.C | 04/09 PANE | 05/09 BY LIVE | 06/09 ORE | 07/09 ARI | 08/09 7:30 LOCKER 1+3 | 09/09 12:00 LOCKER-2-3 | 10/09 DISPONIBILITÀ | 11/09 GIRO AM | 12/09 GIRO PM | 13/09 DOPPIO | 14/09 R.C | 15/09 PANE | 16/09 BY LIVE | 17/09 ORE | 18/09 ARI"},{"id":"d10","name":"Pietro Sala","initials":"PS","phone":"333 100 2110","email":"demo10@example.invalid","shift":"PM","double_ok":false,"extra_hours":0,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 GIRO PM | 19/07 DOPPIO | 20/07 R.C | 21/07 PANE | 22/07 BY LIVE | 23/07 ORE | 24/07 ARI | 25/07 7:30 LOCKER 1+3 | 26/07 12:00 LOCKER-2-3 | 27/07 DISPONIBILITÀ | 28/07 GIRO AM | 29/07 GIRO PM | 30/07 DOPPIO | 31/07 R.C | 01/08 PANE | 02/08 BY LIVE | 03/08 ORE | 04/08 ARI | 05/08 7:30 LOCKER 1+3 | 06/08 12:00 LOCKER-2-3 | 07/08 DISPONIBILITÀ | 08/08 GIRO AM | 09/08 GIRO PM | 10/08 DOPPIO | 11/08 R.C | 12/08 PANE | 13/08 BY LIVE | 14/08 ORE | 15/08 ARI | 16/08 7:30 LOCKER 1+3 | 17/08 12:00 LOCKER-2-3 | 18/08 DISPONIBILITÀ | 19/08 GIRO AM | 20/08 GIRO PM | 21/08 DOPPIO | 22/08 R.C | 23/08 PANE | 24/08 BY LIVE | 25/08 ORE | 26/08 ARI | 27/08 7:30 LOCKER 1+3 | 28/08 12:00 LOCKER-2-3 | 29/08 DISPONIBILITÀ | 30/08 GIRO AM | 31/08 GIRO PM | 01/09 DOPPIO | 02/09 R.C | 03/09 PANE | 04/09 BY LIVE | 05/09 ORE | 06/09 ARI | 07/09 7:30 LOCKER 1+3 | 08/09 12:00 LOCKER-2-3 | 09/09 DISPONIBILITÀ | 10/09 GIRO AM | 11/09 GIRO PM | 12/09 DOPPIO | 13/09 R.C | 14/09 PANE | 15/09 BY LIVE | 16/09 ORE | 17/09 ARI | 18/09 7:30 LOCKER 1+3"},{"id":"d11","name":"Giacomo Fontana","initials":"GF","phone":"333 100 2111","email":"demo11@example.invalid","shift":"RIPOSO","double_ok":true,"extra_hours":2,"status":"disponibile","notes":"[PLANNING AUTISTI] 18/07 DOPPIO | 19/07 R.C | 20/07 PANE | 21/07 BY LIVE | 22/07 ORE | 23/07 ARI | 24/07 7:30 LOCKER 1+3 | 25/07 12:00 LOCKER-2-3 | 26/07 DISPONIBILITÀ | 27/07 GIRO AM | 28/07 GIRO PM | 29/07 DOPPIO | 30/07 R.C | 31/07 PANE | 01/08 BY LIVE | 02/08 ORE | 03/08 ARI | 04/08 7:30 LOCKER 1+3 | 05/08 12:00 LOCKER-2-3 | 06/08 DISPONIBILITÀ | 07/08 GIRO AM | 08/08 GIRO PM | 09/08 DOPPIO | 10/08 R.C | 11/08 PANE | 12/08 BY LIVE | 13/08 ORE | 14/08 ARI | 15/08 7:30 LOCKER 1+3 | 16/08 12:00 LOCKER-2-3 | 17/08 DISPONIBILITÀ | 18/08 GIRO AM | 19/08 GIRO PM | 20/08 DOPPIO | 21/08 R.C | 22/08 PANE | 23/08 BY LIVE | 24/08 ORE | 25/08 ARI | 26/08 7:30 LOCKER 1+3 | 27/08 12:00 LOCKER-2-3 | 28/08 DISPONIBILITÀ | 29/08 GIRO AM | 30/08 GIRO PM | 31/08 DOPPIO | 01/09 R.C | 02/09 PANE | 03/09 BY LIVE | 04/09 ORE | 05/09 ARI | 06/09 7:30 LOCKER 1+3 | 07/09 12:00 LOCKER-2-3 | 08/09 DISPONIBILITÀ | 09/09 GIRO AM | 10/09 GIRO PM | 11/09 DOPPIO | 12/09 R.C | 13/09 PANE | 14/09 BY LIVE | 15/09 ORE | 16/09 ARI | 17/09 7:30 LOCKER 1+3 | 18/09 12:00 LOCKER-2-3"},{"id":"d12","name":"Enrico Lombardi","initials":"EL","phone":"333 100 2112","email":"demo12@example.invalid","shift":"AM","double_ok":false,"extra_hours":0,"status":"in_servizio","notes":"[PLANNING AUTISTI] 18/07 R.C | 19/07 PANE | 20/07 BY LIVE | 21/07 ORE | 22/07 ARI | 23/07 7:30 LOCKER 1+3 | 24/07 12:00 LOCKER-2-3 | 25/07 DISPONIBILITÀ | 26/07 GIRO AM | 27/07 GIRO PM | 28/07 DOPPIO | 29/07 R.C | 30/07 PANE | 31/07 BY LIVE | 01/08 ORE | 02/08 ARI | 03/08 7:30 LOCKER 1+3 | 04/08 12:00 LOCKER-2-3 | 05/08 DISPONIBILITÀ | 06/08 GIRO AM | 07/08 GIRO PM | 08/08 DOPPIO | 09/08 R.C | 10/08 PANE | 11/08 BY LIVE | 12/08 ORE | 13/08 ARI | 14/08 7:30 LOCKER 1+3 | 15/08 12:00 LOCKER-2-3 | 16/08 DISPONIBILITÀ | 17/08 GIRO AM | 18/08 GIRO PM | 19/08 DOPPIO | 20/08 R.C | 21/08 PANE | 22/08 BY LIVE | 23/08 ORE | 24/08 ARI | 25/08 7:30 LOCKER 1+3 | 26/08 12:00 LOCKER-2-3 | 27/08 DISPONIBILITÀ | 28/08 GIRO AM | 29/08 GIRO PM | 30/08 DOPPIO | 31/08 R.C | 01/09 PANE | 02/09 BY LIVE | 03/09 ORE | 04/09 ARI | 05/09 7:30 LOCKER 1+3 | 06/09 12:00 LOCKER-2-3 | 07/09 DISPONIBILITÀ | 08/09 GIRO AM | 09/09 GIRO PM | 10/09 DOPPIO | 11/09 R.C | 12/09 PANE | 13/09 BY LIVE | 14/09 ORE | 15/09 ARI | 16/09 7:30 LOCKER 1+3 | 17/09 12:00 LOCKER-2-3 | 18/09 DISPONIBILITÀ"}],"vans":[{"id":"v1","plate":"FA 314 KD","brand":"Iveco","model":"Daily","year":2023,"km":48210,"status":"operativo","driver_id":"d1","service_date":"2026-09-05","note":"Navacchio · pronto uscita"},{"id":"v2","plate":"GB 527 RT","brand":"Ford","model":"Transit","year":2022,"km":63180,"status":"operativo","driver_id":"d2","service_date":"2026-09-07","note":"Navacchio · nessuna anomalia"},{"id":"v3","plate":"FT 908 LP","brand":"Mercedes","model":"Sprinter","year":2021,"km":91240,"status":"guasto","driver_id":null,"service_date":"2026-08-20","note":"Circuito freni · officina assegnata"},{"id":"v4","plate":"GL 221 NV","brand":"Fiat","model":"Ducato","year":2024,"km":22870,"status":"operativo","driver_id":"d3","service_date":"2026-09-17","note":"Porcari · operativo"},{"id":"v5","plate":"FX 445 DS","brand":"Renault","model":"Master","year":2020,"km":118330,"status":"manutenzione","driver_id":null,"service_date":"2026-08-19","note":"Tagliando programmato · rientro 16:30"},{"id":"v6","plate":"GE 702 CM","brand":"Iveco","model":"Daily","year":2022,"km":74690,"status":"operativo","driver_id":"d7","service_date":"2026-09-12","note":"Navacchio"},{"id":"v7","plate":"GH 163 PK","brand":"Ford","model":"Transit","year":2023,"km":55420,"status":"fermo","driver_id":null,"service_date":"2026-08-21","note":"Verifica pneumatico posteriore"},{"id":"v8","plate":"GC 880 VF","brand":"Fiat","model":"Ducato","year":2021,"km":85770,"status":"operativo","driver_id":"d5","service_date":"2026-09-15","note":"Dotazione completa"}],"routes":[{"id":"r100","code":"GR-100","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r101","code":"GR-101","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r102","code":"GR-102","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r103","code":"GR-103","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r104","code":"GR-104","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r105","code":"GR-105","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r106","code":"GR-106","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r107","code":"GR-107","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-18"},{"id":"r108","code":"GR-108","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r109","code":"GR-109","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r110","code":"GR-110","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r111","code":"GR-111","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r112","code":"GR-112","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r113","code":"GR-113","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r114","code":"GR-114","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r115","code":"GR-115","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-19"},{"id":"r116","code":"GR-116","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r117","code":"GR-117","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r118","code":"GR-118","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r119","code":"GR-119","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r120","code":"GR-120","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r121","code":"GR-121","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r122","code":"GR-122","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r123","code":"GR-123","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-20"},{"id":"r124","code":"GR-124","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r125","code":"GR-125","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r126","code":"GR-126","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r127","code":"GR-127","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r128","code":"GR-128","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r129","code":"GR-129","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r130","code":"GR-130","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r131","code":"GR-131","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-21"},{"id":"r132","code":"GR-132","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r133","code":"GR-133","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r134","code":"GR-134","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r135","code":"GR-135","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r136","code":"GR-136","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r137","code":"GR-137","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r138","code":"GR-138","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r139","code":"GR-139","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-22"},{"id":"r140","code":"GR-140","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r141","code":"GR-141","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r142","code":"GR-142","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r143","code":"GR-143","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r144","code":"GR-144","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r145","code":"GR-145","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r146","code":"GR-146","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r147","code":"GR-147","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-23"},{"id":"r148","code":"GR-148","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r149","code":"GR-149","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r150","code":"GR-150","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r151","code":"GR-151","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r152","code":"GR-152","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r153","code":"GR-153","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r154","code":"GR-154","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r155","code":"GR-155","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-24"},{"id":"r156","code":"GR-156","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r157","code":"GR-157","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r158","code":"GR-158","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r159","code":"GR-159","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r160","code":"GR-160","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r161","code":"GR-161","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r162","code":"GR-162","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r163","code":"GR-163","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-25"},{"id":"r164","code":"GR-164","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r165","code":"GR-165","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r166","code":"GR-166","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r167","code":"GR-167","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r168","code":"GR-168","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r169","code":"GR-169","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r170","code":"GR-170","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r171","code":"GR-171","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-26"},{"id":"r172","code":"GR-172","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r173","code":"GR-173","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r174","code":"GR-174","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r175","code":"GR-175","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r176","code":"GR-176","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r177","code":"GR-177","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r178","code":"GR-178","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r179","code":"GR-179","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-27"},{"id":"r180","code":"GR-180","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r181","code":"GR-181","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r182","code":"GR-182","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r183","code":"GR-183","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r184","code":"GR-184","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r185","code":"GR-185","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r186","code":"GR-186","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r187","code":"GR-187","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-28"},{"id":"r188","code":"GR-188","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r189","code":"GR-189","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r190","code":"GR-190","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r191","code":"GR-191","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r192","code":"GR-192","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r193","code":"GR-193","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r194","code":"GR-194","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r195","code":"GR-195","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-29"},{"id":"r196","code":"GR-196","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r197","code":"GR-197","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r198","code":"GR-198","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r199","code":"GR-199","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r200","code":"GR-200","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r201","code":"GR-201","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r202","code":"GR-202","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r203","code":"GR-203","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-30"},{"id":"r204","code":"GR-204","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r205","code":"GR-205","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r206","code":"GR-206","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r207","code":"GR-207","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r208","code":"GR-208","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r209","code":"GR-209","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r210","code":"GR-210","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r211","code":"GR-211","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-07-31"},{"id":"r212","code":"GR-212","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r213","code":"GR-213","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r214","code":"GR-214","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r215","code":"GR-215","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r216","code":"GR-216","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r217","code":"GR-217","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r218","code":"GR-218","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r219","code":"GR-219","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-01"},{"id":"r220","code":"GR-220","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r221","code":"GR-221","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r222","code":"GR-222","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r223","code":"GR-223","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r224","code":"GR-224","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r225","code":"GR-225","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r226","code":"GR-226","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r227","code":"GR-227","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-02"},{"id":"r228","code":"GR-228","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r229","code":"GR-229","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r230","code":"GR-230","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r231","code":"GR-231","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r232","code":"GR-232","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r233","code":"GR-233","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r234","code":"GR-234","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r235","code":"GR-235","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-03"},{"id":"r236","code":"GR-236","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r237","code":"GR-237","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r238","code":"GR-238","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r239","code":"GR-239","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r240","code":"GR-240","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r241","code":"GR-241","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r242","code":"GR-242","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r243","code":"GR-243","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-04"},{"id":"r244","code":"GR-244","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r245","code":"GR-245","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r246","code":"GR-246","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r247","code":"GR-247","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r248","code":"GR-248","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r249","code":"GR-249","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r250","code":"GR-250","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r251","code":"GR-251","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-05"},{"id":"r252","code":"GR-252","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r253","code":"GR-253","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r254","code":"GR-254","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r255","code":"GR-255","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r256","code":"GR-256","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r257","code":"GR-257","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r258","code":"GR-258","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r259","code":"GR-259","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-06"},{"id":"r260","code":"GR-260","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r261","code":"GR-261","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r262","code":"GR-262","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r263","code":"GR-263","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r264","code":"GR-264","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r265","code":"GR-265","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r266","code":"GR-266","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r267","code":"GR-267","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-07"},{"id":"r268","code":"GR-268","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r269","code":"GR-269","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r270","code":"GR-270","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r271","code":"GR-271","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r272","code":"GR-272","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r273","code":"GR-273","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r274","code":"GR-274","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r275","code":"GR-275","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-08"},{"id":"r276","code":"GR-276","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r277","code":"GR-277","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r278","code":"GR-278","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r279","code":"GR-279","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r280","code":"GR-280","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r281","code":"GR-281","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r282","code":"GR-282","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r283","code":"GR-283","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-09"},{"id":"r284","code":"GR-284","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r285","code":"GR-285","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r286","code":"GR-286","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r287","code":"GR-287","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r288","code":"GR-288","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r289","code":"GR-289","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r290","code":"GR-290","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r291","code":"GR-291","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-10"},{"id":"r292","code":"GR-292","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r293","code":"GR-293","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r294","code":"GR-294","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r295","code":"GR-295","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r296","code":"GR-296","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r297","code":"GR-297","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r298","code":"GR-298","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r299","code":"GR-299","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-11"},{"id":"r300","code":"GR-300","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r301","code":"GR-301","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r302","code":"GR-302","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r303","code":"GR-303","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r304","code":"GR-304","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r305","code":"GR-305","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r306","code":"GR-306","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r307","code":"GR-307","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-12"},{"id":"r308","code":"GR-308","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r309","code":"GR-309","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r310","code":"GR-310","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r311","code":"GR-311","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r312","code":"GR-312","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r313","code":"GR-313","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r314","code":"GR-314","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r315","code":"GR-315","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-13"},{"id":"r316","code":"GR-316","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r317","code":"GR-317","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r318","code":"GR-318","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r319","code":"GR-319","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r320","code":"GR-320","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r321","code":"GR-321","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r322","code":"GR-322","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r323","code":"GR-323","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-14"},{"id":"r324","code":"GR-324","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r325","code":"GR-325","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r326","code":"GR-326","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r327","code":"GR-327","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r328","code":"GR-328","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r329","code":"GR-329","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r330","code":"GR-330","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r331","code":"GR-331","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-15"},{"id":"r332","code":"GR-332","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r333","code":"GR-333","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r334","code":"GR-334","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r335","code":"GR-335","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r336","code":"GR-336","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r337","code":"GR-337","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r338","code":"GR-338","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r339","code":"GR-339","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-16"},{"id":"r340","code":"GR-340","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r341","code":"GR-341","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r342","code":"GR-342","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r343","code":"GR-343","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r344","code":"GR-344","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r345","code":"GR-345","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r346","code":"GR-346","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r347","code":"GR-347","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"completato","notes":"Scenario dimostrativo","service_date":"2026-08-17"},{"id":"r348","code":"GR-348","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"in_corso","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r349","code":"GR-349","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"in_corso","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r350","code":"GR-350","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r351","code":"GR-351","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r352","code":"GR-352","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r353","code":"GR-353","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r354","code":"GR-354","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r355","code":"GR-355","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-08-18"},{"id":"r356","code":"GR-356","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r357","code":"GR-357","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r358","code":"GR-358","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r359","code":"GR-359","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r360","code":"GR-360","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r361","code":"GR-361","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r362","code":"GR-362","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r363","code":"GR-363","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-19"},{"id":"r364","code":"GR-364","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r365","code":"GR-365","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r366","code":"GR-366","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r367","code":"GR-367","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r368","code":"GR-368","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r369","code":"GR-369","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r370","code":"GR-370","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r371","code":"GR-371","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-20"},{"id":"r372","code":"GR-372","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r373","code":"GR-373","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r374","code":"GR-374","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r375","code":"GR-375","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r376","code":"GR-376","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r377","code":"GR-377","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r378","code":"GR-378","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r379","code":"GR-379","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-08-21"},{"id":"r380","code":"GR-380","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r381","code":"GR-381","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r382","code":"GR-382","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r383","code":"GR-383","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r384","code":"GR-384","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r385","code":"GR-385","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r386","code":"GR-386","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r387","code":"GR-387","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-22"},{"id":"r388","code":"GR-388","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r389","code":"GR-389","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r390","code":"GR-390","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r391","code":"GR-391","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r392","code":"GR-392","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r393","code":"GR-393","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r394","code":"GR-394","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r395","code":"GR-395","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-23"},{"id":"r396","code":"GR-396","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r397","code":"GR-397","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r398","code":"GR-398","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r399","code":"GR-399","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r400","code":"GR-400","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r401","code":"GR-401","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r402","code":"GR-402","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r403","code":"GR-403","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-08-24"},{"id":"r404","code":"GR-404","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r405","code":"GR-405","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r406","code":"GR-406","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r407","code":"GR-407","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r408","code":"GR-408","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r409","code":"GR-409","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r410","code":"GR-410","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r411","code":"GR-411","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-25"},{"id":"r412","code":"GR-412","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r413","code":"GR-413","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r414","code":"GR-414","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r415","code":"GR-415","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r416","code":"GR-416","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r417","code":"GR-417","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r418","code":"GR-418","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r419","code":"GR-419","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-26"},{"id":"r420","code":"GR-420","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r421","code":"GR-421","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r422","code":"GR-422","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r423","code":"GR-423","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r424","code":"GR-424","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r425","code":"GR-425","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r426","code":"GR-426","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r427","code":"GR-427","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-08-27"},{"id":"r428","code":"GR-428","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r429","code":"GR-429","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r430","code":"GR-430","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r431","code":"GR-431","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r432","code":"GR-432","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r433","code":"GR-433","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r434","code":"GR-434","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r435","code":"GR-435","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-28"},{"id":"r436","code":"GR-436","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r437","code":"GR-437","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r438","code":"GR-438","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r439","code":"GR-439","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r440","code":"GR-440","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r441","code":"GR-441","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r442","code":"GR-442","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r443","code":"GR-443","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-29"},{"id":"r444","code":"GR-444","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r445","code":"GR-445","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r446","code":"GR-446","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r447","code":"GR-447","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r448","code":"GR-448","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r449","code":"GR-449","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r450","code":"GR-450","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r451","code":"GR-451","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-08-30"},{"id":"r452","code":"GR-452","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r453","code":"GR-453","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r454","code":"GR-454","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r455","code":"GR-455","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r456","code":"GR-456","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r457","code":"GR-457","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r458","code":"GR-458","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r459","code":"GR-459","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-08-31"},{"id":"r460","code":"GR-460","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r461","code":"GR-461","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r462","code":"GR-462","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r463","code":"GR-463","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r464","code":"GR-464","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r465","code":"GR-465","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r466","code":"GR-466","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r467","code":"GR-467","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-01"},{"id":"r468","code":"GR-468","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r469","code":"GR-469","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r470","code":"GR-470","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r471","code":"GR-471","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r472","code":"GR-472","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r473","code":"GR-473","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r474","code":"GR-474","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r475","code":"GR-475","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-09-02"},{"id":"r476","code":"GR-476","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r477","code":"GR-477","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r478","code":"GR-478","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r479","code":"GR-479","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r480","code":"GR-480","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r481","code":"GR-481","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r482","code":"GR-482","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r483","code":"GR-483","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-03"},{"id":"r484","code":"GR-484","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r485","code":"GR-485","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r486","code":"GR-486","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r487","code":"GR-487","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r488","code":"GR-488","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r489","code":"GR-489","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r490","code":"GR-490","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r491","code":"GR-491","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-04"},{"id":"r492","code":"GR-492","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r493","code":"GR-493","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r494","code":"GR-494","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r495","code":"GR-495","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r496","code":"GR-496","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r497","code":"GR-497","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r498","code":"GR-498","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r499","code":"GR-499","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-09-05"},{"id":"r500","code":"GR-500","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r501","code":"GR-501","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r502","code":"GR-502","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r503","code":"GR-503","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r504","code":"GR-504","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r505","code":"GR-505","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r506","code":"GR-506","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r507","code":"GR-507","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-06"},{"id":"r508","code":"GR-508","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r509","code":"GR-509","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r510","code":"GR-510","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r511","code":"GR-511","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r512","code":"GR-512","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r513","code":"GR-513","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r514","code":"GR-514","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r515","code":"GR-515","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-07"},{"id":"r516","code":"GR-516","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r517","code":"GR-517","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r518","code":"GR-518","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r519","code":"GR-519","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r520","code":"GR-520","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r521","code":"GR-521","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r522","code":"GR-522","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r523","code":"GR-523","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-09-08"},{"id":"r524","code":"GR-524","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r525","code":"GR-525","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r526","code":"GR-526","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r527","code":"GR-527","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r528","code":"GR-528","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r529","code":"GR-529","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r530","code":"GR-530","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r531","code":"GR-531","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-09"},{"id":"r532","code":"GR-532","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r533","code":"GR-533","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r534","code":"GR-534","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r535","code":"GR-535","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r536","code":"GR-536","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r537","code":"GR-537","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r538","code":"GR-538","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r539","code":"GR-539","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-10"},{"id":"r540","code":"GR-540","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r541","code":"GR-541","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r542","code":"GR-542","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r543","code":"GR-543","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r544","code":"GR-544","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r545","code":"GR-545","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r546","code":"GR-546","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r547","code":"GR-547","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-09-11"},{"id":"r548","code":"GR-548","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r549","code":"GR-549","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r550","code":"GR-550","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r551","code":"GR-551","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r552","code":"GR-552","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r553","code":"GR-553","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r554","code":"GR-554","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r555","code":"GR-555","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-12"},{"id":"r556","code":"GR-556","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r557","code":"GR-557","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r558","code":"GR-558","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r559","code":"GR-559","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r560","code":"GR-560","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r561","code":"GR-561","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r562","code":"GR-562","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r563","code":"GR-563","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-13"},{"id":"r564","code":"GR-564","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r565","code":"GR-565","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r566","code":"GR-566","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r567","code":"GR-567","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r568","code":"GR-568","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r569","code":"GR-569","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r570","code":"GR-570","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r571","code":"GR-571","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-09-14"},{"id":"r572","code":"GR-572","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r573","code":"GR-573","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r574","code":"GR-574","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r575","code":"GR-575","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r576","code":"GR-576","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r577","code":"GR-577","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r578","code":"GR-578","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r579","code":"GR-579","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-15"},{"id":"r580","code":"GR-580","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r581","code":"GR-581","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r582","code":"GR-582","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r583","code":"GR-583","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r584","code":"GR-584","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r585","code":"GR-585","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r586","code":"GR-586","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r587","code":"GR-587","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-16"},{"id":"r588","code":"GR-588","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r589","code":"GR-589","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r590","code":"GR-590","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r591","code":"GR-591","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r592","code":"GR-592","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r593","code":"GR-593","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r594","code":"GR-594","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r595","code":"GR-595","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":null,"status":"scoperto","notes":"Scenario dimostrativo","service_date":"2026-09-17"},{"id":"r596","code":"GR-596","zone":"Pisa Nord","time_window":"08:00 - 12:30","driver_id":"d1","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r597","code":"GR-597","zone":"Pontedera","time_window":"14:00 - 18:30","driver_id":"d2","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r598","code":"GR-598","zone":"Lucca Centro","time_window":"08:00 - 12:30","driver_id":"d3","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r599","code":"GR-599","zone":"Livorno","time_window":"14:00 - 18:30","driver_id":"d4","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r600","code":"GR-600","zone":"Cascina","time_window":"08:00 - 12:30","driver_id":"d5","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r601","code":"GR-601","zone":"Viareggio","time_window":"14:00 - 18:30","driver_id":"d6","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r602","code":"GR-602","zone":"Empoli","time_window":"08:00 - 12:30","driver_id":"d7","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"},{"id":"r603","code":"GR-603","zone":"San Giuliano Terme","time_window":"14:00 - 18:30","driver_id":"d8","status":"programmato","notes":"Scenario dimostrativo","service_date":"2026-09-18"}],"emergencies":[{"id":"e1","type":"guasto","priority":"alta","title":"Mezzo FT 908 LP fermo","description":"Anomalia circuito freni rilevata prima dell’uscita. Giro riassegnato.","is_open":true,"van_id":"v3","driver_id":null,"route_id":null,"notes":"Scenario dimostrativo","opened_at":"2026-08-18T10:15:00","closed_at":null},{"id":"e2","type":"giro","priority":"alta","title":"Giro scoperto","description":"Assenza improvvisa. Proposta sostituto pronta secondo disponibilità ed equità.","is_open":true,"van_id":null,"driver_id":"d8","route_id":null,"notes":"Scenario dimostrativo","opened_at":"2026-08-18T10:15:00","closed_at":null},{"id":"e3","type":"manutenzione","priority":"media","title":"Manutenzione programmata","description":"Tagliando con rientro previsto nel pomeriggio.","is_open":false,"van_id":"v5","driver_id":null,"route_id":null,"notes":"Scenario dimostrativo","opened_at":"2026-08-18T10:15:00","closed_at":"2026-08-18T10:15:00"}],"users":[{"id":"u1","name":"Amministratore Demo","role":"admin","active":true},{"id":"u2","name":"Referente Demo","role":"dispatcher","active":true},{"id":"u3","name":"Responsabile Demo","role":"responsabile","active":true}],"activity":[{"id":"a1","action":"route.assign","entity":"route","entity_id":"r100","details":{"route":"GR-100","driver":"Luca Ferri"},"created_at":"2026-08-18T10:15:00","user_name":"Referente Demo"},{"id":"a2","action":"van.update","entity":"van","entity_id":"v3","details":{"status":"guasto"},"created_at":"2026-08-18T10:15:00","user_name":"Amministratore Demo"}]};
+function demoClone(x){return JSON.parse(JSON.stringify(x))}
+function demoCollection(path){
+  if(path.startsWith('/api/drivers'))return 'drivers';
+  if(path.startsWith('/api/vans'))return 'vans';
+  if(path.startsWith('/api/routes'))return 'routes';
+  if(path.startsWith('/api/emergencies'))return 'emergencies';
+  if(path.startsWith('/api/users'))return 'users';
+  return null;
+}
+async function demoApi(path,opt={}){
+  await new Promise(r=>setTimeout(r,25));
+  const method=(opt.method||'GET').toUpperCase();
+  if(path==='/api/auth/login')return {token:'demo-token',user:demoClone(DEMO_DB.users[0])};
+  if(path==='/api/me')return demoClone(DEMO_DB.users[0]);
+  if(path.startsWith('/api/activity'))return demoClone(DEMO_DB.activity);
+  if(path==='/api/me/pin')return {ok:true};
+  const c=demoCollection(path);
+  if(!c)return {ok:true};
+  const base='/api/'+c;
+  const id=path.startsWith(base+'/')?path.slice(base.length+1).split('?')[0]:'';
+  const body=opt.body?JSON.parse(opt.body):{};
+  if(method==='GET')return id?demoClone(DEMO_DB[c].find(x=>x.id===id)||null):demoClone(DEMO_DB[c]);
+  if(method==='POST'){
+    const row={id:c[0]+Date.now(),...body,created_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+    DEMO_DB[c].push(row);return demoClone(row);
+  }
+  if(method==='PATCH'){
+    const i=DEMO_DB[c].findIndex(x=>x.id===id);
+    if(i<0)throw Object.assign(new Error('Record demo non trovato'),{status:404});
+    DEMO_DB[c][i]={...DEMO_DB[c][i],...body,updated_at:new Date().toISOString()};
+    return demoClone(DEMO_DB[c][i]);
+  }
+  if(method==='DELETE'){
+    const i=DEMO_DB[c].findIndex(x=>x.id===id);
+    if(i>=0)DEMO_DB[c].splice(i,1);
+    return null;
+  }
+  return {ok:true};
+}
+
+const API='https://cap-backend.davidecravedi168-beep.deno.net';
+let token=sessionStorage.getItem('cap_token')||'';
+let user=JSON.parse(sessionStorage.getItem('cap_user')||'null');
+let state={drivers:[],vans:[],routes:[],emergencies:[],activity:[],users:[],tab:'dashboard',lastUpdated:null,search:'',filter:'all',selectedDate:new Date().toISOString().slice(0,10)};
+const SNAPSHOT_KEY='cap_session_snapshot_v1';
+const QUEUE_KEY='cap_session_queue_v1';
+let pendingQueue=[];
+try{sessionStorage.removeItem(QUEUE_KEY)}catch(e){}
+let syncInProgress=false;
+const APP_VERSION='Final Production 5.0';
+const AUTO_REFRESH_MS=15*60*1000;
+const IDLE_LOGOUT_MS=8*60*60*1000;
+let lastActivity=Date.now(),saving=false;
+
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function canEdit(){return user&&['admin','dispatcher'].includes(user.role)}
+function isViewer(){return user&&['viewer','responsabile','direttore'].includes(user.role)}
+function criticalConfirm(msg){return confirm(msg+'\n\nQuesta azione verrà registrata nel sistema.')}
+function markActivity(){lastActivity=Date.now()}
+['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,markActivity,{passive:true}))
+setInterval(()=>{if(token&&user&&Date.now()-lastActivity>IDLE_LOGOUT_MS){toast('Sessione terminata per inattività');setTimeout(logout,800)}},60*1000)
+function updateSessionBar(){const e=document.getElementById('sessionbar');if(!e)return;e.textContent='Sessione protetta · logout automatico dopo inattività'}
+
+function saveSessionSnapshot(){
+  try{
+    sessionStorage.setItem(SNAPSHOT_KEY,JSON.stringify({
+      drivers:state.drivers,vans:state.vans,routes:state.routes,emergencies:state.emergencies,
+      lastUpdated:state.lastUpdated?state.lastUpdated.toISOString():null
+    }));
+  }catch(e){}
+}
+function restoreSessionSnapshot(){
+  try{
+    const s=JSON.parse(sessionStorage.getItem(SNAPSHOT_KEY)||'null');
+    if(!s)return false;
+    state.drivers=s.drivers||[];state.vans=s.vans||[];state.routes=s.routes||[];state.emergencies=s.emergencies||[];
+    state.lastUpdated=s.lastUpdated?new Date(s.lastUpdated):null;
+    return true;
+  }catch(e){return false}
+}
+function persistQueue(){
+  try{sessionStorage.setItem(QUEUE_KEY,JSON.stringify(pendingQueue))}catch(e){}
+  updateQueueUI();
+}
+function updateQueueUI(){
+  const q=document.getElementById('queue-chip');
+  if(!q)return;
+  const n=pendingQueue.length;
+  q.textContent=n+' modific'+(n===1?'a':'he')+' in coda';
+  q.classList.toggle('show',n>0);
+}
+function setResilienceBanner(mode,msg){
+  const b=document.getElementById('resilience-banner');if(!b)return;
+  if(!msg){b.style.display='none';b.textContent='';b.className='resilience-banner';return}
+  b.style.display='block';b.textContent=msg;b.className='resilience-banner'+(mode==='bad'?' bad':'');
+}
+function queueOperation(path,opt){
+  // Coda solo operazioni esplicite; resta nella sessione del browser.
+  pendingQueue.push({
+    id:'q'+Date.now()+Math.random().toString(16).slice(2),
+    path,method:(opt.method||'POST').toUpperCase(),
+    body:opt.body||null,createdAt:new Date().toISOString()
+  });
+  persistQueue();
+  setResilienceBanner('warn','Connessione temporaneamente non disponibile. La modifica è stata messa in coda e verrà ritentata automaticamente finché questa sessione resta aperta.');
+}
+async function flushQueue(){
+  if(syncInProgress||!pendingQueue.length||!token)return;
+  syncInProgress=true;
+  try{
+    let kept=[];
+    for(const q of pendingQueue){
+      try{
+        await apiRaw(q.path,{method:q.method,body:q.body},false);
+      }catch(e){
+        kept.push(q);
+      }
+    }
+    const before=pendingQueue.length;
+    pendingQueue=kept;persistQueue();
+    if(before && !pendingQueue.length){
+      setResilienceBanner('', '');
+      try{await refresh();render()}catch(e){}
+      toast('Modifiche in coda sincronizzate');
+    }else if(pendingQueue.length){
+      setResilienceBanner('warn','Alcune modifiche sono ancora in attesa di sincronizzazione.');
+    }
+  }finally{syncInProgress=false}
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+async function apiRaw(path,opt={},allowRetry=true){
+  if(DEMO_MODE)return demoApi(path,opt);
+  const method=(opt.method||'GET').toUpperCase();
+  const headers={'Content-Type':'application/json',...(opt.headers||{})};
+  if(token)headers.Authorization='Bearer '+token;
+
+  async function requestOnce(){
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),30000);
+    let r;
+    try{
+      r=await fetch(API+path,{...opt,method,headers,signal:ctrl.signal});
+    }catch(e){
+      clearTimeout(timer);
+      if(e&&e.name==='AbortError')throw new Error('Il server sta impiegando troppo tempo. Riprova tra pochi secondi.');
+      throw new Error('Connessione API non disponibile');
+    }
+    clearTimeout(timer);
+    if(r.status===204)return null;
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok){
+      if(r.status===401&&token){logout();throw new Error('Sessione scaduta')}
+      const msg=data.error||data.detail||('Errore API '+r.status);
+      const err=new Error(msg);err.status=r.status;err.data=data;throw err;
+    }
+    return data;
+  }
+
+  try{return await requestOnce()}
+  catch(e){
+    if(allowRetry && method==='GET' && (!e.status || e.status>=500)){
+      await new Promise(r=>setTimeout(r,1800));
+      return await requestOnce();
+    }
+    throw e;
+  }
+}
+async function api(path,opt={}){
+  const method=(opt.method||'GET').toUpperCase();
+  try{
+    const result=await apiRaw(path,opt,true);
+    if(method==='GET')setResilienceBanner('','');
+    return result;
+  }catch(e){
+    const isNetwork=!e.status && /Connessione API|impiegando troppo tempo/.test(e.message||'');
+    if(method!=='GET' && isNetwork){
+      setResilienceBanner('bad','Connessione non disponibile: la modifica NON è stata inviata. I dati mostrati restano consultabili; riprova quando la connessione è tornata.');
+    }
+    throw e;
+  }
+}
+let loginInProgress=false;
+async function wakeBackend(){
+  if(DEMO_MODE)return true;
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),75000);
+  try{
+    const r=await fetch(API+'/health',{method:'GET',cache:'no-store',signal:ctrl.signal});
+    if(!r.ok)throw new Error('health '+r.status);
+    return true;
+  }finally{clearTimeout(timer)}
+}
+async function authLogin(name,pin){
+  const opt={method:'POST',body:JSON.stringify({name,pin})};
+  try{
+    return await apiRaw('/api/auth/login',opt,false);
+  }catch(e){
+    const transient=!e.status && /Connessione API|impiegando troppo tempo/.test(e.message||'');
+    if(!transient)throw e;
+    await new Promise(r=>setTimeout(r,900));
+    return await apiRaw('/api/auth/login',opt,false);
+  }
+}
+async function login(){
+  if(loginInProgress)return;
+  const name=document.getElementById('login-name').value.trim(),pin=document.getElementById('login-pin').value.trim();
+  const er=document.getElementById('login-error'),btn=document.getElementById('login-btn');
+  er.textContent='';
+  if(!name||!pin){er.textContent='Inserisci utente e PIN.';return}
+  loginInProgress=true;
+  if(btn){btn.disabled=true;btn.textContent='Connessione…'}
+  try{
+    er.textContent='Connessione al server…';
+    const slowMsg=setTimeout(()=>{if(loginInProgress)er.textContent='Avvio del server in corso… può richiedere qualche secondo.'},7000);
+    try{await wakeBackend()}catch(e){
+      clearTimeout(slowMsg);
+      if(e&&e.name==='AbortError')throw new Error('Il server sta impiegando più del previsto a riattivarsi. Riprova tra pochi secondi.');
+      throw new Error('Server momentaneamente non raggiungibile. Controlla la connessione e riprova.');
+    }
+    clearTimeout(slowMsg);
+    er.textContent='Verifica credenziali…';
+    const x=await authLogin(name,pin);
+    token=x.token;user=x.user;
+    const pinEl=document.getElementById('login-pin');if(pinEl)pinEl.value='';
+    sessionStorage.setItem('cap_token',token);sessionStorage.setItem('cap_user',JSON.stringify(user));
+    er.textContent='';
+    await showApp();
+  }catch(e){
+    er.textContent=e.message||'Accesso non riuscito. Riprova.';
+  }finally{
+    loginInProgress=false;
+    if(btn){btn.disabled=false;btn.textContent='Accedi'}
+  }
+}
+function logout(){token='';user=null;pendingQueue=[];sessionStorage.clear();document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
+document.getElementById('login-pin').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+let healthPingBusy=false;
+async function healthPing(){
+  if(DEMO_MODE)return;
+  if(healthPingBusy||!token||!user||document.visibilityState!=='visible'||navigator.onLine===false)return;
+  healthPingBusy=true;
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),12000);
+  try{await fetch(API+'/health',{cache:'no-store',signal:ctrl.signal})}catch(e){}finally{clearTimeout(timer);healthPingBusy=false}
+}
+setInterval(healthPing,10*60*1000);
+async function showApp(){
+  document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';
+  document.getElementById('who').textContent=user.name+' · '+({admin:'Admin',dispatcher:'Operativo',responsabile:'Responsabile'}[user.role]||user.role);
+  document.getElementById('today').textContent=new Date().toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+  document.getElementById('admin-nav').style.display=user.role==='admin'?'block':'none';
+  const rb=document.getElementById('readonly-banner');if(rb)rb.style.display=isViewer()?'block':'none';updateSessionBar();
+  try{await refresh()}catch(e){restoreSessionSnapshot()} updateQueueUI();go('dashboard');
+}
+let refreshPromise=null;
+async function refresh(){
+  if(refreshPromise)return refreshPromise;
+  refreshPromise=(async()=>{
+    try{
+      const [drivers,vans,routes,emergencies]=await Promise.all([
+        api('/api/drivers'),api('/api/vans'),api('/api/routes'),api('/api/emergencies')
+      ]);
+      state.drivers=drivers;state.vans=vans;state.routes=routes;state.emergencies=emergencies;
+      state.lastUpdated=new Date();
+      saveSessionSnapshot();
+      const dot=document.getElementById('api-dot'),lab=document.getElementById('api-status');
+      if(dot)dot.className='dot';
+      if(lab){lab.textContent='Database sincronizzato';lab.classList.remove('stale')}
+      updateControlStatus();
+      updateQueueUI();
+      return true;
+    }catch(e){
+      const dot=document.getElementById('api-dot'),lab=document.getElementById('api-status');
+      if(dot)dot.className='dot bad';
+      if(lab){lab.textContent='Dati non aggiornati · '+e.message;lab.classList.add('stale')}
+      if((!state.drivers.length&&!state.vans.length&&!state.routes.length&&!state.emergencies.length)&&restoreSessionSnapshot()){
+        setResilienceBanner('warn','Backend momentaneamente non raggiungibile: stai vedendo gli ultimi dati disponibili di questa sessione.');
+      }else{
+        setResilienceBanner('warn','Backend momentaneamente non raggiungibile. Gli ultimi dati restano visibili; le modifiche sono temporaneamente disabilitate per evitare duplicazioni.');
+      }
+      updateControlStatus(true);
+      updateQueueUI();
+      throw e;
+    }
+  })();
+  try{return await refreshPromise}finally{refreshPromise=null}
+}
+async function manualRefresh(){
+  const b=document.getElementById('refresh-btn');if(b){b.disabled=true;b.textContent='Aggiornamento…'}
+  try{await refresh();render();toast('Dati aggiornati')}catch(e){toast('Aggiornamento non riuscito: restano visibili gli ultimi dati disponibili')}
+  finally{if(b){b.disabled=false;b.textContent='↻ Aggiorna ora'}}
+}
+function updateControlStatus(error){
+  const u=document.getElementById('last-updated');
+  if(u&&state.lastUpdated)u.textContent='Ultimo aggiornamento: '+state.lastUpdated.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  const open=state.emergencies.filter(e=>e.is_open).length;
+  const uncovered=state.routes.filter(r=>r.status==='scoperto').length;
+  const badv=state.vans.filter(v=>['guasto','fermo'].includes(v.status)).length;
+  const s=document.getElementById('situation'),l=document.getElementById('situation-label');
+  if(!s||!l)return;
+  s.className='situation';
+  if(error){s.classList.add('crit');l.textContent='Connessione da verificare';return}
+  if(open>=2||uncovered>=2){s.classList.add('crit');l.textContent='Situazione critica'}
+  else if(open||uncovered||badv){s.classList.add('att');l.textContent='Situazione: attenzione'}
+  else l.textContent='Situazione OK';
+}
+function go(tab){state.tab=tab;document.querySelectorAll('.nav div').forEach(n=>n.classList.toggle('on',n.dataset.tab===tab));render()}
+function badgeStatus(s){return s==='operativo'||s==='in_corso'?'ok':s==='guasto'||s==='scoperto'||s==='MALATTIA'?'badgebad':s==='manutenzione'?'warn':s==='DOPPIO'?'vio':'neutral'}
+function driverName(id){return state.drivers.find(d=>d.id===id)?.name||''}
+
+function suggestDrivers(excludeId){
+  return state.drivers
+    .filter(d=>d.id!==excludeId)
+    .filter(d=>!['FERIE','MALATTIA'].includes(d.shift))
+    .filter(d=>d.status==='disponibile'||(d.status==='in_servizio'&&d.shift!=='DOPPIO'))
+    .sort((a,b)=>{
+      if(!!a.double_ok!==!!b.double_ok)return a.double_ok?-1:1;
+      const ae=Number(a.extra_hours||0),be=Number(b.extra_hours||0);
+      if(ae!==be)return ae-be;
+      return a.name.localeCompare(b.name,'it');
+    })
+    .slice(0,6);
+}
+function suggestionHTML(contextId){
+  const list=suggestDrivers(null);
+  if(!list.length)return '<div class="empty">Nessun autista proponibile al momento.</div>';
+  return '<div class="suggestbox">'+list.map((d,i)=>{
+    const reason=(d.double_ok?'Disponibile a doppio turno · ':'Non preferenziale per doppio · ')+Number(d.extra_hours||0)+' h extra mese';
+    return `<div class="suggestrow"><div class="rank">${i+1}</div><div class="grow"><div class="name">${esc(d.name)}</div><div class="reason">${esc(reason)}</div></div><button class="smallbtn" onclick="event.stopPropagation();chooseSuggestedDriver('${contextId}','${d.id}')">Scegli</button></div>`;
+  }).join('')+'</div>';
+}
+function openSuggestions(contextId,title){
+  openSheet(`<h2>${esc(title||'Autisti consigliati')}</h2><div class="meta" style="margin-top:5px">Priorità: disponibili al doppio turno, poi minori ore extra mensili. Gli altri non vengono esclusi.</div>${suggestionHTML(contextId)}`);
+}
+async function chooseSuggestedDriver(contextId,driverId){if(!canEdit())return toast('Modalità sola lettura');
+  const r=state.routes.find(x=>x.id===contextId);
+  if(r){
+    try{
+      await api('/api/routes/'+r.id,{method:'PATCH',body:JSON.stringify({driver_id:driverId,status:'programmato'})});
+      closeSheet();await refresh();render();toast('Autista assegnato al giro');
+    }catch(e){toast(e.message)}
+    return;
+  }
+  const e=state.emergencies.find(x=>x.id===contextId);
+  if(e){
+    const d=state.drivers.find(x=>x.id===driverId);
+    toast((d?d.name:'Autista')+' selezionato come proposta');
+    closeSheet();
+  }
+}
+function ticker(){
+  const o=state.emergencies.filter(e=>e.is_open),el=document.getElementById('ticker');
+  if(!o.length){el.style.display='none';return}el.style.display='block';el.innerHTML='<b style="color:var(--red)">'+o.length+' emergenze aperte</b> — '+esc(o[0].description);
+}
+
+function isoToday(){return new Date().toISOString().slice(0,10)}
+function addIsoDays(iso,days){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+function dayDistance(a,b){return Math.round((new Date(a+'T12:00:00')-new Date(b+'T12:00:00'))/86400000)}
+function selectedDateLabel(){return new Date(state.selectedDate+'T12:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function setSelectedDate(v){if(!v)return;const diff=dayDistance(v,isoToday());if(Math.abs(diff)>31){toast('Intervallo disponibile: 31 giorni prima o dopo oggi');return}state.selectedDate=v;state.search='';render()}
+function moveSelectedDate(days){setSelectedDate(addIsoDays(state.selectedDate,days))}
+function dateBar(){const t=isoToday(),diff=dayDistance(state.selectedDate,t),rel=diff===0?'Oggi':diff===-1?'Ieri':diff===1?'Domani':diff<0?Math.abs(diff)+' giorni fa':'Tra '+diff+' giorni';return `<div class="datebar"><button onclick="moveSelectedDate(-1)" aria-label="Giorno precedente">‹</button><input type="date" value="${esc(state.selectedDate)}" min="${addIsoDays(t,-31)}" max="${addIsoDays(t,31)}" onchange="setSelectedDate(this.value)"><button onclick="moveSelectedDate(1)" aria-label="Giorno successivo">›</button><button class="todaybtn" onclick="setSelectedDate('${t}')">Oggi</button></div><div class="datecaption"><b>${esc(selectedDateLabel())}</b> · ${esc(rel)}</div>`}
+function planningEntryForDate(d,iso){const notes=String(d.notes||'');const day=iso.slice(8,10),month=iso.slice(5,7);const re=new RegExp('(?:^|[|\]])\\s*'+day+'/'+month+'\\s+([^|]+)','i');const m=notes.match(re);return m?m[1].trim():''}
+function plannedShiftForDate(d){const raw=planningEntryForDate(d,state.selectedDate);if(!raw)return state.selectedDate===isoToday()?(d.shift||''):'—';const n=raw.toUpperCase().replace(/[.]+/g,' ').trim();if(n.includes('MALATT'))return 'MALATTIA';if(n.includes('FERIE')||n.includes('CONG PARENT'))return 'FERIE';if(n.includes('DOPPIO'))return 'DOPPIO';if(n==='RC'||n==='R C'||n.includes('RIPOSO'))return 'RIPOSO';if(n.includes('GIRO PM')||/\\bPM\\b/.test(n))return 'PM';if(n.includes('GIRO AM')||/\\bAM\\b/.test(n))return 'AM';return raw}
+function routesForSelectedDate(){return state.routes.filter(r=>String(r.service_date||'').slice(0,10)===state.selectedDate)}
+
+function render(){ticker();const m=document.getElementById('main'),db=['dashboard','turni','giri'].includes(state.tab)?dateBar():'';if(state.tab==='dashboard')m.innerHTML=db+dashboard();if(state.tab==='turni')m.innerHTML=db+drivers(true);if(state.tab==='autisti')m.innerHTML=drivers(false);if(state.tab==='giri')m.innerHTML=db+routes();if(state.tab==='emergenze')m.innerHTML=emergencies();if(state.tab==='flotta')m.innerHTML=vans();if(state.tab==='admin')admin()}
+function dashboard(){
+  const dayRoutes=routesForSelectedDate(),active=dayRoutes.filter(r=>['in_corso','programmato'].includes(r.status)).length,avail=state.drivers.filter(d=>plannedShiftForDate(d)==='RIPOSO'||String(plannedShiftForDate(d)).toUpperCase().includes('DISPONIBIL')).length,op=state.vans.filter(v=>v.status==='operativo').length,em=state.emergencies.filter(e=>e.is_open).length;
+  let h=`<div class="kpis"><div class="kpi"><div class="kl">Giri del giorno</div><div class="kv amber">${active}</div><div class="kf">${dayRoutes.length} totali</div></div><div class="kpi"><div class="kl">Autisti disponibili</div><div class="kv green">${avail}</div><div class="kf">sulla data scelta</div></div><div class="kpi"><div class="kl">Furgoni operativi</div><div class="kv blue">${op}/${state.vans.length}</div><div class="kf">${state.vans.length-op} non operativi</div></div><div class="kpi"><div class="kl">Emergenze attuali</div><div class="kv ${em?'red':'green'}">${em}</div><div class="kf">${em?'richiedono azione':'nessuna criticità'}</div></div></div>`;
+  const sc=dayRoutes.filter(r=>r.status==='scoperto');h+=`<div class="section">Giri scoperti del giorno <span class="add" onclick="go('giri')">Vedi tutti ›</span></div>`+(sc.length?sc.slice(0,3).map(routeCard).join(''):'<div class="card meta">Nessun giro scoperto per questa data.</div>');
+  const eo=state.emergencies.filter(e=>e.is_open);h+=`<div class="section">Emergenze attualmente aperte <span class="add" onclick="go('emergenze')">Vedi tutte ›</span></div>`+(eo.length?eo.slice(0,3).map(emCard).join(''):'<div class="card meta">Nessuna emergenza aperta.</div>');return h;
+}
+function drivers(turni){
+  const q=(state.search||'').toLowerCase();
+  const a0=state.drivers.filter(d=>!q||[d.name,d.phone,turni?plannedShiftForDate(d):d.shift,d.status].some(x=>String(x||'').toLowerCase().includes(q)));
+  const order={AM:0,PM:1,DOPPIO:2,RIPOSO:3,FERIE:4,MALATTIA:5};const a=[...a0].sort(turni?(a,b)=>(order[plannedShiftForDate(a)]??9)-(order[plannedShiftForDate(b)]??9):(a,b)=>a.name.localeCompare(b.name));
+  return `<div class="searchbar"><input placeholder="Cerca autista…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div><div class="section">${turni?'Turni del giorno':'Anagrafica autisti'} ${canEdit()?'<span class="add" onclick="driverSheet()">+ Aggiungi ›</span>':''}</div>`+a.map(d=>{const sh=turni?plannedShiftForDate(d):d.shift,raw=turni?planningEntryForDate(d,state.selectedDate):'';return `<div class="card" onclick="canEdit()&&driverSheet('${d.id}')"><div class="row"><div class="avatar">${esc(d.initials||d.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div class="grow"><div class="name">${esc(d.name)}</div><div class="meta">${esc(d.phone||'')} · Extra ${Number(d.extra_hours||0)} h${d.double_ok?' · doppio ok':''}${turni&&raw&&raw!==sh?' · '+esc(raw):''}</div></div><span class="badge ${badgeStatus(sh)}">${esc(sh||'—')}</span></div></div>`}).join('');
+}
+function routeCard(r){return `<div class="card" onclick="canEdit()&&routeSheet('${r.id}')"><div class="row"><div class="grow"><div class="plate">${esc(r.code)}</div><div class="name">${esc(r.zone)}</div><div class="meta">${esc(r.time_window||'')} · ${r.driver_id?esc(driverName(r.driver_id)):'Nessun autista'}</div>${r.status==='scoperto'&&canEdit()?`<div style="margin-top:8px"><button class="smallbtn" onclick="event.stopPropagation();openSuggestions('${r.id}','Proposte per ${esc(r.code)}')">Trova autista</button></div>`:''}</div><span class="badge ${badgeStatus(r.status)}">${esc(r.status.replace('_',' '))}</span></div></div>`}
+function routes(){const q=(state.search||'').toLowerCase(),a=routesForSelectedDate().filter(r=>!q||[r.code,r.zone,r.status,driverName(r.driver_id)].some(x=>String(x||'').toLowerCase().includes(q)));return `<div class="searchbar"><input placeholder="Cerca giro, zona, autista…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div>${canEdit()?'<button class="btn primary" onclick="routeSheet()">+ Aggiungi giro</button>':''}<div class="section">Giri del giorno</div>`+(a.length?a.map(routeCard).join(''):'<div class="card meta">Nessun giro registrato per questa data.</div>')}
+function emCard(e){return `<div class="card" onclick="canEdit()&&emSheet('${e.id}')"><div class="row"><div class="grow"><div class="name">${esc(e.title)}</div><div class="meta">${esc(e.description)}</div>${e.is_open&&canEdit()?`<div style="margin-top:8px"><button class="smallbtn" onclick="event.stopPropagation();openSuggestions('${e.id}','Autisti consigliati')">Suggerisci autista</button></div>`:''}</div><span class="badge ${e.is_open?'badgebad':'ok'}">${e.is_open?'Aperta':'Chiusa'}</span></div></div>`}
+function emergencies(){const q=(state.search||'').toLowerCase(),arr=state.emergencies.filter(e=>!q||[e.title,e.description,e.type,e.priority].some(x=>String(x||'').toLowerCase().includes(q)));return `<div class="searchbar"><input placeholder="Cerca emergenza…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div>${canEdit()?'<button class="btn primary" onclick="emSheet()">+ Nuova emergenza</button>':''}<div class="section">Emergenze aperte</div>`+arr.filter(e=>e.is_open).map(emCard).join('')+`<div class="section">Chiuse</div>`+arr.filter(e=>!e.is_open).map(emCard).join('')}
+function vans(){const q=(state.search||'').toLowerCase(),arr=state.vans.filter(v=>!q||[v.plate,v.brand,v.model,v.status,v.note].some(x=>String(x||'').toLowerCase().includes(q)));return `<div class="searchbar"><input placeholder="Cerca mezzo, targa, stato…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div><div class="section">Anagrafica mezzi ${canEdit()?'<span class="add" onclick="vanSheet()">+ Aggiungi ›</span>':''}</div>`+arr.map(v=>`<div class="card" onclick="canEdit()&&vanSheet('${v.id}')"><div class="row"><div class="avatar">🚚</div><div class="grow"><div class="plate">${esc(v.plate)}</div><div class="meta">${esc((v.brand||'')+' '+(v.model||''))} · ${Number(v.km||0).toLocaleString('it-IT')} km${v.note?' · '+esc(v.note):''}</div></div><span class="badge ${badgeStatus(v.status)}">${esc(v.status)}</span></div></div>`).join('')}
+
+function openSheet(h){document.getElementById('sheet').innerHTML='<span class="close" onclick="closeSheet()">×</span>'+h;document.getElementById('overlay').classList.add('open')}
+function closeSheet(){document.getElementById('overlay').classList.remove('open')}
+function val(id){return document.getElementById(id).value}
+function chk(id){return document.getElementById(id).checked}
+
+function driverSheet(id){
+ const d=state.drivers.find(x=>x.id===id);
+ openSheet(`<h2>${d?'Modifica':'Nuovo'} autista</h2><div class="formgrid"><div><label>Nome</label><input id="d-name" value="${esc(d?.name||'')}"></div><div><label>Telefono</label><input id="d-phone" value="${esc(d?.phone||'')}"></div><div><label>Email</label><input id="d-email" value="${esc(d?.email||'')}"></div><div><label>Turno</label><select id="d-shift">${['AM','PM','DOPPIO','RIPOSO','FERIE','MALATTIA'].map(x=>`<option ${d?.shift===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Stato</label><select id="d-status">${['in_servizio','disponibile','assente'].map(x=>`<option ${d?.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Ore extra</label><input id="d-extra" type="number" step=".5" value="${Number(d?.extra_hours||0)}"></div></div><label><input id="d-double" style="width:auto" type="checkbox" ${d?.double_ok?'checked':''}> Disponibile a doppio turno</label><label>Note</label><textarea id="d-notes">${esc(d?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveDriver('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/drivers/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveDriver(id){
+ const name=val('d-name').trim();if(!name)return toast('Nome obbligatorio');
+ const body={name,initials:name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase(),phone:val('d-phone'),email:val('d-email'),shift:val('d-shift'),status:val('d-status'),extra_hours:Number(val('d-extra')||0),double_ok:chk('d-double'),notes:val('d-notes')};
+ await saveEntity('/api/drivers',id,body);
+}
+function vanSheet(id){
+ const v=state.vans.find(x=>x.id===id);
+ openSheet(`<h2>${v?'Modifica':'Nuovo'} mezzo</h2><div class="formgrid"><div><label>Targa *</label><input id="v-plate" autocomplete="off" value="${esc(v?.plate||'')}" placeholder="Es. AB 123 CD"><div class="field-error" id="v-error"></div></div><div><label>Marca</label><input id="v-brand" value="${esc(v?.brand||'')}"></div><div><label>Modello</label><input id="v-model" value="${esc(v?.model||'')}"></div><div><label>Anno</label><input id="v-year" type="number" min="1980" max="2100" value="${v?.year||''}"></div><div><label>Km</label><input id="v-km" type="number" min="0" step="1" value="${Number(v?.km||0)}"></div><div><label>Stato</label><select id="v-status">${['operativo','guasto','manutenzione','fermo'].map(x=>`<option ${v?.status===x?'selected':''}>${x}</option>`).join('')}</select></div></div><label>Note</label><textarea id="v-note" maxlength="500">${esc(v?.note||'')}</textarea><div class="actions"><button class="btn primary" id="v-save" onclick="saveVan('${id||''}')">Salva mezzo</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/vans/${id}')">Elimina</button>`:''}</div>`);
+}
+function vanValidationError(msg){
+ const e=document.getElementById('v-error');if(e){e.textContent=msg;e.style.display='block'}else toast(msg);
+}
+async function saveVan(id){
+ if(!canEdit())return toast('Modalità sola lettura');
+ const plate=val('v-plate').trim().toUpperCase().replace(/\s+/g,' ');
+ const yearRaw=val('v-year').trim(),kmRaw=val('v-km').trim();
+ if(!plate)return vanValidationError('La targa è obbligatoria.');
+ if(plate.length>20)return vanValidationError('Targa troppo lunga.');
+ if(yearRaw && (Number(yearRaw)<1980||Number(yearRaw)>2100))return vanValidationError('Anno non valido.');
+ if(kmRaw && (!Number.isFinite(Number(kmRaw))||Number(kmRaw)<0))return vanValidationError('Chilometri non validi.');
+ const body={plate,brand:val('v-brand').trim(),model:val('v-model').trim(),km:Math.round(Number(kmRaw||0)),status:val('v-status'),note:val('v-note').trim()};
+ if(yearRaw)body.year=Number(yearRaw);
+ const b=document.getElementById('v-save');if(b){b.disabled=true;b.textContent='Salvataggio…'}
+ try{
+   const res=await api('/api/vans'+(id?'/'+id:''),{method:id?'PATCH':'POST',body:JSON.stringify(body)});
+   closeSheet();
+   if(res&&res.queued){toast('Mezzo messo in coda per sincronizzazione')}
+   else{await refresh();render();toast('Mezzo salvato correttamente')}
+ }catch(e){
+   if(e.status===409)vanValidationError('Targa già presente nel sistema.');
+   else vanValidationError('Errore salvataggio: '+e.message);
+ }finally{if(b){b.disabled=false;b.textContent='Salva mezzo'}}
+}
+function routeSheet(id){
+ const r=state.routes.find(x=>x.id===id);
+ openSheet(`<h2>${r?'Modifica':'Nuovo'} giro</h2><div class="formgrid"><div><label>Codice</label><input id="r-code" value="${esc(r?.code||'GR-')}"></div><div><label>Zona</label><input id="r-zone" value="${esc(r?.zone||'')}"></div><div><label>Orario</label><input id="r-time" value="${esc(r?.time_window||'')}"></div><div><label>Stato</label><select id="r-status">${['scoperto','in_corso','programmato','completato'].map(x=>`<option ${r?.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Autista</label><select id="r-driver"><option value="">— Nessuno —</option>${state.drivers.map(d=>`<option value="${d.id}" ${r?.driver_id===d.id?'selected':''}>${esc(d.name)}</option>`).join('')}</select></div><div><label>Data</label><input id="r-date" type="date" value="${(r?.service_date||state.selectedDate||new Date().toISOString().slice(0,10)).slice(0,10)}"></div></div><label>Note</label><textarea id="r-notes">${esc(r?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveRoute('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/routes/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveRoute(id){await saveEntity('/api/routes',id,{code:val('r-code'),zone:val('r-zone'),time_window:val('r-time'),status:val('r-status'),driver_id:val('r-driver')||null,service_date:val('r-date'),notes:val('r-notes')})}
+function emSheet(id){
+ const e=state.emergencies.find(x=>x.id===id);
+ openSheet(`<h2>${e?'Modifica':'Nuova'} emergenza</h2><div class="formgrid"><div><label>Titolo</label><input id="e-title" value="${esc(e?.title||'')}"></div><div><label>Tipo</label><select id="e-type">${['guasto','giro','assenza','incidente','altro'].map(x=>`<option ${e?.type===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Priorità</label><select id="e-priority">${['alta','media','bassa'].map(x=>`<option ${e?.priority===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Stato</label><select id="e-open"><option value="true" ${e?.is_open!==false?'selected':''}>Aperta</option><option value="false" ${e?.is_open===false?'selected':''}>Chiusa</option></select></div></div><label>Descrizione</label><textarea id="e-desc">${esc(e?.description||'')}</textarea><label>Note</label><textarea id="e-notes">${esc(e?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveEm('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/emergencies/${id}')">Elimina</button>`:''}</div>`);
+}
+async function saveEm(id){
+ const closing=val('e-open')==='false';
+ const current=state.emergencies.find(x=>x.id===id);
+ if(id && closing && current && current.is_open && !criticalConfirm('Confermi la chiusura dell’emergenza?'))return;
+ await saveEntity('/api/emergencies',id,{title:val('e-title'),type:val('e-type'),priority:val('e-priority'),is_open:!closing,description:val('e-desc'),notes:val('e-notes'),closed_at:closing?new Date().toISOString():null})
+}
+async function saveEntity(base,id,body){
+ if(!canEdit())return toast('Modalità sola lettura');
+ if(navigator.onLine===false)return toast('Sei offline: modifica non inviata. Riprova quando torna la connessione.');
+ if(saving)return;saving=true;
+ try{
+   const res=await api(base+(id?'/'+id:''),{method:id?'PATCH':'POST',body:JSON.stringify(body)});
+   closeSheet();
+   if(res&&res.queued){
+     toast('Modifica salvata in coda');
+   }else{
+     await refresh();render();toast('Salvato nel database');
+   }
+ }catch(e){toast(e.message)}finally{saving=false}
+}
+async function del(path){
+ if(!canEdit())return toast('Modalità sola lettura');
+ if(!criticalConfirm('Confermi l’eliminazione?'))return;
+ try{
+   // Le eliminazioni non vengono mai accodate offline: troppo rischioso.
+   await apiRaw(path,{method:'DELETE'},false);
+   closeSheet();await refresh();render();toast('Eliminato');
+ }catch(e){toast('Eliminazione non eseguita: '+e.message)}
+}
+function nk(k){return String(k||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
+function fv(row,names){const m={};Object.keys(row).forEach(k=>m[nk(k)]=row[k]);for(const n of names)if(m[nk(n)]!==undefined&&String(m[nk(n)]).trim()!=='')return m[nk(n)];return ''}
+
+function cleanCell(v){return String(v??'').replace(/\s+/g,' ').trim()}
+function norm(v){return cleanCell(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()}
+function truthyImport(v){return ['si','sì','yes','true','1','x','ok','disponibile'].includes(cleanCell(v).toLowerCase())}
+function extractItalianPlate(v){const s=cleanCell(v).toUpperCase();const m=s.match(/(?:^|[^A-Z0-9])([A-Z]{2})[\s.\-]*([0-9]{3})[\s.\-]*([A-Z]{2})(?=$|[^A-Z0-9])/);return m?(m[1]+m[2]+m[3]):''}
+function plateImport(v){return extractItalianPlate(v)||cleanCell(v).toUpperCase().replace(/[^A-Z0-9]/g,'')}
+function isItalianPlate(v){return /^[A-Z]{2}\d{3}[A-Z]{2}$/.test(plateImport(v))}
+function importDate(v){
+  if(v instanceof Date&&!isNaN(v))return v.toISOString().slice(0,10);
+  const x=cleanCell(v);if(!x)return '';
+  let m=x.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})$/);
+  if(m){let y=Number(m[3]);if(y<100)y+=2000;return String(y).padStart(4,'0')+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0')}
+  if(/^\d{4}-\d{2}-\d{2}/.test(x))return x.slice(0,10);
+  return x;
+}
+function shiftImport(v){const n=norm(v);if(!n)return '';
+  if(/malatt/.test(n))return 'MALATTIA';if(/ferie/.test(n))return 'FERIE';if(/riposo|rip\b/.test(n))return 'RIPOSO';if(/doppio|double/.test(n))return 'DOPPIO';if(/pomerig|\bpm\b/.test(n))return 'PM';if(/mattin|\bam\b/.test(n))return 'AM';return cleanCell(v).toUpperCase()}
+function driverStatusFrom(shift,status){const s=shiftImport(shift),n=norm(status);if(n.includes('assent'))return 'assente';if(n.includes('dispon'))return 'disponibile';if(n.includes('servizio'))return 'in_servizio';if(['FERIE','MALATTIA'].includes(s))return 'assente';if(s==='RIPOSO')return 'disponibile';return 'in_servizio'}
+function vanStatusFrom(problem,status){const n=norm(problem+' '+status);if(!n)return 'operativo';if(/guasto|rotto|problemi motore|fermo/.test(n))return 'guasto';if(/lavoraz|ritirat|officina|sostitu|ammortizz|crepa|bloccato|atp|petit/.test(n))return 'manutenzione';return 'fermo'}
+function rowObjFromHeaders(row,header){const o={};for(const [k,i] of Object.entries(header))o[k]=row[i]??'';return o}
+const IMPORT_HEADERS={
+ drivers:{name:['nome','autista','nominativo','nome cognome','driver'],phone:['telefono','cellulare','tel'],email:['email','mail'],shift:['turno','shift','servizio'],extra:['ore extra','extra','extra mese','straordinario'],double:['doppio','doppio turno','disponibile doppio'],status:['stato','status'],notes:['note','nota','annotazioni'],location:['sede','ubicazione','deposito','zona']},
+ vans:{plate:['targa','plate','mezzo','veicolo'],location:['ubicazione','sede','deposito','localita'],problem:['problema','guasto','anomalia','difetto'],date:['data inizio fermo','data fermo','data','dal'],status:['stato','situazione','esito','destinazione'],brand:['marca','brand'],model:['modello','model'],year:['anno','year'],km:['km','chilometri','chilometraggio'],note:['note','nota']},
+ routes:{code:['codice','giro','codice giro','route'],zone:['zona','destinazione','localita','area'],time:['orario','fascia oraria','fascia'],status:['stato','status'],date:['data','data servizio','giorno'],notes:['note','nota']},
+ emergencies:{title:['titolo','emergenza','oggetto'],description:['descrizione','testo','note','dettaglio','problema'],type:['tipo','type'],priority:['priorita','priority'],status:['stato','status']}
+};
+function detectHeader(row,entity){const defs=IMPORT_HEADERS[entity],header={};let hits=0;row.forEach((cell,i)=>{const n=norm(cell);if(!n)return;for(const [key,aliases] of Object.entries(defs)){if(aliases.some(a=>n===norm(a)||n.includes(norm(a)))){if(header[key]===undefined){header[key]=i;hits++}break}}});if(entity==='vans'&&header.plate!==undefined)return header;return hits>=2?header:null}
+function parseDriverObj(r){const name=cleanCell(r.name||r.autista||r.nominativo);if(!name)return null;const shift=shiftImport(r.shift||r.turno||r.servizio)||'AM';const notes=[r.notes||r.note,r.location?('Sede: '+cleanCell(r.location)):''].filter(Boolean).join(' · ');return {name,initials:name.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(),phone:cleanCell(r.phone||r.telefono),email:cleanCell(r.email||r.mail),shift,extra_hours:Number(String(r.extra??r.extra_hours??0).replace(',','.'))||0,double_ok:truthyImport(r.double??r.double_ok),status:driverStatusFrom(shift,r.status||r.stato),notes}}
+function parseVanObj(r,section=''){const plate=plateImport(r.plate||r.targa||r.mezzo||r.veicolo);if(!isItalianPlate(plate))return null;const location=cleanCell(r.location||r.ubicazione||section),problem=cleanCell(r.problem||r.problema||r.guasto),date=importDate(r.date||r.data),situation=cleanCell(r.status||r.stato||r.situazione),note0=cleanCell(r.note||r.notes);const details=[location&&('Ubicazione: '+location),problem&&('Problema: '+problem),date&&('Data inizio fermo: '+date),situation&&('Situazione: '+situation),note0].filter(Boolean).join(' · ');return {plate,brand:cleanCell(r.brand||r.marca),model:cleanCell(r.model||r.modello),year:Number(r.year||r.anno)||null,km:Number(String(r.km||0).replace(/[^0-9,.-]/g,'').replace(',','.'))||0,status:vanStatusFrom(problem,situation),note:details}}
+function parseRouteObj(r){const code=cleanCell(r.code||r.codice||r.giro),zone=cleanCell(r.zone||r.zona||r.destinazione);if(!code||!zone)return null;return {code,zone,time_window:cleanCell(r.time||r.orario||r.time_window),status:cleanCell(r.status||r.stato||'programmato').toLowerCase().replace(/\s+/g,'_'),service_date:importDate(r.date||r.data||new Date())||new Date().toISOString().slice(0,10),notes:cleanCell(r.notes||r.note)}}
+function parseEmergencyObj(r){const desc=cleanCell(r.description||r.descrizione||r.problema||r.testo||r.note);if(!desc)return null;return {title:cleanCell(r.title||r.titolo||r.emergenza||'Emergenza'),description:desc,type:cleanCell(r.type||r.tipo||'altro').toLowerCase(),priority:cleanCell(r.priority||r.priorita||'media').toLowerCase(),is_open:!['chiusa','chiuso','risolta','risolto'].includes(norm(r.status||r.stato))}}
+function italianMonthNumber(v){const n=norm(v),m={gennaio:1,febbraio:2,marzo:3,aprile:4,maggio:5,giugno:6,luglio:7,agosto:8,settembre:9,ottobre:10,novembre:11,dicembre:12};for(const [k,x] of Object.entries(m))if(n.includes(k))return x;return 0}
+function dateFromPlanningHeader(v,yearHint){const x=cleanCell(v),n=norm(x),dm=n.match(/(?:lunedi|martedi|mercoledi|giovedi|venerdi|sabato|domenica)?\s*(\d{1,2})\s+([a-z]+)/);if(!dm)return '';const month=italianMonthNumber(dm[2]);if(!month)return '';const y=Number(yearHint)||new Date().getFullYear();return `${y}-${String(month).padStart(2,'0')}-${String(Number(dm[1])).padStart(2,'0')}`}
+function planningShift(v){const raw=cleanCell(v),n=norm(raw);if(!raw)return '';
+ if(/malatt/.test(n))return 'MALATTIA';
+ if(/ferie|cong parent|conged/.test(n))return 'FERIE';
+ if(/\bdoppio\b/.test(n))return 'DOPPIO';
+ if(/\br c\b|\brc\b|riposo/.test(n))return 'RIPOSO';
+ if(/\bgiro pm\b|\bpm\b|(^|\s)12 00(\s|$)/.test(n))return 'PM';
+ if(/\bgiro am\b|\bam\b|(^|\s)7 30(\s|$)/.test(n))return 'AM';
+ return '';
+}
+function planningStatus(v,shift){const n=norm(v);if(/cong parent|conged|ferie|malatt/.test(n))return 'assente';if(/disponibil|\br c\b|\brc\b|riposo/.test(n))return 'disponibile';return shift?'in_servizio':''}
+function parseWeeklyDriverGrid(grid){
+ const out=[];let yearHint=new Date().getFullYear();
+ for(const row of grid){for(const c of row||[]){const m=cleanCell(c).match(/\b(20\d{2})\b/);if(m){yearHint=Number(m[1]);break}}}
+ for(let hr=0;hr<grid.length;hr++){
+  const head=(grid[hr]||[]).map(cleanCell);if(norm(head[0])!=='autisti')continue;
+  const dates=head.map((x,i)=>i?dateFromPlanningHeader(x,yearHint):'');if(!dates.some(Boolean))continue;
+  let prevFirst='';for(let pr=hr-1;pr>=0;pr--){prevFirst=cleanCell((grid[pr]||[])[0]);if(prevFirst)break}
+  let section=norm(prevFirst)==='orew'?'OREW':'AUTISTI';
+  for(let r=hr+1;r<grid.length;r++){
+   const row=(grid[r]||[]).map(cleanCell),first=cleanCell(row[0]);
+   if(norm(first)==='autisti')break;
+   if(norm(first)==='orew'){section='OREW';continue}
+   if(!first){continue}
+   if(/settimana dal/i.test(first))continue;
+   const plan=[];for(let c=1;c<head.length;c++){if(dates[c]&&cleanCell(row[c]))plan.push({date:dates[c],label:cleanCell(head[c]),value:cleanCell(row[c])})}
+   if(!plan.length)continue;
+   const today=new Date().toISOString().slice(0,10),todayItem=plan.find(x=>x.date===today);const source=todayItem||plan.find(x=>planningShift(x.value))||plan[0];
+   const shift=planningShift(source?.value),status=planningStatus(source?.value,shift);
+   const weekly='[PLANNING '+(section==='OREW'?'OREW':'AUTISTI')+'] '+plan.map(x=>`${x.date.slice(8,10)}/${x.date.slice(5,7)} ${x.value}`).join(' | ');
+   out.push({name:first,initials:first.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(),phone:'',email:'',shift,extra_hours:0,double_ok:plan.some(x=>/doppio|disponibil/i.test(x.value)),status,notes:weekly,__planning:true,__todayIncluded:!!todayItem,__todayValue:todayItem?.value||'',__section:section});
+  }
+ }
+ return out
+}
+function parseGridEntity(grid,entity){
+ let out=[],header=null,section='';
+ for(let ri=0;ri<grid.length;ri++){
+  const row=(grid[ri]||[]).map(cleanCell);if(!row.some(Boolean))continue;
+  const h=detectHeader(row,entity);if(h){header=h;continue}
+  const nonempty=row.filter(Boolean);
+  if(nonempty.length===1&&!extractItalianPlate(nonempty[0])&&nonempty[0].length<60){section=nonempty[0];continue}
+  if(header){
+    const r=rowObjFromHeaders(row,header);let x=entity==='drivers'?parseDriverObj(r):entity==='vans'?parseVanObj(r,section):entity==='routes'?parseRouteObj(r):parseEmergencyObj(r);
+    if(x){out.push(x);continue}
+  }
+  if(entity==='vans'){
+    let pi=-1,plate='';
+    for(let i=0;i<row.length;i++){const p=extractItalianPlate(row[i]);if(p){pi=i;plate=p;break}}
+    if(pi>=0){
+      const before=row.slice(0,pi).filter(Boolean),after=row.slice(pi+1).filter(Boolean);
+      const dateIndex=after.findIndex(v=>/^\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}$/.test(v)||/^\d{4}-\d{2}-\d{2}/.test(v));
+      const date=dateIndex>=0?after[dateIndex]:'';
+      const words=after.filter((_,i)=>i!==dateIndex);
+      let location='',problem='',situation='';
+      if(header){
+        location=cleanCell(row[header.location]||'');problem=cleanCell(row[header.problem]||'');situation=cleanCell(row[header.status]||'');
+      }
+      if(!location)location=words[0]||before[before.length-1]||section;
+      if(!problem)problem=words[1]||'';
+      if(!situation)situation=words.slice(2).join(' · ');
+      const x=parseVanObj({plate,location,problem,date,status:situation},section);if(x)out.push(x);
+    }
+  }
+ }
+ return out
+}
+function scanWorkbookCellsForVans(ws){
+ const out=[];const ref=ws['!ref'];if(!ref)return out;const range=XLSX.utils.decode_range(ref);let section='';
+ for(let r=range.s.r;r<=range.e.r;r++){
+   const vals=[];for(let c=range.s.c;c<=range.e.c;c++){const cell=ws[XLSX.utils.encode_cell({r,c})];vals.push(cleanCell(cell?.w??cell?.v??''))}
+   const non=vals.filter(Boolean);if(non.length===1&&!extractItalianPlate(non[0])&&non[0].length<60)section=non[0];
+   let pi=-1,plate='';for(let i=0;i<vals.length;i++){const p=extractItalianPlate(vals[i]);if(p){pi=i;plate=p;break}}
+   if(pi<0)continue;
+   const after=vals.slice(pi+1).filter(Boolean);const di=after.findIndex(v=>/^\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}$/.test(v)||/^\d{4}-\d{2}-\d{2}/.test(v));
+   const date=di>=0?after[di]:'';const words=after.filter((_,i)=>i!==di);
+   const x=parseVanObj({plate,location:words[0]||section,problem:words[1]||'',date,status:words.slice(2).join(' · ')},section);if(x)out.push(x);
+ }
+ return out
+}
+function dedupeImport(rows,entity){
+ const map=new Map();
+ for(const r of rows){
+   const key=importKey(entity,r);if(!key)continue;const prev=map.get(key);
+   if(!prev){map.set(key,r);continue}
+   if(entity==='drivers'){
+     const notes=[prev.notes,r.notes].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).join(' || ');
+     map.set(key,{...prev,...r,name:prev.name||r.name,phone:prev.phone||r.phone,email:prev.email||r.email,
+       shift:prev.shift||r.shift,status:prev.status||r.status,double_ok:!!(prev.double_ok||r.double_ok),
+       extra_hours:Math.max(Number(prev.extra_hours||0),Number(r.extra_hours||0)),notes,__planning:!!(prev.__planning||r.__planning)});
+   }else if(JSON.stringify(r).length>JSON.stringify(prev).length)map.set(key,r);
+ }
+ return [...map.values()]
+}
+
+function importKey(entity,r){
+ if(entity==='drivers')return norm(r.name);
+ if(entity==='vans')return plateImport(r.plate);
+ if(entity==='routes')return norm(r.code);
+ if(entity==='emergencies')return [norm(r.title),norm(r.description),norm(r.type)].join('|');
+ return '';
+}
+function findExistingImport(entity,r){
+ const key=importKey(entity,r);if(!key)return null;
+ const list=entity==='drivers'?state.drivers:entity==='vans'?state.vans:entity==='routes'?state.routes:state.emergencies;
+ return list.find(x=>importKey(entity,x)===key)||null;
+}
+function mergePlanningNotes(existingNotes,newNotes){
+ const old=cleanCell(existingNotes),neu=cleanCell(newNotes);if(!neu)return old;if(!old||old===neu)return neu;
+ const manual=old.replace(/\[PLANNING (?:AUTISTI|OREW)\][\s\S]*$/,'').replace(/\s*·\s*$/,'').trim();
+ return manual?neu+' · '+manual:neu;
+}
+function compactObject(obj){const out={};for(const [k,v] of Object.entries(obj)){if(v!==undefined&&v!==null&&v!=='')out[k]=v}return out}
+async function upsertImportedEntity(entity,src){
+ const existing=findExistingImport(entity,src);
+ if(entity==='drivers'){
+   const body={name:src.name,initials:src.initials||existing?.initials||src.name.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(),
+     phone:src.phone||existing?.phone||'',email:src.email||existing?.email||'',extra_hours:Number(src.extra_hours??existing?.extra_hours??0),
+     double_ok:!!(src.double_ok||existing?.double_ok),notes:src.__planning?mergePlanningNotes(existing?.notes,src.notes):(src.notes||existing?.notes||'')};
+   body.shift=src.shift||existing?.shift||'AM';body.status=src.status||existing?.status||driverStatusFrom(body.shift,'');
+   return api('/api/drivers'+(existing?'/'+existing.id:''),{method:existing?'PATCH':'POST',body:JSON.stringify(body)});
+ }
+ if(entity==='vans'){
+   const body=compactObject({plate:src.plate,brand:src.brand||existing?.brand,model:src.model||existing?.model,year:src.year||existing?.year,
+     km:src.km||existing?.km,status:src.status||existing?.status||'operativo',note:src.note||existing?.note});
+   return api('/api/vans'+(existing?'/'+existing.id:''),{method:existing?'PATCH':'POST',body:JSON.stringify(body)});
+ }
+ if(entity==='routes'){
+   const body=compactObject({code:src.code,zone:src.zone||existing?.zone,time_window:src.time_window||existing?.time_window,
+     driver_id:src.driver_id||existing?.driver_id,status:src.status||existing?.status||'programmato',notes:src.notes||existing?.notes,
+     service_date:src.service_date||existing?.service_date});
+   return api('/api/routes'+(existing?'/'+existing.id:''),{method:existing?'PATCH':'POST',body:JSON.stringify(body)});
+ }
+ if(entity==='emergencies'){
+   const body=compactObject({type:src.type||existing?.type||'altro',priority:src.priority||existing?.priority||'media',
+     title:src.title||existing?.title||'Emergenza',description:src.description||existing?.description,
+     is_open:src.is_open!==undefined?src.is_open:(existing?.is_open??true),notes:src.notes||existing?.notes});
+   return api('/api/emergencies'+(existing?'/'+existing.id:''),{method:existing?'PATCH':'POST',body:JSON.stringify(body)});
+ }
+}
+
+function parseWorkbookImport(wb,entity){let out=[];for(const sn of wb.SheetNames||[]){const ws=wb.Sheets[sn];if(!ws)continue;const grid=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false,blankrows:true});if(entity==='drivers')out.push(...parseWeeklyDriverGrid(grid));out.push(...parseGridEntity(grid,entity));if(entity==='vans')out.push(...scanWorkbookCellsForVans(ws));const objs=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});for(const r of objs){let x=null;if(entity==='drivers')x=parseDriverObj({name:fv(r,['nome','autista','nome e cognome','nominativo','driver']),phone:fv(r,['telefono','cellulare','tel','numero telefono']),email:fv(r,['email','e-mail','mail']),shift:fv(r,['turno','shift','servizio']),extra:fv(r,['extra','ore extra','oreextra','extra mese']),double:fv(r,['doppio','doppio turno','disponibile doppio','double ok']),status:fv(r,['stato','status']),notes:fv(r,['note','nota']),location:fv(r,['sede','ubicazione','deposito'])});if(entity==='vans')x=parseVanObj({plate:fv(r,['targa','plate','mezzo','veicolo']),location:fv(r,['ubicazione','sede','deposito','localita']),problem:fv(r,['problema','guasto','anomalia']),date:fv(r,['data inizio fermo','data fermo','data']),status:fv(r,['stato','situazione','esito']),brand:fv(r,['marca','brand']),model:fv(r,['modello','model']),year:fv(r,['anno','year']),km:fv(r,['km','chilometri','chilometraggio']),note:fv(r,['note','nota'])});if(entity==='routes')x=parseRouteObj({code:fv(r,['codice','giro','codice giro','route']),zone:fv(r,['zona','destinazione','localita','località','area']),time:fv(r,['orario','fascia oraria','fascia','orario consegna']),status:fv(r,['stato','status']),date:fv(r,['data','data servizio','giorno']),notes:fv(r,['note','nota'])});if(entity==='emergencies')x=parseEmergencyObj({title:fv(r,['titolo','emergenza','oggetto']),description:fv(r,['descrizione','testo','note','dettaglio','problema']),type:fv(r,['tipo','type']),priority:fv(r,['priorita','priorità','priority']),status:fv(r,['stato','status'])});if(x)out.push(x)}}return dedupeImport(out,entity)}
+
+
+
+async function admin(){
+  if(user.role!=='admin'){go('dashboard');return}
+  try{
+    [state.users,state.activity]=await Promise.all([api('/api/users'),api('/api/activity?limit=40')]);
+  }catch(e){toast(e.message)}
+  document.getElementById('main').innerHTML=`
+    <div class="section">Utenti <span class="add" onclick="userSheet()">+ Aggiungi ›</span></div>
+    ${state.users.map(u=>`<div class="card" onclick="userSheet('${u.id}')"><div class="row"><div class="avatar">${esc(u.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div class="grow"><div class="name">${esc(u.name)}</div><div class="meta">${esc({admin:'Admin',dispatcher:'Operativo',responsabile:'Responsabile'}[u.role]||u.role)} · ${u.active?'attivo':'disattivato'}</div></div><span class="badge ${u.active?'ok':'neutral'}">${u.active?'Attivo':'Off'}</span></div></div>`).join('')}
+    <div class="section">Sicurezza account</div>
+    <div class="card"><div class="name">Cambia il mio PIN</div><div class="meta">Serve il PIN attuale. Il PIN nuovo viene salvato solo come hash.</div><button class="btn ghost" style="margin-top:10px;width:100%" onclick="myPinSheet()">Cambia PIN</button></div>
+    <div class="section">Stato sistema</div>
+    <div class="card"><div class="healthgrid"><div class="healthitem"><b>Frontend</b><span>GitHub Pages</span></div><div class="healthitem"><b>API</b><span>Connessa</span></div><div class="healthitem"><b>Database</b><span>Sincronizzato</span></div><div class="healthitem"><b>Refresh</b><span>15 minuti + manuale</span></div></div>
+    <div class="actions"><button class="btn ghost" onclick="exportBackup()">Esporta backup</button></div>
+    <details class="diag"><summary>Diagnostica tecnica</summary><button class="btn ghost" style="margin-top:10px;width:100%" onclick="runSystemTest()">Esegui test completo sistema</button><div id="system-test-report"></div></details></div>
+    <div class="section">Import Excel / CSV</div>
+    <div class="importbox"><label>Tipo dati</label><select id="imp-entity"><option value="drivers">Autisti / planning turni</option><option value="vans">Mezzi</option><option value="routes">Giri</option><option value="emergencies">Emergenze</option></select><label>File</label><input id="imp-file" type="file" accept=".xlsx,.xls,.csv"><button class="btn primary" style="margin-top:12px" onclick="importFile()">Analizza e importa</button><div class="import-status" id="import-status">L’import aggiorna i record esistenti e non crea duplicati quando riconosce la stessa chiave.</div></div>
+    <div class="section">Log attività</div>
+    <div class="card">${state.activity.map(x=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:11px">${esc(x.action)}<div class="meta">${esc(x.user_name||'')} · ${new Date(x.created_at).toLocaleString('it-IT')}</div></div>`).join('')||'<div class="meta">Nessuna attività</div>'}</div>`;
+}
+
+function userSheet(id){
+  const u=id?state.users.find(x=>x.id===id):null;
+  const role=u?.role||'dispatcher';
+  openSheet(`<h2>${u?'Gestisci utente':'Nuovo utente'}</h2>
+    <label>Nome utente</label><input id="u-name" value="${esc(u?.name||'')}" placeholder="Es. Responsabile Transit Point">
+    <label>Ruolo</label><select id="u-role">
+      <option value="dispatcher" ${role==='dispatcher'?'selected':''}>Operativo / Dispatcher</option>
+      <option value="responsabile" ${role==='responsabile'?'selected':''}>Responsabile · sola lettura</option>
+      <option value="admin" ${role==='admin'?'selected':''}>Amministratore</option>
+    </select>
+    <label>${u?'Nuovo PIN (lascia vuoto per non cambiarlo)':'PIN iniziale'}</label>
+    <input id="u-pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="${u?'•••• opzionale':'4-12 cifre'}">
+    ${u?`<label>Stato account</label><select id="u-active"><option value="true" ${u.active?'selected':''}>Attivo</option><option value="false" ${!u.active?'selected':''}>Disattivato</option></select>`:''}
+    <div class="actions"><button class="btn primary" onclick="saveUser('${id||''}')">${u?'Salva modifiche':'Crea utente'}</button>${u&&u.id!==user.id?`<button class="btn danger" onclick="deleteUser('${u.id}')">Elimina</button>`:''}</div>`);
+}
+async function saveUser(id){
+  const name=val('u-name').trim(),role=val('u-role'),pin=val('u-pin').trim();
+  if(!name)return toast('Nome utente obbligatorio');
+  if(!id&&!/^\d{4,12}$/.test(pin))return toast('Inserisci un PIN numerico di 4-12 cifre');
+  if(id&&pin&&!/^\d{4,12}$/.test(pin))return toast('Il nuovo PIN deve avere 4-12 cifre');
+  const body={name,role};
+  if(pin)body.pin=pin;
+  if(id)body.active=val('u-active')==='true';
+  try{
+    await apiRaw('/api/users'+(id?'/'+id:''),{method:id?'PATCH':'POST',body:JSON.stringify(body)},false);
+    closeSheet();toast(id?'Utente aggiornato':'Utente creato');await admin();
+  }catch(e){toast(e.message)}
+}
+async function deleteUser(id){
+  if(!criticalConfirm('Confermi l’eliminazione di questo utente?'))return;
+  try{
+    await apiRaw('/api/users/'+id,{method:'DELETE'},false);
+    closeSheet();toast('Utente eliminato');await admin();
+  }catch(e){toast(e.message)}
+}
+function myPinSheet(){
+  openSheet(`<h2>Cambia il mio PIN</h2><div class="meta">Per sicurezza devi inserire il PIN attuale.</div>
+    <label>PIN attuale</label><input id="p-old" type="password" inputmode="numeric" autocomplete="current-password" maxlength="12">
+    <label>Nuovo PIN</label><input id="p-new" type="password" inputmode="numeric" autocomplete="new-password" maxlength="12">
+    <label>Ripeti nuovo PIN</label><input id="p-new2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="12">
+    <button class="btn primary btn-block" onclick="changeMyPin()">Aggiorna PIN</button>`);
+}
+async function changeMyPin(){
+  const old=val('p-old'),p1=val('p-new'),p2=val('p-new2');
+  if(!/^\d{4,12}$/.test(old)||!/^\d{4,12}$/.test(p1))return toast('PIN numerico di 4-12 cifre richiesto');
+  if(p1!==p2)return toast('I nuovi PIN non coincidono');
+  try{
+    await apiRaw('/api/me/pin',{method:'POST',body:JSON.stringify({currentPin:old,newPin:p1})},false);
+    closeSheet();toast('PIN aggiornato. Sarà valido dal prossimo accesso.');
+  }catch(e){toast(e.message)}
+}
+
+function renderTestReport(items){
+ const el=document.getElementById('system-test-report');if(!el)return;
+ el.innerHTML='<div class="testreport">'+items.map(x=>`<div class="testline"><span>${esc(x.name)}</span><span class="${x.ok===true?'testok':x.ok===false?'testbad':'testwait'}">${x.ok===true?'OK':x.ok===false?'ERRORE':'TEST…'}${x.detail?' · '+esc(x.detail):''}</span></div>`).join('')+'</div>';
+}
+async function runSystemTest(){
+ if(!user||user.role!=='admin')return toast('Test disponibile solo per Admin');
+ const tests=[
+  {name:'API /health',ok:null},{name:'Lettura autisti',ok:null},{name:'CRUD autista',ok:null},
+  {name:'Lettura mezzi',ok:null},{name:'CRUD mezzo',ok:null},{name:'Lettura giri',ok:null},
+  {name:'CRUD giro',ok:null},{name:'Lettura emergenze',ok:null},{name:'CRUD emergenza',ok:null},
+  {name:'Log attività',ok:null}
+ ];
+ renderTestReport(tests);
+ const mark=(i,ok,detail='')=>{tests[i].ok=ok;tests[i].detail=detail;renderTestReport(tests)};
+ let created={driver:null,van:null,route:null,em:null};
+ const stamp=Date.now().toString().slice(-7);
+ try{
+   try{const h=await fetch(API+'/health').then(r=>r.json());mark(0,!!h.ok,h.ok?'online':'non disponibile')}catch(e){mark(0,false,e.message)}
+   try{await api('/api/drivers');mark(1,true)}catch(e){mark(1,false,e.message)}
+   try{
+     created.driver=await api('/api/drivers',{method:'POST',body:JSON.stringify({name:'QA AUTISTA '+stamp,initials:'QA',shift:'RIPOSO',double_ok:true,extra_hours:0,status:'disponibile',notes:'record temporaneo test sistema'})});
+     await api('/api/drivers/'+created.driver.id,{method:'PATCH',body:JSON.stringify({notes:'test modifica riuscito'})});
+     mark(2,true);
+   }catch(e){mark(2,false,e.message)}
+   try{await api('/api/vans');mark(3,true)}catch(e){mark(3,false,e.message)}
+   try{
+     created.van=await api('/api/vans',{method:'POST',body:JSON.stringify({plate:'QA-'+stamp,brand:'TEST',model:'TEMP',km:0,status:'operativo',note:'record temporaneo test sistema'})});
+     await api('/api/vans/'+created.van.id,{method:'PATCH',body:JSON.stringify({km:1,note:'test modifica riuscito'})});
+     mark(4,true);
+   }catch(e){mark(4,false,e.message)}
+   try{await api('/api/routes');mark(5,true)}catch(e){mark(5,false,e.message)}
+   try{
+     created.route=await api('/api/routes',{method:'POST',body:JSON.stringify({code:'QA-'+stamp,zone:'TEST SISTEMA',time_window:'00:00 - 00:10',status:'programmato',service_date:new Date().toISOString().slice(0,10),notes:'record temporaneo test sistema'})});
+     await api('/api/routes/'+created.route.id,{method:'PATCH',body:JSON.stringify({status:'completato'})});
+     mark(6,true);
+   }catch(e){mark(6,false,e.message)}
+   try{await api('/api/emergencies');mark(7,true)}catch(e){mark(7,false,e.message)}
+   try{
+     created.em=await api('/api/emergencies',{method:'POST',body:JSON.stringify({type:'altro',priority:'bassa',title:'QA TEST '+stamp,description:'Record temporaneo test sistema',is_open:true,notes:'test automatico'})});
+     await api('/api/emergencies/'+created.em.id,{method:'PATCH',body:JSON.stringify({is_open:false,closed_at:new Date().toISOString()})});
+     mark(8,true);
+   }catch(e){mark(8,false,e.message)}
+   try{await api('/api/activity?limit=5');mark(9,true)}catch(e){mark(9,false,e.message)}
+ } finally {
+   for(const [base,obj] of [['/api/emergencies',created.em],['/api/routes',created.route],['/api/vans',created.van],['/api/drivers',created.driver]]){
+     if(obj&&obj.id){try{await api(base+'/'+obj.id,{method:'DELETE'})}catch(e){}}
+   }
+   try{await refresh()}catch(e){}
+ }
+ const fails=tests.filter(x=>x.ok===false).length;
+ toast(fails?`Diagnostica: ${fails} errore/i`:'Diagnostica sistema superata');
+}
+
+function exportBackup(){
+  const payload={version:APP_VERSION,exportedAt:new Date().toISOString(),drivers:state.drivers,vans:state.vans,routes:state.routes,emergencies:state.emergencies};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='cap-delivery-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Backup esportato');
+}
+async function importFile(){if(DEMO_MODE)return toast('Import disabilitato nella demo: nessun dato reale viene caricato.');
+ if(user?.role!=='admin')return toast('Import Excel disponibile solo per Admin');
+ if(!DEMO_MODE&&navigator.onLine===false)return toast('Sei offline: importazione non avviata.');
+ const input=document.getElementById('imp-file'),f=input?.files?.[0],entity=val('imp-entity'),statusEl=document.getElementById('import-status');
+ if(!f)return toast('Seleziona prima un file Excel o CSV');
+ if(!/\.(xlsx|xls|csv)$/i.test(f.name))return toast('Formato non supportato: usa .xlsx, .xls o .csv');if(f.size>8*1024*1024)return toast('File troppo grande: massimo 8 MB per sicurezza e fluidità.');
+ if(typeof XLSX==='undefined')return toast('Lettore Excel non caricato. Chiudi e riapri la pagina e riprova.');
+ const btn=document.querySelector('.importbox .btn.primary'),oldText=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='Analisi Excel…'}if(statusEl)statusEl.textContent='Analisi di tutti i fogli e delle tabelle…';
+ try{
+   const ab=await f.arrayBuffer(),wb=XLSX.read(ab,{type:'array',cellDates:true});if(!wb.SheetNames?.length)throw new Error('Il file non contiene fogli leggibili');
+   const out=parseWorkbookImport(wb,entity);if(!out.length)throw new Error('Nessuna riga riconosciuta anche dopo la scansione completa delle celle. Inviami il file Excel originale e lo adatto senza farti cambiare il foglio.');if(out.length>5000)throw new Error('Troppi record: massimo 5000 per importazione');
+   const names={drivers:'autisti',vans:'mezzi',routes:'giri',emergencies:'emergenze'};if(statusEl)statusEl.textContent=`Riconosciuti ${out.length} ${names[entity]} in ${wb.SheetNames.length} foglio/i.`;
+   if(!criticalConfirm(`Riconosciuti ${out.length} ${names[entity]} da “${f.name}”. Confermi l’importazione?`)){if(statusEl)statusEl.textContent='Importazione annullata: nessun dato modificato.';return}
+   if(btn)btn.textContent='Sincronizzazione '+out.length+' record…';
+   let created=0,updated=0,processed=0;
+   for(const src of out){
+     const existed=!!findExistingImport(entity,src);
+     await upsertImportedEntity(entity,src);
+     processed++;if(existed)updated++;else created++;
+   }
+   if(statusEl)statusEl.textContent=`Completato: ${processed} record · ${created} nuovi · ${updated} aggiornati · 0 duplicati creati.`;
+   toast(`Import completato: ${created} nuovi, ${updated} aggiornati`);
+   input.value='';await refresh();await admin();
+ }catch(e){console.error('Import Excel:',e);if(statusEl)statusEl.textContent='Errore: '+(e?.message||'errore sconosciuto');toast('Import non riuscito: '+(e?.message||'errore sconosciuto'))}
+ finally{if(btn){btn.disabled=false;btn.textContent=oldText||'Importa nel database'}}
+}
+
+(async()=>{
+  if(DEMO_MODE){
+    token='demo-token';
+    user=demoClone(DEMO_DB.users[0]);
+    try{
+      sessionStorage.setItem('cap_token',token);
+      sessionStorage.setItem('cap_user',JSON.stringify(user));
+    }catch(e){}
+    await showApp();
+    return;
+  }
+  try{
+    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),12000);
+    const h=await fetch(API+'/health',{cache:'no-store',signal:ctrl.signal}).then(r=>r.json());
+    clearTimeout(timer);if(!h.ok)throw 0
+  }catch(e){}
+  if(token&&user){try{await api('/api/me');showApp()}catch(e){logout()}}
+})();
+
+window.addEventListener('offline',()=>{
+  if(token&&user)setResilienceBanner('warn','Connessione assente: puoi consultare gli ultimi dati caricati, ma le modifiche sono temporaneamente disabilitate.');
+});
+window.addEventListener('online',()=>{
+  if(token&&user){setResilienceBanner('','');manualRefresh()}
+});
+
+setInterval(async()=>{
+  if(token&&user){
+    try{await refresh();render()}catch(e){}
+  }
+},AUTO_REFRESH_MS);
+document.addEventListener('visibilitychange',async()=>{
+  if(document.visibilityState==='visible'&&token&&user&&state.lastUpdated&&(Date.now()-state.lastUpdated.getTime()>AUTO_REFRESH_MS)){
+    try{await refresh();render()}catch(e){}
+  }
+});
+</script>
+</body>
+</html>
