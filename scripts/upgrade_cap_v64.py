@@ -22,11 +22,17 @@ new="try{if(entity==='drivers'&&window.CapEnterprise&&typeof window.CapEnterpris
 if old in s:s=s.replace(old,new,1)
 elif 'syncPlanningHorizon(out,entity,f.name)' not in s: raise SystemExit('missing import hook anchor')
 
-for marker in ['CAP Delivery 6.4 · Transit Point Operating System','cap-planning-horizon.css','cap-planning-horizon.js','cap-planning-horizon-layer.js','syncPlanningHorizon(out,entity,f.name)']:
+version_ok=any(x in s for x in [
+    'CAP Delivery 6.4 · Transit Point Operating System',
+    'CAP Delivery 6.4.1 · Security + Premium',
+    'CAP Delivery 6.5 · Resilience + Operational Clarity'
+])
+if not version_ok: raise SystemExit('missing CAP Delivery 6.4+ version marker')
+for marker in ['cap-planning-horizon.css','cap-planning-horizon.js','cap-planning-horizon-layer.js','syncPlanningHorizon(out,entity,f.name)']:
     if marker not in s: raise SystemExit('missing marker '+marker)
 
 if s!=orig:
     p.write_text(s,encoding='utf-8')
     print('CAP frontend 6.4 finalization patch applied')
 else:
-    print('CAP frontend 6.4 patch already applied')
+    print('CAP frontend 6.4 base requirements already satisfied by newer version')
