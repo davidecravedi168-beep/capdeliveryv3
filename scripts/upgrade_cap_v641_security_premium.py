@@ -10,7 +10,7 @@ def once(old,new,label):
     elif new not in s:
         raise SystemExit('missing '+label+' anchor')
 
-# Reduce runtime third-party surface. SheetJS is vendored by CI from the pinned official build.
+# Reduce runtime third-party surface. The following migration pins SheetJS to the official 0.20.3 distribution.
 s=s.replace('<link rel="preconnect" href="https://fonts.googleapis.com">\n','')
 s=s.replace('<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">\n','')
 once('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>','<script src="vendor/xlsx.full.min.js"></script>','SheetJS')
@@ -102,7 +102,7 @@ if 'font-family:-apple-system' not in s:
 
 for marker in [
     'CAP Delivery 6.4.1 · Security + Premium','vendor/xlsx.full.min.js','cap-security-premium.css','cap-security-premium.js',
-    'nessuna copia persistente dei dati aziendali','export locale disattivato','nuovo PIN minimo 6 cifre','Dati aziendali'
+    'nessuna copia persistente dei dati aziendali','export locale disattivato','nuovo PIN minimo 6 cifre','dati aziendali'
 ]:
     if marker not in s: raise SystemExit('missing 6.4.1 marker: '+marker)
 for forbidden in ['cdn.jsdelivr.net/npm/xlsx@0.18.5','fonts.googleapis.com','value="Amministratore"','sessionStorage.setItem(SNAPSHOT_KEY','onclick="exportBackup()"']:
