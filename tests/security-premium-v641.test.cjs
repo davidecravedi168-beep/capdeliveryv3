@@ -4,7 +4,7 @@ const index=fs.readFileSync('index.html','utf8');
 const layer=fs.readFileSync('cap-security-premium.js','utf8');
 const css=fs.readFileSync('cap-security-premium.css','utf8');
 assert.match(index,/CAP Delivery 6\.4\.1 · Security \+ Premium/);
-assert.match(index,/vendor\/xlsx\.full\.min\.js/);
+assert.match(index,/https:\/\/cdn\.sheetjs\.com\/xlsx-0\.20\.3\/package\/dist\/xlsx\.full\.min\.js/);
 assert.doesNotMatch(index,/cdn\.jsdelivr\.net\/npm\/xlsx@0\.18\.5/);
 assert.doesNotMatch(index,/fonts\.googleapis\.com/);
 assert.doesNotMatch(index,/value="Amministratore"/);
