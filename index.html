@@ -236,6 +236,7 @@ button,.nav div{touch-action:manipulation}
 <link rel="stylesheet" href="cap-tp-route-layer.css">
 <link rel="stylesheet" href="cap-office-bridge.css">
 <link rel="stylesheet" href="cap-enterprise-layer.css">
+<link rel="stylesheet" href="cap-planning-horizon.css">
 </head>
 <body>
 <div id="login">
@@ -289,7 +290,7 @@ const QUEUE_KEY='cap_session_queue_v1';
 let pendingQueue=[];
 try{sessionStorage.removeItem(QUEUE_KEY)}catch(e){}
 let syncInProgress=false;
-const APP_VERSION='CAP Delivery 6.3 · Enterprise TP Control';
+const APP_VERSION='CAP Delivery 6.4 · Transit Point Operating System';
 const AUTO_REFRESH_MS=15*60*1000;
 const IDLE_LOGOUT_MS=8*60*60*1000;
 let lastActivity=Date.now(),saving=false;
@@ -1039,7 +1040,7 @@ async function importFile(){
    if(statusEl)statusEl.textContent=`Completato: ${processed} record · ${created} nuovi · ${updated} aggiornati · 0 duplicati creati.`;
    toast(`Import completato: ${created} nuovi, ${updated} aggiornati`);
    try{if(typeof window.capOfficeMarkSource==='function')await window.capOfficeMarkSource('planning_excel','RECEIVED',`Import Excel: ${names[entity]} · ${processed} record`)}catch(_e){}
-   input.value='';await refresh();try{if(entity==='drivers'&&window.CapEnterprise&&typeof window.CapEnterprise.syncPlanningWorkload==='function')await window.CapEnterprise.syncPlanningWorkload(out,f.name)}catch(_e){}await admin();
+   input.value='';await refresh();try{if(entity==='drivers'&&window.CapEnterprise&&typeof window.CapEnterprise.syncPlanningWorkload==='function')await window.CapEnterprise.syncPlanningWorkload(out,f.name);if(window.CapEnterprise&&typeof window.CapEnterprise.syncPlanningHorizon==='function')await window.CapEnterprise.syncPlanningHorizon(out,entity,f.name)}catch(_e){}await admin();
  }catch(e){console.error('Import Excel:',e);if(statusEl)statusEl.textContent='Errore: '+(e?.message||'errore sconosciuto');toast('Import non riuscito: '+(e?.message||'errore sconosciuto'))}
  finally{if(btn){btn.disabled=false;btn.textContent=oldText||'Importa nel database'}}
 }
@@ -1078,5 +1079,7 @@ document.addEventListener('visibilitychange',async()=>{
 <script src="cap-office-bridge.js"></script>
 <script src="cap-enterprise-core.js"></script>
 <script src="cap-enterprise-layer.js"></script>
+<script src="cap-planning-horizon.js"></script>
+<script src="cap-planning-horizon-layer.js"></script>
 </body>
 </html>
