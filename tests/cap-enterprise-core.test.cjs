@@ -10,4 +10,5 @@ const tp=new Map([['r1',{route_id:'r1',tp_stage:'BLOCKED',load_ready:false,chill
 const ready=C.tpReadiness(tp,now);assert.equal(ready.blocked,1);assert.equal(ready.temp_fail,1);assert.equal(ready.load_not_ready,1);assert.equal(ready.departure_overdue,1);
 const snap=C.closureSnapshot({drivers:[{id:'d1',status:'assente'}],vans:[{status:'guasto'}],routes:[{id:'r1',driver_id:'d1',service_date:C.todayRome(now),status:'coperto'}],emergencies:[{is_open:true}]},{sources:[],handovers:[{status:'OPEN'}]},tp,now);
 assert.equal(snap.assigned_unavailable,1);assert.equal(snap.van_issues,1);assert.equal(snap.emergencies,1);assert.equal(snap.handovers_open,1);assert.equal(snap.tp_blocked,1);assert.equal(snap.temp_fail,1);assert.equal(snap.departure_overdue,1);assert.ok(snap.critical>=6);assert.ok(C.fairnessBurden({double_30:2,extra_30:3})>0);
+const report=C.reportText(snap,'CAP Delivery · Transit Point');assert.match(report,/Giri:/);assert.match(report,/temperatura KO/i);assert.match(report,/Data gap:/);
 console.log('PASS enterprise core guards');
