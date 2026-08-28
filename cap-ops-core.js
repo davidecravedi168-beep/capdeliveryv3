@@ -21,6 +21,8 @@
   function vanUnavailable(v){return hasAny(v?.status,badVanWords);}
   function emergencyOpen(e){if(e?.is_open===false||e?.is_open===0||norm(e?.is_open)==='false')return false;return !e?.closed_at;}
   function priorityRank(p){const n=norm(p);if(highWords.some(w=>n.includes(w)))return 3;if(['media','medium','p2','ambra','amber'].some(w=>n.includes(w)))return 2;return 1;}
+  function todayRome(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
+  function operationalToday(r,today=todayRome()){const d=txt(r?.service_date).slice(0,10);return !d||d===today}
   function shiftForRoute(r){const w=norm(r?.time_window);if(/(^|\D)(0?[5-9]|1[0-2])[:.]/.test(w)||w.includes('am')||w.includes('matt'))return 'AM';if(/(^|\D)(1[4-9]|2[0-3])[:.]/.test(w)||w.includes('pm')||w.includes('pomer'))return 'PM';return ''}
   function routeLoadMap(routes){const m={};for(const r of routes||[]){if(!routeIsOpen(r)||!r.driver_id)continue;m[r.driver_id]=(m[r.driver_id]||0)+1;}return m;}
   function rankDrivers(route,drivers,routes){
@@ -38,8 +40,9 @@
     }).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name,'it'));
   }
   function buildSnapshot(input={}){
-    const drivers=input.drivers||[],vans=input.vans||[],routes=input.routes||[],emergencies=input.emergencies||[];
-    const openRoutes=routes.filter(routeIsOpen),uncovered=openRoutes.filter(routeIsUncovered),openEmergencies=emergencies.filter(emergencyOpen);
+    const drivers=input.drivers||[],vans=input.vans||[],routes=input.routes||[],emergencies=input.emergencies||[],today=todayRome();
+    const todaysRoutes=routes.filter(r=>operationalToday(r,today));
+    const openRoutes=todaysRoutes.filter(routeIsOpen),uncovered=openRoutes.filter(routeIsUncovered),openEmergencies=emergencies.filter(emergencyOpen);
     const unavailableDrivers=drivers.filter(driverUnavailable),availableDrivers=drivers.filter(driverAvailable),badVans=vans.filter(vanUnavailable),readyVans=vans.filter(v=>!vanUnavailable(v));
     const assignedDriverIds=new Set(openRoutes.filter(r=>r.driver_id).map(r=>String(r.driver_id)));
     const absentWithRoute=unavailableDrivers.filter(d=>assignedDriverIds.has(String(d.id)));
@@ -60,12 +63,13 @@
     absentWithRoute.forEach(d=>exceptions.push({severity:3,type:'Copertura',title:`${txt(d.name)||'Autista'} non disponibile`,detail:'Ha almeno un giro attivo assegnato',driver_id:d.id}));
     badVans.forEach(v=>exceptions.push({severity:2,type:'Flotta',title:`${txt(v.plate)||'Mezzo'} · ${txt(v.status)||'da verificare'}`,detail:txt(v.note),van_id:v.id}));
     exceptions.sort((a,b)=>b.severity-a.severity||a.type.localeCompare(b.type,'it'));
+    const candidateShortlists=uncovered.map(r=>({route_id:r.id,route_code:txt(r.code),candidates:rankDrivers(r,drivers,openRoutes).slice(0,5)}));
     const actions=[];
-    uncovered.slice(0,4).forEach(r=>{const cand=rankDrivers(r,drivers,routes)[0];actions.push({severity:3,title:`Copri ${txt(r.code)||'giro scoperto'}`,detail:cand?`Prima opzione: ${cand.name} · score operativo ${cand.score}/100`:'Nessun autista candidabile',target:'giri',route_id:r.id});});
+    uncovered.slice(0,4).forEach(r=>{const cand=rankDrivers(r,drivers,openRoutes)[0];actions.push({severity:3,title:`Copri ${txt(r.code)||'giro scoperto'}`,detail:cand?`Prima opzione: ${cand.name} · score operativo ${cand.score}/100`:'Nessun autista candidabile',target:'giri',route_id:r.id});});
     openEmergencies.filter(e=>priorityRank(e.priority)>=3).slice(0,3).forEach(e=>actions.push({severity:3,title:`Gestisci: ${txt(e.title)||'emergenza critica'}`,detail:txt(e.description)||'Apri il dettaglio e assegna un responsabile',target:'emergenze',emergency_id:e.id}));
     badVans.slice(0,2).forEach(v=>actions.push({severity:2,title:`Verifica mezzo ${txt(v.plate)||''}`.trim(),detail:txt(v.status)||'Stato mezzo non operativo',target:'flotta',van_id:v.id}));
     if(!actions.length)actions.push({severity:1,title:'Nessuna eccezione critica',detail:'Controlla il piano e conferma la copertura prima del prossimo picco operativo',target:'dashboard'});
-    return {generated_at:new Date().toISOString(),situation,pressure,utilization,metrics:{drivers_total:drivers.length,drivers_available:availableDrivers.length,drivers_unavailable:unavailableDrivers.length,routes_open:openRoutes.length,routes_uncovered:uncovered.length,emergencies_open:openEmergencies.length,vans_ready:readyVans.length,vans_unavailable:badVans.length},exceptions,actions,trust:{mode:'RULE_BASED_OPERATIONAL_INTELLIGENCE',gps_connected:false,predictive_eta:false,note:'Nessun ETA o posizione viene inventato senza feed GPS reale.'}};
+    return {generated_at:new Date().toISOString(),operational_date:today,situation,pressure,utilization,metrics:{drivers_total:drivers.length,drivers_available:availableDrivers.length,drivers_unavailable:unavailableDrivers.length,routes_open:openRoutes.length,routes_uncovered:uncovered.length,emergencies_open:openEmergencies.length,vans_ready:readyVans.length,vans_unavailable:badVans.length},exceptions,actions,candidate_shortlists:candidateShortlists,trust:{mode:'RULE_BASED_OPERATIONAL_INTELLIGENCE',gps_connected:false,predictive_eta:false,note:'Nessun ETA o posizione viene inventato senza feed GPS reale.'}};
   }
-  return {buildSnapshot,rankDrivers,routeIsUncovered,driverUnavailable,driverAvailable,vanUnavailable,emergencyOpen};
+  return {buildSnapshot,rankDrivers,routeIsUncovered,driverUnavailable,driverAvailable,vanUnavailable,emergencyOpen,operationalToday};
 });
