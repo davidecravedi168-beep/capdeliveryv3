@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');
+const CapOfficeCore=require('../cap-office-core.js');
+const today='2026-08-28';
+const snap=CapOfficeCore.buildBriefing({today,drivers:[{id:1,status:'malattia'},{id:2,status:'disponibile'}],vans:[{plate:'AA',status:'operativo'},{plate:'BB',status:'officina',note:'freni'}],routes:[{code:'G1',service_date:today,driver_id:null,status:'SCOPERTO'},{code:'G2',service_date:today,driver_id:1,status:'assegnato'},{code:'OLD',service_date:'2026-08-27',driver_id:null,status:'SCOPERTO'}],emergencies:[{title:'Problema TP',priority:'alta',is_open:true},{title:'Chiusa',priority:'alta',is_open:false}]});
+assert.equal(snap.metrics.routes,2);
+assert.equal(snap.metrics.uncovered,1);
+assert.equal(snap.metrics.assigned_unavailable,1);
+assert.equal(snap.metrics.van_issues,1);
+assert.equal(snap.metrics.emergencies,1);
+assert.ok(snap.pressure>=60);
+assert.equal(snap.items[0].severity,3);
+assert.equal(CapOfficeCore.sourceLabel({mode:'LIVE_INTERNAL'}),'LIVE CAP');
+assert.equal(CapOfficeCore.sourceLabel({mode:'EXTERNAL_UNLINKED'}),'APP ESTERNA');
+console.log('PASS office bridge briefing rules');
