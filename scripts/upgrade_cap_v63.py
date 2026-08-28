@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 p=Path('index.html')
 s=p.read_text(encoding='utf-8')
 orig=s
@@ -12,9 +13,13 @@ if 'cap-enterprise-layer.js' not in s:
     if '</body>' not in s: raise SystemExit('missing </body>')
     s=s.replace('</body>',scripts+'</body>',1)
 
-s=s.replace("const APP_VERSION='CAP Delivery 6.2 · Office Bridge + Esselunga TP';","const APP_VERSION='CAP Delivery 6.3 · Enterprise TP Control';")
-if "CAP Delivery 6.3 · Enterprise TP Control" not in s:
-    raise SystemExit('APP_VERSION anchor changed')
+v62="const APP_VERSION='CAP Delivery 6.2 · Office Bridge + Esselunga TP';"
+v63="const APP_VERSION='CAP Delivery 6.3 · Enterprise TP Control';"
+if v62 in s:
+    s=s.replace(v62,v63,1)
+version_match=re.search(r"const APP_VERSION='CAP Delivery 6\.(\d+)",s)
+if not version_match or int(version_match.group(1))<3:
+    raise SystemExit('APP_VERSION below 6.3 or unrecognized')
 
 if '__planningEntries:plan' not in s:
     old='__todayValue:todayItem?.value||\'\',__section:section});'
@@ -60,11 +65,14 @@ if 'doppi/30g' not in s:
     if old_reason not in s: raise SystemExit('driver suggestion reason anchor changed')
     s=s.replace(old_reason,new_reason,1)
 
-for marker in ['cap-enterprise-layer.css','cap-enterprise-core.js','cap-enterprise-layer.js',"CAP Delivery 6.3 · Enterprise TP Control",'__planningEntries:plan','window.CapEnterprise.confirmImportPreview','window.CapEnterprise.syncPlanningWorkload','fairnessForDriver?.(a.id)','doppi/30g']:
+for marker in ['cap-enterprise-layer.css','cap-enterprise-core.js','cap-enterprise-layer.js','__planningEntries:plan','window.CapEnterprise.confirmImportPreview','window.CapEnterprise.syncPlanningWorkload','fairnessForDriver?.(a.id)','doppi/30g']:
     if marker not in s: raise SystemExit('missing marker: '+marker)
+version_match=re.search(r"const APP_VERSION='CAP Delivery 6\.(\d+)",s)
+if not version_match or int(version_match.group(1))<3:
+    raise SystemExit('post-migration APP_VERSION below 6.3')
 
 if s!=orig:
     p.write_text(s,encoding='utf-8')
     print('CAP Delivery 6.3 enterprise patch applied')
 else:
-    print('CAP Delivery 6.3 enterprise patch already applied')
+    print('CAP Delivery 6.3 enterprise patch already satisfied by newer version')
