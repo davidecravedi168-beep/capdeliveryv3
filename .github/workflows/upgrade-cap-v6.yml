@@ -34,6 +34,7 @@ on:
       - "scripts/upgrade_cap_v64.py"
       - "scripts/upgrade_cap_v641_security_premium.py"
       - "scripts/upgrade_cap_v641_sheetjs_source.py"
+      - "scripts/upgrade_cap_v641_csp.py"
       - ".github/workflows/upgrade-cap-v6.yml"
   workflow_dispatch:
 
@@ -65,6 +66,7 @@ jobs:
           python scripts/upgrade_cap_v64.py
           python scripts/upgrade_cap_v641_security_premium.py
           python scripts/upgrade_cap_v641_sheetjs_source.py
+          python scripts/upgrade_cap_v641_csp.py
       - name: Regression tests pass 1
         run: |
           node tests/cap-ops-core.test.cjs
@@ -97,6 +99,8 @@ jobs:
         run: |
           grep -q 'CAP Delivery 6.4.1 · Security + Premium' index.html
           grep -q 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js' index.html
+          grep -q 'Content-Security-Policy' index.html
+          grep -q "object-src 'none'" index.html
           grep -q 'cap-security-premium.css' index.html
           grep -q 'cap-security-premium.js' index.html
           grep -q 'cap-planning-horizon.js' index.html
