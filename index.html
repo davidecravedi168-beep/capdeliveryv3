@@ -239,6 +239,7 @@ button,.nav div{touch-action:manipulation}
 <link rel="stylesheet" href="cap-enterprise-layer.css">
 <link rel="stylesheet" href="cap-planning-horizon.css">
 <link rel="stylesheet" href="cap-security-premium.css">
+<link rel="stylesheet" href="cap-live-status.css">
 </head>
 <body>
 <div id="login">
@@ -256,7 +257,7 @@ button,.nav div{touch-action:manipulation}
 <div id="app">
   <div class="top">
     <div class="toprow"><div class="brand"><span class="mark" style="width:9px;height:9px;margin:0 8px 0 0"></span>CAP Delivery<small>Transit Point Operating System</small></div><div class="who"><b id="who"></b><br><span id="today"></span><div class="status"><span id="api-dot" class="dot"></span><span id="api-status">Backend online</span></div><div class="sessionbar" id="sessionbar"></div><span onclick="logout()" style="color:var(--amber);cursor:pointer">Esci</span></div></div>
-    <div class="version">Secure Premium · 6.4.1</div>
+    <div class="version">Resilience Premium · 6.5</div>
     <div class="readonly-banner" id="readonly-banner">Modalità sola lettura: puoi consultare i dati ma non modificarli.</div>
     <div class="controlbar">
       <button class="refreshbtn" id="refresh-btn" onclick="manualRefresh()">↻ Aggiorna ora</button>
@@ -292,7 +293,7 @@ const QUEUE_KEY='cap_session_queue_v1';
 let pendingQueue=[];
 try{sessionStorage.removeItem(QUEUE_KEY)}catch(e){}
 let syncInProgress=false;
-const APP_VERSION='CAP Delivery 6.4.1 · Security + Premium';
+const APP_VERSION='CAP Delivery 6.5 · Resilience + Operational Clarity';
 const AUTO_REFRESH_MS=15*60*1000;
 const IDLE_LOGOUT_MS=8*60*60*1000;
 let lastActivity=Date.now(),saving=false;
@@ -1070,5 +1071,6 @@ document.addEventListener('visibilitychange',async()=>{
 <script src="cap-planning-horizon.js"></script>
 <script src="cap-planning-horizon-layer.js"></script>
 <script src="cap-security-premium.js"></script>
+<script src="cap-live-status.js"></script>
 </body>
 </html>

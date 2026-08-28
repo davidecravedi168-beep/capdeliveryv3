@@ -11,7 +11,7 @@
     if(fetching||typeof api!=='function'||typeof state==='undefined'||state.tab!=='dashboard')return;
     if(!force&&lastRemote&&Date.now()-remoteAt<60000){render();return}
     fetching=true;
-    try{const data=await api('/api/ops/snapshot');if(data&&data.metrics){lastRemote=data;remoteAt=Date.now();render();}}catch(e){}finally{fetching=false}
+    try{const data=await api('/api/ops/snapshot');if(data&&data.metrics){lastRemote=data;remoteAt=Date.now();window.CapLiveStatus?.report?.('control tower',true);render();}}catch(e){window.CapLiveStatus?.report?.('control tower',false,e?.message||'snapshot non disponibile')}finally{fetching=false}
   }
   function snapshot(){return lastRemote&&Date.now()-remoteAt<5*60*1000?lastRemote:localSnapshot()}
   function metric(label,value,cls=''){return `<div class="capops-kpi"><span>${esc(label)}</span><b class="${cls}">${esc(value)}</b></div>`}
