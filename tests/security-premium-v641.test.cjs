@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const index=fs.readFileSync('index.html','utf8');
 const layer=fs.readFileSync('cap-security-premium.js','utf8');
 const css=fs.readFileSync('cap-security-premium.css','utf8');
-assert.match(index,/CAP Delivery 6\.4\.1 · Security \+ Premium/);
+assert.match(index,/CAP Delivery 6\.(?:4\.1 · Security \+ Premium|5 · Resilience \+ Operational Clarity)/);
 assert.match(index,/https:\/\/cdn\.sheetjs\.com\/xlsx-0\.20\.3\/package\/dist\/xlsx\.full\.min\.js/);
 assert.match(index,/Content-Security-Policy/);
 assert.match(index,/object-src 'none'/);
