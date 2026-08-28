@@ -18,16 +18,22 @@ on:
       - "cap-planning-horizon.js"
       - "cap-planning-horizon-layer.js"
       - "cap-planning-horizon.css"
+      - "cap-security-premium.js"
+      - "cap-security-premium.css"
       - "DATA_OWNERSHIP_V64.md"
+      - "SECURITY_PREMIUM_V64_AUDIT.md"
       - "tests/cap-ops-core.test.cjs"
       - "tests/cap-office-core.test.cjs"
       - "tests/cap-enterprise-core.test.cjs"
       - "tests/cap-planning-horizon.test.cjs"
       - "tests/data-ownership-v64.test.cjs"
+      - "tests/security-premium-v641.test.cjs"
       - "scripts/upgrade_cap_v6.py"
       - "scripts/upgrade_cap_v62.py"
       - "scripts/upgrade_cap_v63.py"
       - "scripts/upgrade_cap_v64.py"
+      - "scripts/upgrade_cap_v641_security_premium.py"
+      - "scripts/upgrade_cap_v641_sheetjs_source.py"
       - ".github/workflows/upgrade-cap-v6.yml"
   workflow_dispatch:
 
@@ -57,6 +63,8 @@ jobs:
           python scripts/upgrade_cap_v62.py
           python scripts/upgrade_cap_v63.py
           python scripts/upgrade_cap_v64.py
+          python scripts/upgrade_cap_v641_security_premium.py
+          python scripts/upgrade_cap_v641_sheetjs_source.py
       - name: Regression tests pass 1
         run: |
           node tests/cap-ops-core.test.cjs
@@ -64,8 +72,10 @@ jobs:
           node tests/cap-enterprise-core.test.cjs
           node tests/cap-planning-horizon.test.cjs
           node tests/data-ownership-v64.test.cjs
+          node tests/security-premium-v641.test.cjs
       - name: Regression tests pass 2
         run: |
+          node tests/security-premium-v641.test.cjs
           node tests/data-ownership-v64.test.cjs
           node tests/cap-planning-horizon.test.cjs
           node tests/cap-enterprise-core.test.cjs
@@ -82,21 +92,23 @@ jobs:
           node --check cap-enterprise-layer.js
           node --check cap-planning-horizon.js
           node --check cap-planning-horizon-layer.js
-      - name: Validate integration contract
+          node --check cap-security-premium.js
+      - name: Validate security and integration contract
         run: |
-          grep -q 'cap-ops-layer.css' index.html
-          grep -q 'cap-tp-route-layer.css' index.html
-          grep -q 'cap-office-bridge.css' index.html
-          grep -q 'cap-enterprise-layer.css' index.html
-          grep -q 'cap-planning-horizon.css' index.html
+          grep -q 'CAP Delivery 6.4.1 · Security + Premium' index.html
+          grep -q 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js' index.html
+          grep -q 'cap-security-premium.css' index.html
+          grep -q 'cap-security-premium.js' index.html
           grep -q 'cap-planning-horizon.js' index.html
-          grep -q 'cap-planning-horizon-layer.js' index.html
-          grep -q 'CAP Delivery 6.4 · Transit Point Operating System' index.html
           grep -q 'window.CapEnterprise.confirmImportPreview' index.html
-          grep -q 'window.CapEnterprise.syncPlanningWorkload' index.html
           grep -q 'window.CapEnterprise.syncPlanningHorizon' index.html
           grep -q 'APP AUTISTI · EVIDENZA ESTERNA' cap-tp-route-layer.js
-          ! grep -q "captp-temp" cap-tp-route-layer.js
+          ! grep -q 'sessionStorage.setItem(SNAPSHOT_KEY' index.html
+          ! grep -q 'fonts.googleapis.com' index.html
+          ! grep -q 'cdn.jsdelivr.net/npm/xlsx@0.18.5' index.html
+          ! grep -q 'value="Amministratore"' index.html
+          ! grep -q 'onclick="exportBackup()"' index.html
+          ! grep -q 'captp-temp' cap-tp-route-layer.js
           git diff --check
       - name: Publish tested frontend upgrade
         run: |
@@ -107,5 +119,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'CAP Delivery 6.4 — Transit Point Operating System'
+          git commit -m 'CAP Delivery 6.4.1 — Security + Premium'
           git push origin HEAD:main
