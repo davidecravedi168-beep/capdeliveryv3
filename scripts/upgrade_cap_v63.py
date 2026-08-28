@@ -34,7 +34,33 @@ if 'window.CapEnterprise.syncPlanningWorkload' not in s:
     if old not in s: raise SystemExit('import completion anchor changed')
     s=s.replace(old,new,1)
 
-for marker in ['cap-enterprise-layer.css','cap-enterprise-core.js','cap-enterprise-layer.js',"CAP Delivery 6.3 · Enterprise TP Control",'__planningEntries:plan','window.CapEnterprise.confirmImportPreview','window.CapEnterprise.syncPlanningWorkload']:
+old_sort=""".sort((a,b)=>{
+      if(!!a.double_ok!==!!b.double_ok)return a.double_ok?-1:1;
+      const ae=Number(a.extra_hours||0),be=Number(b.extra_hours||0);
+      if(ae!==be)return ae-be;
+      return a.name.localeCompare(b.name,'it');
+    })"""
+new_sort=""".sort((a,b)=>{
+      if(!!a.double_ok!==!!b.double_ok)return a.double_ok?-1:1;
+      const af=window.CapEnterprise?.fairnessForDriver?.(a.id)||{},bf=window.CapEnterprise?.fairnessForDriver?.(b.id)||{};
+      const ab=Number(af.double_30||0)*10+Number(af.double_60||0)*3+Number(af.double_90||0)+Number(af.extra_30||0)*2;
+      const bb=Number(bf.double_30||0)*10+Number(bf.double_60||0)*3+Number(bf.double_90||0)+Number(bf.extra_30||0)*2;
+      if(ab!==bb)return ab-bb;
+      const ae=Number(a.extra_hours||0),be=Number(b.extra_hours||0);
+      if(ae!==be)return ae-be;
+      return a.name.localeCompare(b.name,'it');
+    })"""
+if 'fairnessForDriver?.(a.id)' not in s:
+    if old_sort not in s: raise SystemExit('driver ranking anchor changed')
+    s=s.replace(old_sort,new_sort,1)
+
+old_reason="const reason=(d.double_ok?'Disponibile a doppio turno · ':'Non preferenziale per doppio · ')+Number(d.extra_hours||0)+' h extra mese';"
+new_reason="const f=window.CapEnterprise?.fairnessForDriver?.(d.id)||{};const recent=Number(f.double_30||0);const reason=(d.double_ok?'Disponibile a doppio · ':'Non preferenziale · ')+recent+' doppi/30g · '+Number(f.extra_30||d.extra_hours||0)+' h extra/30g';"
+if 'doppi/30g' not in s:
+    if old_reason not in s: raise SystemExit('driver suggestion reason anchor changed')
+    s=s.replace(old_reason,new_reason,1)
+
+for marker in ['cap-enterprise-layer.css','cap-enterprise-core.js','cap-enterprise-layer.js',"CAP Delivery 6.3 · Enterprise TP Control",'__planningEntries:plan','window.CapEnterprise.confirmImportPreview','window.CapEnterprise.syncPlanningWorkload','fairnessForDriver?.(a.id)','doppi/30g']:
     if marker not in s: raise SystemExit('missing marker: '+marker)
 
 if s!=orig:
