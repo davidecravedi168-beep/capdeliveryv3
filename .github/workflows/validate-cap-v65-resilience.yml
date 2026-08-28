@@ -31,7 +31,11 @@ jobs:
           python scripts/upgrade_cap_v62.py
           python scripts/upgrade_cap_v63.py
           python scripts/upgrade_cap_v64.py
-          python scripts/upgrade_cap_v641_security_premium.py
+          if grep -qE 'CAP Delivery 6\.(4\.1 · Security \+ Premium|5 · Resilience \+ Operational Clarity)' index.html; then
+            echo 'CAP 6.4.1 security base already satisfied'
+          else
+            python scripts/upgrade_cap_v641_security_premium.py
+          fi
           python scripts/upgrade_cap_v641_sheetjs_source.py
           python scripts/upgrade_cap_v641_csp.py
           python scripts/upgrade_cap_v65_resilience.py
