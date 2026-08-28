@@ -5,23 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#10151A"><meta name="description" content="CAP Delivery Control — gestione operativa transit point"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>CAP Delivery Control</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://cap-backend.davidecravedi168-beep.deno.net; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
-:root{--bg:#10151A;--s:#1A2129;--s2:#222B35;--s3:#2A3541;--line:#2E3944;--ink:#EDF1F5;--dim:#8FA0AF;--faint:#5C6B78;--amber:#F2A93B;--green:#33C481;--red:#F0553F;--blue:#4C9BE8;--violet:#9D7FE8;--r:12px}
-*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--bg);color:var(--ink);font-family:Inter,sans-serif}body{min-height:100vh;display:flex;justify-content:center}button,input,select,textarea{font:inherit}button{cursor:pointer}
+:root{--ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;--bg:#10151A;--s:#1A2129;--s2:#222B35;--s3:#2A3541;--line:#2E3944;--ink:#EDF1F5;--dim:#8FA0AF;--faint:#5C6B78;--amber:#F2A93B;--green:#33C481;--red:#F0553F;--blue:#4C9BE8;--violet:#9D7FE8;--r:12px}
+*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--bg);color:var(--ink);font-family:var(--ui)}body{min-height:100vh;display:flex;justify-content:center}button,input,select,textarea{font:inherit}button{cursor:pointer}
 #login{width:100%;max-width:480px;min-height:100vh;display:flex;align-items:center;padding:24px}#app{width:100%;max-width:1180px;min-height:100vh;display:none;flex-direction:column}
-.loginbox{width:100%}.logo{text-align:center;margin-bottom:28px}.mark{display:inline-block;width:13px;height:13px;background:var(--amber);border-radius:3px;margin-bottom:10px}.logo h1,.brand{font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase}.logo h1{font-size:30px}.sub{font-size:11px;color:var(--faint);margin-top:4px}
+.loginbox{width:100%}.logo{text-align:center;margin-bottom:28px}.mark{display:inline-block;width:13px;height:13px;background:var(--amber);border-radius:3px;margin-bottom:10px}.logo h1,.brand{font-family:var(--ui);font-weight:700;text-transform:uppercase}.logo h1{font-size:30px}.sub{font-size:11px;color:var(--faint);margin-top:4px}
 .notice{border-left:2px solid var(--amber);padding-left:12px;color:var(--dim);font-size:11px;line-height:1.5;margin:20px 0}
 label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin:13px 0 6px}
 input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:11px 12px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:700}.primary{background:var(--amber);color:#3D2B04;width:100%}.ghost{background:var(--s2);color:var(--ink);border:1px solid var(--line)}.danger{background:transparent;color:var(--red);border:1px solid var(--red)}
 .error{color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:18px}
-.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 18px}.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:23px}.brand small{display:block;font-family:Inter;font-size:9px;color:var(--faint);letter-spacing:.08em}.who{text-align:right;font-size:10px;color:var(--dim)}.who b{color:var(--ink)}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 18px}.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:23px}.brand small{display:block;font-family:var(--ui);font-size:9px;color:var(--faint);letter-spacing:.08em}.who{text-align:right;font-size:10px;color:var(--dim)}.who b{color:var(--ink)}
 .status{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.dot.bad{background:var(--red)}.ticker{margin-top:10px;border:1px solid var(--red);border-left:4px solid var(--red);border-radius:8px;padding:8px 10px;font-size:11px;background:var(--s2)}
-.main{padding:16px 18px 100px;flex:1}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.kpi,.card{background:var(--s);border:1px solid var(--line);border-radius:14px}.kpi{padding:13px}.kl{font-size:9px;text-transform:uppercase;color:var(--faint)}.kv{font:700 26px "JetBrains Mono";margin-top:5px}.kf{font-size:10px;color:var(--dim);margin-top:5px}.amber{color:var(--amber)}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.main{padding:16px 18px 100px;flex:1}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.kpi,.card{background:var(--s);border:1px solid var(--line);border-radius:14px}.kpi{padding:13px}.kl{font-size:9px;text-transform:uppercase;color:var(--faint)}.kv{font:700 26px var(--mono);margin-top:5px}.kf{font-size:10px;color:var(--dim);margin-top:5px}.amber{color:var(--amber)}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
 .section{display:flex;justify-content:space-between;align-items:center;margin:22px 0 9px;font:700 16px "Barlow Condensed";text-transform:uppercase}.add{font:600 11px Inter;color:var(--amber);text-transform:none}
-.card{padding:13px;margin-bottom:9px}.row{display:flex;align-items:center;gap:10px}.avatar{width:38px;height:38px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font:700 14px "Barlow Condensed";color:var(--dim);flex:none}.grow{flex:1;min-width:0}.name{font-size:14px;font-weight:600}.meta{font-size:10.5px;color:var(--faint);margin-top:3px}.plate{font:700 14px "JetBrains Mono"}.badge{font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:6px;white-space:nowrap}.ok{background:#04291A;color:var(--green)}.warn{background:#3D2B04;color:var(--amber)}.badgebad{background:#3D0D06;color:var(--red)}.neutral{background:#394552;color:var(--dim)}.vio{background:#1D1440;color:var(--violet)}
+.card{padding:13px;margin-bottom:9px}.row{display:flex;align-items:center;gap:10px}.avatar{width:38px;height:38px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font:700 14px "Barlow Condensed";color:var(--dim);flex:none}.grow{flex:1;min-width:0}.name{font-size:14px;font-weight:600}.meta{font-size:10.5px;color:var(--faint);margin-top:3px}.plate{font:700 14px var(--mono)}.badge{font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:6px;white-space:nowrap}.ok{background:#04291A;color:var(--green)}.warn{background:#3D2B04;color:var(--amber)}.badgebad{background:#3D0D06;color:var(--red)}.neutral{background:#394552;color:var(--dim)}.vio{background:#1D1440;color:var(--violet)}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1180px,100%);display:flex;background:var(--s);border-top:1px solid var(--line);z-index:30;padding-bottom:env(safe-area-inset-bottom)}.nav div{flex:1;text-align:center;padding:11px 2px 9px;font-size:8px;text-transform:uppercase;color:var(--faint)}.nav .on{color:var(--amber)}
 .overlay{position:fixed;inset:0;background:rgba(5,8,10,.78);z-index:50;display:none;align-items:flex-end}.overlay.open{display:flex}.sheet{width:100%;max-height:90vh;overflow:auto;background:var(--s);border-radius:20px 20px 0 0;padding:18px}.sheet h2{font:700 21px "Barlow Condensed";text-transform:uppercase}.sheet .close{float:right;font-size:24px;color:var(--faint)}.formgrid{display:grid;grid-template-columns:1fr;gap:8px}.actions{display:flex;gap:8px;margin-top:15px}.actions button{flex:1}.empty{text-align:center;color:var(--faint);font-size:12px;padding:25px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--s3);border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:11px;opacity:0;transition:.2s;z-index:70;max-width:90%;text-align:center}.toast.show{opacity:1}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar button{font-size:11px}.importbox{background:var(--s);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
@@ -35,7 +36,7 @@ input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--lin
 .situation.att .sdot{background:var(--amber)}.situation.crit .sdot{background:var(--red)}
 .suggestbox{margin-top:12px}
 .suggestrow{display:flex;align-items:center;gap:9px;background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
-.rank{font:700 11px "JetBrains Mono";color:var(--faint);width:16px}
+.rank{font:700 11px var(--mono);color:var(--faint);width:16px}
 .reason{font-size:9.5px;color:var(--dim);margin-top:3px;line-height:1.35}
 .smallbtn{border:0;border-radius:8px;padding:7px 9px;font-size:10px;font-weight:700;background:var(--amber);color:#3D2B04}
 
@@ -237,14 +238,15 @@ button,.nav div{touch-action:manipulation}
 <link rel="stylesheet" href="cap-office-bridge.css">
 <link rel="stylesheet" href="cap-enterprise-layer.css">
 <link rel="stylesheet" href="cap-planning-horizon.css">
+<link rel="stylesheet" href="cap-security-premium.css">
 </head>
 <body>
 <div id="login">
   <div class="loginbox">
     <div class="logo"><span class="mark"></span><h1>CAP Delivery Control</h1><div class="sub">Control Center</div></div>
-    <div class="notice">Accesso collegato al backend CAP Delivery. Le modifiche vengono salvate nel database centrale.</div>
+    <div class="notice">Accesso riservato · dati aziendali · sessione protetta. Usa esclusivamente la tua utenza personale.</div>
     <label>Utente</label>
-    <input id="login-name" type="text" autocomplete="username" placeholder="Nome utente" value="Amministratore">
+    <input id="login-name" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Nome utente">
     <label>PIN</label><input id="login-pin" type="password" inputmode="numeric" maxlength="12" autocomplete="current-password" placeholder="••••">
     <button id="login-btn" class="btn primary" style="margin-top:14px" onclick="login()">Accedi</button>
     <div id="login-error" class="error"></div>
@@ -253,8 +255,8 @@ button,.nav div{touch-action:manipulation}
 
 <div id="app">
   <div class="top">
-    <div class="toprow"><div class="brand"><span class="mark" style="width:9px;height:9px;margin:0 8px 0 0"></span>CAP Delivery<small>Control Center · produzione MVP</small></div><div class="who"><b id="who"></b><br><span id="today"></span><div class="status"><span id="api-dot" class="dot"></span><span id="api-status">Backend online</span></div><div class="sessionbar" id="sessionbar"></div><span onclick="logout()" style="color:var(--amber);cursor:pointer">Esci</span></div></div>
-    <div class="version">Final Production · Smart + Timeline</div>
+    <div class="toprow"><div class="brand"><span class="mark" style="width:9px;height:9px;margin:0 8px 0 0"></span>CAP Delivery<small>Transit Point Operating System</small></div><div class="who"><b id="who"></b><br><span id="today"></span><div class="status"><span id="api-dot" class="dot"></span><span id="api-status">Backend online</span></div><div class="sessionbar" id="sessionbar"></div><span onclick="logout()" style="color:var(--amber);cursor:pointer">Esci</span></div></div>
+    <div class="version">Secure Premium · 6.4.1</div>
     <div class="readonly-banner" id="readonly-banner">Modalità sola lettura: puoi consultare i dati ma non modificarli.</div>
     <div class="controlbar">
       <button class="refreshbtn" id="refresh-btn" onclick="manualRefresh()">↻ Aggiorna ora</button>
@@ -290,7 +292,7 @@ const QUEUE_KEY='cap_session_queue_v1';
 let pendingQueue=[];
 try{sessionStorage.removeItem(QUEUE_KEY)}catch(e){}
 let syncInProgress=false;
-const APP_VERSION='CAP Delivery 6.4 · Transit Point Operating System';
+const APP_VERSION='CAP Delivery 6.4.1 · Security + Premium';
 const AUTO_REFRESH_MS=15*60*1000;
 const IDLE_LOGOUT_MS=8*60*60*1000;
 let lastActivity=Date.now(),saving=false;
@@ -306,21 +308,11 @@ setInterval(()=>{if(token&&user&&Date.now()-lastActivity>IDLE_LOGOUT_MS){toast('
 function updateSessionBar(){const e=document.getElementById('sessionbar');if(!e)return;e.textContent='Sessione protetta · logout automatico dopo inattività'}
 
 function saveSessionSnapshot(){
-  try{
-    sessionStorage.setItem(SNAPSHOT_KEY,JSON.stringify({
-      drivers:state.drivers,vans:state.vans,routes:state.routes,emergencies:state.emergencies,
-      lastUpdated:state.lastUpdated?state.lastUpdated.toISOString():null
-    }));
-  }catch(e){}
+  try{sessionStorage.removeItem(SNAPSHOT_KEY)}catch(e){}
 }
 function restoreSessionSnapshot(){
-  try{
-    const s=JSON.parse(sessionStorage.getItem(SNAPSHOT_KEY)||'null');
-    if(!s)return false;
-    state.drivers=s.drivers||[];state.vans=s.vans||[];state.routes=s.routes||[];state.emergencies=s.emergencies||[];
-    state.lastUpdated=s.lastUpdated?new Date(s.lastUpdated):null;
-    return true;
-  }catch(e){return false}
+  try{sessionStorage.removeItem(SNAPSHOT_KEY)}catch(e){}
+  return false;
 }
 function persistQueue(){
   try{sessionStorage.setItem(QUEUE_KEY,JSON.stringify(pendingQueue))}catch(e){}
@@ -514,9 +506,9 @@ async function refresh(){
       if(dot)dot.className='dot bad';
       if(lab){lab.textContent='Dati non aggiornati · '+e.message;lab.classList.add('stale')}
       if((!state.drivers.length&&!state.vans.length&&!state.routes.length&&!state.emergencies.length)&&restoreSessionSnapshot()){
-        setResilienceBanner('warn','Backend momentaneamente non raggiungibile: stai vedendo gli ultimi dati disponibili di questa sessione.');
+        setResilienceBanner('warn','Backend momentaneamente non raggiungibile: nessuna copia persistente dei dati aziendali viene mantenuta nel browser.');
       }else{
-        setResilienceBanner('warn','Backend momentaneamente non raggiungibile. Gli ultimi dati restano visibili; le modifiche sono temporaneamente disabilitate per evitare duplicazioni.');
+        setResilienceBanner('warn','Backend momentaneamente non raggiungibile. Restano visibili solo i dati già presenti in memoria; le modifiche sono disabilitate fino alla riconnessione.');
       }
       updateControlStatus(true);
       updateQueueUI();
@@ -619,7 +611,7 @@ function drivers(turni){
   const q=(state.search||'').toLowerCase();
   const a0=state.drivers.filter(d=>!q||[d.name,d.phone,turni?plannedShiftForDate(d):d.shift,d.status].some(x=>String(x||'').toLowerCase().includes(q)));
   const order={AM:0,PM:1,DOPPIO:2,RIPOSO:3,FERIE:4,MALATTIA:5};const a=[...a0].sort(turni?(a,b)=>(order[plannedShiftForDate(a)]??9)-(order[plannedShiftForDate(b)]??9):(a,b)=>a.name.localeCompare(b.name));
-  return `<div class="searchbar"><input placeholder="Cerca autista…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div><div class="section">${turni?'Turni del giorno':'Anagrafica autisti'} ${canEdit()?'<span class="add" onclick="driverSheet()">+ Aggiungi ›</span>':''}</div>`+a.map(d=>{const sh=turni?plannedShiftForDate(d):d.shift,raw=turni?planningEntryForDate(d,state.selectedDate):'';return `<div class="card" onclick="canEdit()&&driverSheet('${d.id}')"><div class="row"><div class="avatar">${esc(d.initials||d.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div class="grow"><div class="name">${esc(d.name)}</div><div class="meta">${esc(d.phone||'')} · Extra ${Number(d.extra_hours||0)} h${d.double_ok?' · doppio ok':''}${turni&&raw&&raw!==sh?' · '+esc(raw):''}</div></div><span class="badge ${badgeStatus(sh)}">${esc(sh||'—')}</span></div></div>`}).join('');
+  return `<div class="searchbar"><input placeholder="Cerca autista…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div><div class="section">${turni?'Turni del giorno':'Anagrafica autisti'} ${canEdit()?'<span class="add" onclick="driverSheet()">+ Aggiungi ›</span>':''}</div>`+a.map(d=>{const sh=turni?plannedShiftForDate(d):d.shift,raw=turni?planningEntryForDate(d,state.selectedDate):'';return `<div class="card" onclick="canEdit()&&driverSheet('${d.id}')"><div class="row"><div class="avatar">${esc(d.initials||d.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div class="grow"><div class="name">${esc(d.name)}</div><div class="meta">${turni?'':`<span class="cap-personal">${esc(d.phone||'')}</span>${d.phone?' · ':''}`}Extra ${Number(d.extra_hours||0)} h${d.double_ok?' · doppio ok':''}${turni&&raw&&raw!==sh?' · '+esc(raw):''}</div></div><span class="badge ${badgeStatus(sh)}">${esc(sh||'—')}</span></div></div>`}).join('');
 }
 function routeCard(r){return `<div class="card" onclick="canEdit()&&routeSheet('${r.id}')"><div class="row"><div class="grow"><div class="plate">${esc(r.code)}</div><div class="name">${esc(r.zone)}</div><div class="meta">${esc(r.time_window||'')} · ${r.driver_id?esc(driverName(r.driver_id)):'Nessun autista'}</div>${r.status==='scoperto'&&canEdit()?`<div style="margin-top:8px"><button class="smallbtn" onclick="event.stopPropagation();openSuggestions('${r.id}','Proposte per ${esc(r.code)}')">Trova autista</button></div>`:''}</div><span class="badge ${badgeStatus(r.status)}">${esc(r.status.replace('_',' '))}</span></div></div>`}
 function routes(){const q=(state.search||'').toLowerCase(),a=routesForSelectedDate().filter(r=>!q||[r.code,r.zone,r.status,driverName(r.driver_id)].some(x=>String(x||'').toLowerCase().includes(q)));return `<div class="searchbar"><input placeholder="Cerca giro, zona, autista…" value="${esc(state.search)}" oninput="state.search=this.value;render()"></div>${canEdit()?'<button class="btn primary" onclick="routeSheet()">+ Aggiungi giro</button>':''}<div class="section">Giri del giorno</div>`+(a.length?a.map(routeCard).join(''):'<div class="card meta">Nessun giro registrato per questa data.</div>')}
@@ -634,7 +626,7 @@ function chk(id){return document.getElementById(id).checked}
 
 function driverSheet(id){
  const d=state.drivers.find(x=>x.id===id);
- openSheet(`<h2>${d?'Modifica':'Nuovo'} autista</h2><div class="formgrid"><div><label>Nome</label><input id="d-name" value="${esc(d?.name||'')}"></div><div><label>Telefono</label><input id="d-phone" value="${esc(d?.phone||'')}"></div><div><label>Email</label><input id="d-email" value="${esc(d?.email||'')}"></div><div><label>Turno</label><select id="d-shift">${['AM','PM','DOPPIO','RIPOSO','FERIE','MALATTIA'].map(x=>`<option ${d?.shift===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Stato</label><select id="d-status">${['in_servizio','disponibile','assente'].map(x=>`<option ${d?.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Ore extra</label><input id="d-extra" type="number" step=".5" value="${Number(d?.extra_hours||0)}"></div></div><label><input id="d-double" style="width:auto" type="checkbox" ${d?.double_ok?'checked':''}> Disponibile a doppio turno</label><label>Note</label><textarea id="d-notes">${esc(d?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveDriver('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/drivers/${id}')">Elimina</button>`:''}</div>`);
+ openSheet(`<h2>${d?'Modifica':'Nuovo'} autista</h2><div class="formgrid"><div><label>Nome</label><input id="d-name" value="${esc(d?.name||'')}"></div><div><label>Telefono</label><input id="d-phone" class="cap-personal" value="${esc(d?.phone||'')}"></div><div><label>Email</label><input id="d-email" class="cap-personal" value="${esc(d?.email||'')}"></div><div><label>Turno</label><select id="d-shift">${['AM','PM','DOPPIO','RIPOSO','FERIE','MALATTIA'].map(x=>`<option ${d?.shift===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Stato</label><select id="d-status">${['in_servizio','disponibile','assente'].map(x=>`<option ${d?.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Ore extra</label><input id="d-extra" type="number" step=".5" value="${Number(d?.extra_hours||0)}"></div></div><label><input id="d-double" style="width:auto" type="checkbox" ${d?.double_ok?'checked':''}> Disponibile a doppio turno</label><label>Note</label><textarea id="d-notes">${esc(d?.notes||'')}</textarea><div class="actions"><button class="btn primary" onclick="saveDriver('${id||''}')">Salva</button>${id&&user.role==='admin'?`<button class="btn danger" onclick="del('/api/drivers/${id}')">Elimina</button>`:''}</div>`);
 }
 async function saveDriver(id){
  const name=val('d-name').trim();if(!name)return toast('Nome obbligatorio');
@@ -898,7 +890,7 @@ async function admin(){
     <div class="card"><div class="name">Cambia il mio PIN</div><div class="meta">Serve il PIN attuale. Il PIN nuovo viene salvato solo come hash.</div><button class="btn ghost" style="margin-top:10px;width:100%" onclick="myPinSheet()">Cambia PIN</button></div>
     <div class="section">Stato sistema</div>
     <div class="card"><div class="healthgrid"><div class="healthitem"><b>Frontend</b><span>GitHub Pages</span></div><div class="healthitem"><b>API</b><span>Connessa</span></div><div class="healthitem"><b>Database</b><span>Sincronizzato</span></div><div class="healthitem"><b>Refresh</b><span>15 minuti + manuale</span></div></div>
-    <div class="actions"><button class="btn ghost" onclick="exportBackup()">Esporta backup</button></div>
+    <div class="cap-trust-line"><b>Protezione dati:</b> export locale disattivato · backup gestito lato database.</div>
     <details class="diag"><summary>Diagnostica tecnica</summary><button class="btn ghost" style="margin-top:10px;width:100%" onclick="runSystemTest()">Esegui test completo sistema</button><div id="system-test-report"></div></details></div>
     <div class="section">Import Excel / CSV</div>
     <div class="importbox"><label>Tipo dati</label><select id="imp-entity"><option value="drivers">Autisti / planning turni</option><option value="vans">Mezzi</option><option value="routes">Giri</option><option value="emergencies">Emergenze</option></select><label>File</label><input id="imp-file" type="file" accept=".xlsx,.xls,.csv"><button class="btn primary" style="margin-top:12px" onclick="importFile()">Analizza e importa</button><div class="import-status" id="import-status">L’import aggiorna i record esistenti e non crea duplicati quando riconosce la stessa chiave.</div></div>
@@ -917,15 +909,15 @@ function userSheet(id){
       <option value="admin" ${role==='admin'?'selected':''}>Amministratore</option>
     </select>
     <label>${u?'Nuovo PIN (lascia vuoto per non cambiarlo)':'PIN iniziale'}</label>
-    <input id="u-pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="${u?'•••• opzionale':'4-12 cifre'}">
+    <input id="u-pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="${u?'•••• opzionale':'6-12 cifre'}">
     ${u?`<label>Stato account</label><select id="u-active"><option value="true" ${u.active?'selected':''}>Attivo</option><option value="false" ${!u.active?'selected':''}>Disattivato</option></select>`:''}
     <div class="actions"><button class="btn primary" onclick="saveUser('${id||''}')">${u?'Salva modifiche':'Crea utente'}</button>${u&&u.id!==user.id?`<button class="btn danger" onclick="deleteUser('${u.id}')">Elimina</button>`:''}</div>`);
 }
 async function saveUser(id){
   const name=val('u-name').trim(),role=val('u-role'),pin=val('u-pin').trim();
   if(!name)return toast('Nome utente obbligatorio');
-  if(!id&&!/^\d{4,12}$/.test(pin))return toast('Inserisci un PIN numerico di 4-12 cifre');
-  if(id&&pin&&!/^\d{4,12}$/.test(pin))return toast('Il nuovo PIN deve avere 4-12 cifre');
+  if(!id&&!/^\d{6,12}$/.test(pin))return toast('Inserisci un PIN numerico di 6-12 cifre');
+  if(id&&pin&&!/^\d{6,12}$/.test(pin))return toast('Il nuovo PIN deve avere 6-12 cifre');
   const body={name,role};
   if(pin)body.pin=pin;
   if(id)body.active=val('u-active')==='true';
@@ -950,11 +942,11 @@ function myPinSheet(){
 }
 async function changeMyPin(){
   const old=val('p-old'),p1=val('p-new'),p2=val('p-new2');
-  if(!/^\d{4,12}$/.test(old)||!/^\d{4,12}$/.test(p1))return toast('PIN numerico di 4-12 cifre richiesto');
+  if(!/^\d{4,12}$/.test(old)||!/^\d{6,12}$/.test(p1))return toast('PIN attuale 4-12 cifre; nuovo PIN minimo 6 cifre');
   if(p1!==p2)return toast('I nuovi PIN non coincidono');
   try{
     await apiRaw('/api/me/pin',{method:'POST',body:JSON.stringify({currentPin:old,newPin:p1})},false);
-    closeSheet();toast('PIN aggiornato. Sarà valido dal prossimo accesso.');
+    closeSheet();toast('PIN aggiornato · accedi di nuovo');setTimeout(logout,700);
   }catch(e){toast(e.message)}
 }
 
@@ -1011,11 +1003,7 @@ async function runSystemTest(){
  toast(fails?`Diagnostica: ${fails} errore/i`:'Diagnostica sistema superata');
 }
 
-function exportBackup(){
-  const payload={version:APP_VERSION,exportedAt:new Date().toISOString(),drivers:state.drivers,vans:state.vans,routes:state.routes,emergencies:state.emergencies};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download='cap-delivery-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Backup esportato');
-}
+function exportBackup(){toast('Export locale disattivato per protezione dei dati aziendali')}
 async function importFile(){
  if(user?.role!=='admin')return toast('Import Excel disponibile solo per Admin');
  if(navigator.onLine===false)return toast('Sei offline: importazione non avviata.');
@@ -1025,7 +1013,7 @@ async function importFile(){
  if(typeof XLSX==='undefined')return toast('Lettore Excel non caricato. Chiudi e riapri la pagina e riprova.');
  const btn=document.querySelector('.importbox .btn.primary'),oldText=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='Analisi Excel…'}if(statusEl)statusEl.textContent='Analisi di tutti i fogli e delle tabelle…';
  try{
-   const ab=await f.arrayBuffer(),wb=XLSX.read(ab,{type:'array',cellDates:true});if(!wb.SheetNames?.length)throw new Error('Il file non contiene fogli leggibili');
+   const ab=await f.arrayBuffer(),wb=XLSX.read(ab,{type:'array',cellDates:true,cellFormula:false,cellHTML:false,cellNF:false,bookVBA:false,WTF:false});if(!wb.SheetNames?.length)throw new Error('Il file non contiene fogli leggibili');if(wb.SheetNames.length>32)throw new Error('File troppo complesso: massimo 32 fogli per importazione');
    const out=parseWorkbookImport(wb,entity);if(!out.length)throw new Error('Nessuna riga riconosciuta anche dopo la scansione completa delle celle. Inviami il file Excel originale e lo adatto senza farti cambiare il foglio.');if(out.length>5000)throw new Error('Troppi record: massimo 5000 per importazione');
    const names={drivers:'autisti',vans:'mezzi',routes:'giri',emergencies:'emergenze'};if(statusEl)statusEl.textContent=`Riconosciuti ${out.length} ${names[entity]} in ${wb.SheetNames.length} foglio/i.`;
    const importApproved=window.CapEnterprise&&typeof window.CapEnterprise.confirmImportPreview==='function'?await window.CapEnterprise.confirmImportPreview({out,entity,fileName:f.name,sheetNames:wb.SheetNames}):criticalConfirm(`Riconosciuti ${out.length} ${names[entity]} da “${f.name}”. Confermi l’importazione?`);
@@ -1081,5 +1069,6 @@ document.addEventListener('visibilitychange',async()=>{
 <script src="cap-enterprise-layer.js"></script>
 <script src="cap-planning-horizon.js"></script>
 <script src="cap-planning-horizon-layer.js"></script>
+<script src="cap-security-premium.js"></script>
 </body>
 </html>
