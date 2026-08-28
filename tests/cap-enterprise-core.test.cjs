@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+require('../cap-enterprise-core.js');
+const C=global.CapEnterpriseCore;
+let p=C.previewImport([{name:'A',__planning:true},{name:''}],'drivers');
+assert.equal(p.rows,2);assert.equal(p.planning,1);assert.equal(p.invalid,1);
+const events=C.workloadEventsFromPlanning([{name:'Mario Rossi',__planningEntries:[{date:'2026-08-28',value:'DOPPIO'},{date:'2026-08-29',value:'AM'}]}],[{id:'d1',name:'Mario Rossi'}],'file.xlsx');
+assert.equal(events.length,1);assert.equal(events[0].event_type,'DOUBLE_SHIFT');assert.equal(events[0].source_key,'file.xlsx:d1:2026-08-28:DOUBLE_SHIFT');
+const snap=C.closureSnapshot({drivers:[{id:'d1',status:'assente'}],vans:[{status:'guasto'}],routes:[{driver_id:'d1',service_date:C.todayRome(),status:'coperto'}],emergencies:[{is_open:true}]},{sources:[],handovers:[{status:'OPEN'}]});
+assert.equal(snap.assigned_unavailable,1);assert.equal(snap.van_issues,1);assert.equal(snap.emergencies,1);assert.equal(snap.handovers_open,1);assert.ok(snap.critical>=3);assert.ok(C.fairnessBurden({double_30:2,extra_30:3})>0);
+console.log('PASS enterprise core guards');
