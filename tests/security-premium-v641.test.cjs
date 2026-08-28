@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const index=fs.readFileSync('index.html','utf8');
+const layer=fs.readFileSync('cap-security-premium.js','utf8');
+const css=fs.readFileSync('cap-security-premium.css','utf8');
+assert.match(index,/CAP Delivery 6\.4\.1 · Security \+ Premium/);
+assert.match(index,/vendor\/xlsx\.full\.min\.js/);
+assert.doesNotMatch(index,/cdn\.jsdelivr\.net\/npm\/xlsx@0\.18\.5/);
+assert.doesNotMatch(index,/fonts\.googleapis\.com/);
+assert.doesNotMatch(index,/value="Amministratore"/);
+assert.doesNotMatch(index,/sessionStorage\.setItem\(SNAPSHOT_KEY/);
+assert.doesNotMatch(index,/onclick="exportBackup\(\)"/);
+assert.match(index,/new PIN minimo 6 cifre/);
+assert.match(index,/class="cap-personal"/);
+assert.match(layer,/Dati aziendali protetti/);
+assert.match(layer,/visibilityState==='hidden'/);
+assert.match(css,/\.cap-privacy \.cap-personal/);
+console.log('PASS security premium frontend guards');
