@@ -235,6 +235,7 @@ button,.nav div{touch-action:manipulation}
 <link rel="stylesheet" href="cap-ops-layer.css">
 <link rel="stylesheet" href="cap-tp-route-layer.css">
 <link rel="stylesheet" href="cap-office-bridge.css">
+<link rel="stylesheet" href="cap-enterprise-layer.css">
 </head>
 <body>
 <div id="login">
@@ -288,7 +289,7 @@ const QUEUE_KEY='cap_session_queue_v1';
 let pendingQueue=[];
 try{sessionStorage.removeItem(QUEUE_KEY)}catch(e){}
 let syncInProgress=false;
-const APP_VERSION='CAP Delivery 6.2 · Office Bridge + Esselunga TP';
+const APP_VERSION='CAP Delivery 6.3 · Enterprise TP Control';
 const AUTO_REFRESH_MS=15*60*1000;
 const IDLE_LOGOUT_MS=8*60*60*1000;
 let lastActivity=Date.now(),saving=false;
@@ -553,6 +554,10 @@ function suggestDrivers(excludeId){
     .filter(d=>d.status==='disponibile'||(d.status==='in_servizio'&&d.shift!=='DOPPIO'))
     .sort((a,b)=>{
       if(!!a.double_ok!==!!b.double_ok)return a.double_ok?-1:1;
+      const af=window.CapEnterprise?.fairnessForDriver?.(a.id)||{},bf=window.CapEnterprise?.fairnessForDriver?.(b.id)||{};
+      const ab=Number(af.double_30||0)*10+Number(af.double_60||0)*3+Number(af.double_90||0)+Number(af.extra_30||0)*2;
+      const bb=Number(bf.double_30||0)*10+Number(bf.double_60||0)*3+Number(bf.double_90||0)+Number(bf.extra_30||0)*2;
+      if(ab!==bb)return ab-bb;
       const ae=Number(a.extra_hours||0),be=Number(b.extra_hours||0);
       if(ae!==be)return ae-be;
       return a.name.localeCompare(b.name,'it');
@@ -563,7 +568,7 @@ function suggestionHTML(contextId){
   const list=suggestDrivers(null);
   if(!list.length)return '<div class="empty">Nessun autista proponibile al momento.</div>';
   return '<div class="suggestbox">'+list.map((d,i)=>{
-    const reason=(d.double_ok?'Disponibile a doppio turno · ':'Non preferenziale per doppio · ')+Number(d.extra_hours||0)+' h extra mese';
+    const f=window.CapEnterprise?.fairnessForDriver?.(d.id)||{};const recent=Number(f.double_30||0);const reason=(d.double_ok?'Disponibile a doppio · ':'Non preferenziale · ')+recent+' doppi/30g · '+Number(f.extra_30||d.extra_hours||0)+' h extra/30g';
     return `<div class="suggestrow"><div class="rank">${i+1}</div><div class="grow"><div class="name">${esc(d.name)}</div><div class="reason">${esc(reason)}</div></div><button class="smallbtn" onclick="event.stopPropagation();chooseSuggestedDriver('${contextId}','${d.id}')">Scegli</button></div>`;
   }).join('')+'</div>';
 }
@@ -765,7 +770,7 @@ function parseWeeklyDriverGrid(grid){
    const today=new Date().toISOString().slice(0,10),todayItem=plan.find(x=>x.date===today);const source=todayItem||plan.find(x=>planningShift(x.value))||plan[0];
    const shift=planningShift(source?.value),status=planningStatus(source?.value,shift);
    const weekly='[PLANNING '+(section==='OREW'?'OREW':'AUTISTI')+'] '+plan.map(x=>`${x.date.slice(8,10)}/${x.date.slice(5,7)} ${x.value}`).join(' | ');
-   out.push({name:first,initials:first.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(),phone:'',email:'',shift,extra_hours:0,double_ok:plan.some(x=>/doppio|disponibil/i.test(x.value)),status,notes:weekly,__planning:true,__todayIncluded:!!todayItem,__todayValue:todayItem?.value||'',__section:section});
+   out.push({name:first,initials:first.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(),phone:'',email:'',shift,extra_hours:0,double_ok:plan.some(x=>/doppio|disponibil/i.test(x.value)),status,notes:weekly,__planning:true,__todayIncluded:!!todayItem,__todayValue:todayItem?.value||'',__section:section,__planningEntries:plan});
   }
  }
  return out
@@ -1022,7 +1027,8 @@ async function importFile(){
    const ab=await f.arrayBuffer(),wb=XLSX.read(ab,{type:'array',cellDates:true});if(!wb.SheetNames?.length)throw new Error('Il file non contiene fogli leggibili');
    const out=parseWorkbookImport(wb,entity);if(!out.length)throw new Error('Nessuna riga riconosciuta anche dopo la scansione completa delle celle. Inviami il file Excel originale e lo adatto senza farti cambiare il foglio.');if(out.length>5000)throw new Error('Troppi record: massimo 5000 per importazione');
    const names={drivers:'autisti',vans:'mezzi',routes:'giri',emergencies:'emergenze'};if(statusEl)statusEl.textContent=`Riconosciuti ${out.length} ${names[entity]} in ${wb.SheetNames.length} foglio/i.`;
-   if(!criticalConfirm(`Riconosciuti ${out.length} ${names[entity]} da “${f.name}”. Confermi l’importazione?`)){if(statusEl)statusEl.textContent='Importazione annullata: nessun dato modificato.';return}
+   const importApproved=window.CapEnterprise&&typeof window.CapEnterprise.confirmImportPreview==='function'?await window.CapEnterprise.confirmImportPreview({out,entity,fileName:f.name,sheetNames:wb.SheetNames}):criticalConfirm(`Riconosciuti ${out.length} ${names[entity]} da “${f.name}”. Confermi l’importazione?`);
+   if(!importApproved){if(statusEl)statusEl.textContent='Importazione annullata: nessun dato modificato.';return}
    if(btn)btn.textContent='Sincronizzazione '+out.length+' record…';
    let created=0,updated=0,processed=0;
    for(const src of out){
@@ -1033,7 +1039,7 @@ async function importFile(){
    if(statusEl)statusEl.textContent=`Completato: ${processed} record · ${created} nuovi · ${updated} aggiornati · 0 duplicati creati.`;
    toast(`Import completato: ${created} nuovi, ${updated} aggiornati`);
    try{if(typeof window.capOfficeMarkSource==='function')await window.capOfficeMarkSource('planning_excel','RECEIVED',`Import Excel: ${names[entity]} · ${processed} record`)}catch(_e){}
-   input.value='';await refresh();await admin();
+   input.value='';await refresh();try{if(entity==='drivers'&&window.CapEnterprise&&typeof window.CapEnterprise.syncPlanningWorkload==='function')await window.CapEnterprise.syncPlanningWorkload(out,f.name)}catch(_e){}await admin();
  }catch(e){console.error('Import Excel:',e);if(statusEl)statusEl.textContent='Errore: '+(e?.message||'errore sconosciuto');toast('Import non riuscito: '+(e?.message||'errore sconosciuto'))}
  finally{if(btn){btn.disabled=false;btn.textContent=oldText||'Importa nel database'}}
 }
@@ -1070,5 +1076,7 @@ document.addEventListener('visibilitychange',async()=>{
 <script src="cap-tp-route-layer.js"></script>
 <script src="cap-office-core.js"></script>
 <script src="cap-office-bridge.js"></script>
+<script src="cap-enterprise-core.js"></script>
+<script src="cap-enterprise-layer.js"></script>
 </body>
 </html>
