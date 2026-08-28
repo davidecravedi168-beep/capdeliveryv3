@@ -9,8 +9,13 @@ on:
       - "cap-ops-layer.css"
       - "cap-tp-route-layer.js"
       - "cap-tp-route-layer.css"
+      - "cap-office-core.js"
+      - "cap-office-bridge.js"
+      - "cap-office-bridge.css"
       - "tests/cap-ops-core.test.cjs"
+      - "tests/cap-office-core.test.cjs"
       - "scripts/upgrade_cap_v6.py"
+      - "scripts/upgrade_cap_v62.py"
       - ".github/workflows/upgrade-cap-v6.yml"
   workflow_dispatch:
 
@@ -34,15 +39,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Apply guarded migration
-        run: python scripts/upgrade_cap_v6.py
-      - name: Regression test operations intelligence
-        run: node tests/cap-ops-core.test.cjs
+      - name: Apply guarded migrations
+        run: |
+          python scripts/upgrade_cap_v6.py
+          python scripts/upgrade_cap_v62.py
+      - name: Regression tests
+        run: |
+          node tests/cap-ops-core.test.cjs
+          node tests/cap-office-core.test.cjs
       - name: Validate browser scripts
         run: |
           node --check cap-ops-core.js
           node --check cap-ops-layer.js
           node --check cap-tp-route-layer.js
+          node --check cap-office-core.js
+          node --check cap-office-bridge.js
       - name: Validate integration contract
         run: |
           grep -q 'cap-ops-layer.css' index.html
@@ -50,7 +61,11 @@ jobs:
           grep -q 'cap-ops-layer.js' index.html
           grep -q 'cap-tp-route-layer.css' index.html
           grep -q 'cap-tp-route-layer.js' index.html
-          grep -q 'CAP Delivery 6.1 · Esselunga TP Control' index.html
+          grep -q 'cap-office-bridge.css' index.html
+          grep -q 'cap-office-core.js' index.html
+          grep -q 'cap-office-bridge.js' index.html
+          grep -q 'CAP Delivery 6.2 · Office Bridge + Esselunga TP' index.html
+          grep -q "window.capOfficeMarkSource('planning_excel'" index.html
           git diff --check
       - name: Publish tested frontend upgrade
         run: |
@@ -61,5 +76,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'CAP Delivery 6.1 — Esselunga transit-point control'
+          git commit -m 'CAP Delivery 6.2 — Office Bridge control tower'
           git push origin HEAD:main
