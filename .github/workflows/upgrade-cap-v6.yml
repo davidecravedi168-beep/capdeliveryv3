@@ -1,0 +1,60 @@
+name: Upgrade CAP Delivery V6
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cap-ops-core.js"
+      - "cap-ops-layer.js"
+      - "cap-ops-layer.css"
+      - "tests/cap-ops-core.test.cjs"
+      - "scripts/upgrade_cap_v6.py"
+      - ".github/workflows/upgrade-cap-v6.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cap-v6-upgrade
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Apply guarded migration
+        run: python scripts/upgrade_cap_v6.py
+      - name: Regression test operations intelligence
+        run: node tests/cap-ops-core.test.cjs
+      - name: Validate browser scripts
+        run: |
+          node --check cap-ops-core.js
+          node --check cap-ops-layer.js
+      - name: Validate integration contract
+        run: |
+          grep -q 'cap-ops-layer.css' index.html
+          grep -q 'cap-ops-core.js' index.html
+          grep -q 'cap-ops-layer.js' index.html
+          grep -q 'CAP Delivery 6.0 · Operations Intelligence' index.html
+          git diff --check
+      - name: Publish tested frontend upgrade
+        run: |
+          if git diff --quiet; then
+            echo 'No migration changes to publish'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'CAP Delivery 6.0 — operations intelligence control tower'
+          git push origin HEAD:main
