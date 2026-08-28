@@ -7,6 +7,8 @@ on:
       - "cap-ops-core.js"
       - "cap-ops-layer.js"
       - "cap-ops-layer.css"
+      - "cap-tp-route-layer.js"
+      - "cap-tp-route-layer.css"
       - "tests/cap-ops-core.test.cjs"
       - "scripts/upgrade_cap_v6.py"
       - ".github/workflows/upgrade-cap-v6.yml"
@@ -40,12 +42,15 @@ jobs:
         run: |
           node --check cap-ops-core.js
           node --check cap-ops-layer.js
+          node --check cap-tp-route-layer.js
       - name: Validate integration contract
         run: |
           grep -q 'cap-ops-layer.css' index.html
           grep -q 'cap-ops-core.js' index.html
           grep -q 'cap-ops-layer.js' index.html
-          grep -q 'CAP Delivery 6.0 · Operations Intelligence' index.html
+          grep -q 'cap-tp-route-layer.css' index.html
+          grep -q 'cap-tp-route-layer.js' index.html
+          grep -q 'CAP Delivery 6.1 · Esselunga TP Control' index.html
           git diff --check
       - name: Publish tested frontend upgrade
         run: |
@@ -56,5 +61,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'CAP Delivery 6.0 — operations intelligence control tower'
+          git commit -m 'CAP Delivery 6.1 — Esselunga transit-point control'
           git push origin HEAD:main
