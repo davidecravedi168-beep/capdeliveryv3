@@ -11,7 +11,6 @@
   const unavailableWords=['malatt','ferie','assent','riposo','indispon','non disponibil','forfait','sospes'];
   const badVanWords=['guasto','officina','fermo','ko','manutenz','blocc','non disponibile'];
   const closedWords=['chius','closed','complet','done','consegn','annull','cancel'];
-  const openRouteWords=['scopert','open','apert','da assegn','unassigned','pending','attiv'];
   const highWords=['crit','alta','high','urgente','p1','rosso'];
   function hasAny(v,arr){const n=norm(v);return arr.some(w=>n.includes(w));}
   function routeIsClosed(r){return hasAny(r?.status,closedWords);}
@@ -51,8 +50,10 @@
     pressure+=Math.min(15,badVans.length*5);
     pressure+=Math.min(15,absentWithRoute.length*8);
     if(utilization>100) pressure+=Math.min(20,Math.round((utilization-100)/5));
+    const hardCritical=(uncovered.length>0&&openEmergencies.some(e=>priorityRank(e.priority)>=3))||absentWithRoute.length>0;
+    if(hardCritical)pressure=Math.max(70,pressure);
     pressure=Math.max(0,Math.min(100,pressure));
-    const situation=pressure>=70?'CRIT':pressure>=35?'ATT':'OK';
+    const situation=hardCritical||pressure>=70?'CRIT':pressure>=35?'ATT':'OK';
     const exceptions=[];
     uncovered.forEach(r=>exceptions.push({severity:3,type:'Giro scoperto',title:txt(r.code)||'Giro senza codice',detail:[txt(r.zone),txt(r.time_window)].filter(Boolean).join(' · '),route_id:r.id}));
     openEmergencies.forEach(e=>exceptions.push({severity:priorityRank(e.priority),type:'Emergenza',title:txt(e.title)||txt(e.type)||'Emergenza aperta',detail:txt(e.description)||txt(e.notes),emergency_id:e.id}));
@@ -64,12 +65,7 @@
     openEmergencies.filter(e=>priorityRank(e.priority)>=3).slice(0,3).forEach(e=>actions.push({severity:3,title:`Gestisci: ${txt(e.title)||'emergenza critica'}`,detail:txt(e.description)||'Apri il dettaglio e assegna un responsabile',target:'emergenze',emergency_id:e.id}));
     badVans.slice(0,2).forEach(v=>actions.push({severity:2,title:`Verifica mezzo ${txt(v.plate)||''}`.trim(),detail:txt(v.status)||'Stato mezzo non operativo',target:'flotta',van_id:v.id}));
     if(!actions.length)actions.push({severity:1,title:'Nessuna eccezione critica',detail:'Controlla il piano e conferma la copertura prima del prossimo picco operativo',target:'dashboard'});
-    return {
-      generated_at:new Date().toISOString(),situation,pressure,utilization,
-      metrics:{drivers_total:drivers.length,drivers_available:availableDrivers.length,drivers_unavailable:unavailableDrivers.length,routes_open:openRoutes.length,routes_uncovered:uncovered.length,emergencies_open:openEmergencies.length,vans_ready:readyVans.length,vans_unavailable:badVans.length},
-      exceptions,actions,
-      trust:{mode:'RULE_BASED_OPERATIONAL_INTELLIGENCE',gps_connected:false,predictive_eta:false,note:'Nessun ETA o posizione viene inventato senza feed GPS reale.'}
-    };
+    return {generated_at:new Date().toISOString(),situation,pressure,utilization,metrics:{drivers_total:drivers.length,drivers_available:availableDrivers.length,drivers_unavailable:unavailableDrivers.length,routes_open:openRoutes.length,routes_uncovered:uncovered.length,emergencies_open:openEmergencies.length,vans_ready:readyVans.length,vans_unavailable:badVans.length},exceptions,actions,trust:{mode:'RULE_BASED_OPERATIONAL_INTELLIGENCE',gps_connected:false,predictive_eta:false,note:'Nessun ETA o posizione viene inventato senza feed GPS reale.'}};
   }
   return {buildSnapshot,rankDrivers,routeIsUncovered,driverUnavailable,driverAvailable,vanUnavailable,emergencyOpen};
 });
