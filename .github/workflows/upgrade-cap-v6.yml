@@ -20,6 +20,8 @@ on:
       - "cap-planning-horizon.css"
       - "cap-security-premium.js"
       - "cap-security-premium.css"
+      - "cap-live-status.js"
+      - "cap-live-status.css"
       - "DATA_OWNERSHIP_V64.md"
       - "SECURITY_PREMIUM_V64_AUDIT.md"
       - "tests/cap-ops-core.test.cjs"
@@ -28,6 +30,7 @@ on:
       - "tests/cap-planning-horizon.test.cjs"
       - "tests/data-ownership-v64.test.cjs"
       - "tests/security-premium-v641.test.cjs"
+      - "tests/resilience-v65.test.cjs"
       - "scripts/upgrade_cap_v6.py"
       - "scripts/upgrade_cap_v62.py"
       - "scripts/upgrade_cap_v63.py"
@@ -35,6 +38,7 @@ on:
       - "scripts/upgrade_cap_v641_security_premium.py"
       - "scripts/upgrade_cap_v641_sheetjs_source.py"
       - "scripts/upgrade_cap_v641_csp.py"
+      - "scripts/upgrade_cap_v65_resilience.py"
       - ".github/workflows/upgrade-cap-v6.yml"
   workflow_dispatch:
 
@@ -64,9 +68,14 @@ jobs:
           python scripts/upgrade_cap_v62.py
           python scripts/upgrade_cap_v63.py
           python scripts/upgrade_cap_v64.py
-          python scripts/upgrade_cap_v641_security_premium.py
+          if grep -qE 'CAP Delivery 6\.(4\.1 · Security \+ Premium|5 · Resilience \+ Operational Clarity)' index.html; then
+            echo 'CAP 6.4.1 security base already satisfied'
+          else
+            python scripts/upgrade_cap_v641_security_premium.py
+          fi
           python scripts/upgrade_cap_v641_sheetjs_source.py
           python scripts/upgrade_cap_v641_csp.py
+          python scripts/upgrade_cap_v65_resilience.py
       - name: Regression tests pass 1
         run: |
           node tests/cap-ops-core.test.cjs
@@ -75,8 +84,10 @@ jobs:
           node tests/cap-planning-horizon.test.cjs
           node tests/data-ownership-v64.test.cjs
           node tests/security-premium-v641.test.cjs
+          node tests/resilience-v65.test.cjs
       - name: Regression tests pass 2
         run: |
+          node tests/resilience-v65.test.cjs
           node tests/security-premium-v641.test.cjs
           node tests/data-ownership-v64.test.cjs
           node tests/cap-planning-horizon.test.cjs
@@ -95,15 +106,23 @@ jobs:
           node --check cap-planning-horizon.js
           node --check cap-planning-horizon-layer.js
           node --check cap-security-premium.js
-      - name: Validate security and integration contract
+          node --check cap-live-status.js
+      - name: Validate resilience, security and integration contract
         run: |
-          grep -q 'CAP Delivery 6.4.1 · Security + Premium' index.html
+          grep -q 'CAP Delivery 6.5 · Resilience + Operational Clarity' index.html
           grep -q 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js' index.html
           grep -q 'Content-Security-Policy' index.html
           grep -q "object-src 'none'" index.html
           grep -q 'cap-security-premium.css' index.html
           grep -q 'cap-security-premium.js' index.html
-          grep -q 'cap-planning-horizon.js' index.html
+          grep -q 'cap-live-status.css' index.html
+          grep -q 'cap-live-status.js' index.html
+          grep -q 'BACKEND LIVE · DATI CONFERMATI' cap-planning-horizon-layer.js
+          grep -q 'LOCAL_FALLBACK_NO_BACKEND' cap-planning-horizon-layer.js
+          grep -q 'state.routes' cap-planning-horizon-layer.js
+          grep -q 'state.drivers' cap-planning-horizon-layer.js
+          ! grep -q "localStorage.getItem('cap_token')" cap-planning-horizon-layer.js
+          grep -q 'health/ready' cap-live-status.js
           grep -q 'window.CapEnterprise.confirmImportPreview' index.html
           grep -q 'window.CapEnterprise.syncPlanningHorizon' index.html
           grep -q 'APP AUTISTI · EVIDENZA ESTERNA' cap-tp-route-layer.js
@@ -122,6 +141,6 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          git commit -m 'CAP Delivery 6.4.1 — Security + Premium'
+          git add index.html cap-planning-horizon-layer.js cap-ops-layer.js cap-office-bridge.js cap-enterprise-layer.js
+          git commit -m 'CAP Delivery 6.5 — Resilience + Operational Clarity'
           git push origin HEAD:main
