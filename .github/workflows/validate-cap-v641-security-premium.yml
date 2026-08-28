@@ -1,0 +1,76 @@
+name: Validate CAP 6.4.1 Security Premium
+
+on:
+  push:
+    branches: [dev-cap-v64-security-premium]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cap-v641-security-premium-validation
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: dev-cap-v64-security-premium
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Apply guarded migrations in disposable workspace
+        run: |
+          python scripts/upgrade_cap_v6.py
+          python scripts/upgrade_cap_v62.py
+          python scripts/upgrade_cap_v63.py
+          python scripts/upgrade_cap_v64.py
+          python scripts/upgrade_cap_v641_security_premium.py
+          python scripts/upgrade_cap_v641_sheetjs_source.py
+      - name: Syntax
+        run: |
+          python -m py_compile scripts/upgrade_cap_v641_security_premium.py scripts/upgrade_cap_v641_sheetjs_source.py
+          node --check cap-ops-core.js
+          node --check cap-ops-layer.js
+          node --check cap-tp-route-layer.js
+          node --check cap-office-core.js
+          node --check cap-office-bridge.js
+          node --check cap-enterprise-core.js
+          node --check cap-enterprise-layer.js
+          node --check cap-planning-horizon.js
+          node --check cap-planning-horizon-layer.js
+          node --check cap-security-premium.js
+      - name: Regression pass A
+        run: |
+          node tests/cap-ops-core.test.cjs
+          node tests/cap-office-core.test.cjs
+          node tests/cap-enterprise-core.test.cjs
+          node tests/cap-planning-horizon.test.cjs
+          node tests/data-ownership-v64.test.cjs
+          node tests/security-premium-v641.test.cjs
+      - name: Regression pass B reversed
+        run: |
+          node tests/security-premium-v641.test.cjs
+          node tests/data-ownership-v64.test.cjs
+          node tests/cap-planning-horizon.test.cjs
+          node tests/cap-enterprise-core.test.cjs
+          node tests/cap-office-core.test.cjs
+          node tests/cap-ops-core.test.cjs
+      - name: Security contract
+        run: |
+          grep -q 'CAP Delivery 6.4.1 · Security + Premium' index.html
+          grep -q 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js' index.html
+          grep -q 'cap-security-premium.css' index.html
+          grep -q 'cap-security-premium.js' index.html
+          ! grep -q 'sessionStorage.setItem(SNAPSHOT_KEY' index.html
+          ! grep -q 'fonts.googleapis.com' index.html
+          ! grep -q 'cdn.jsdelivr.net/npm/xlsx@0.18.5' index.html
+          ! grep -q 'value="Amministratore"' index.html
+          ! grep -q 'onclick="exportBackup()"' index.html
+          git diff --check
