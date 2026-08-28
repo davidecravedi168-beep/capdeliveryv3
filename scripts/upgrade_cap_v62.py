@@ -12,9 +12,10 @@ if 'cap-office-bridge.js' not in s:
     if '</body>' not in s: raise SystemExit('missing </body>')
     s=s.replace('</body>',scripts+'</body>',1)
 
-s=s.replace("const APP_VERSION='CAP Delivery 6.1 · Esselunga TP Control';","const APP_VERSION='CAP Delivery 6.2 · Office Bridge + Esselunga TP';")
-if "CAP Delivery 6.2 · Office Bridge + Esselunga TP" not in s:
-    raise SystemExit('APP_VERSION anchor changed')
+if "const APP_VERSION='CAP Delivery 6.1 · Esselunga TP Control';" in s:
+    s=s.replace("const APP_VERSION='CAP Delivery 6.1 · Esselunga TP Control';","const APP_VERSION='CAP Delivery 6.2 · Office Bridge + Esselunga TP';",1)
+elif "const APP_VERSION='CAP Delivery 6." not in s:
+    raise SystemExit('APP_VERSION contract changed')
 
 old="""toast(`Import completato: ${created} nuovi, ${updated} aggiornati`);
    input.value='';await refresh();await admin();"""
@@ -26,11 +27,12 @@ if old in s:
 elif "window.capOfficeMarkSource('planning_excel'" not in s:
     raise SystemExit('Excel import success anchor changed')
 
-for marker in ['cap-office-bridge.css','cap-office-core.js','cap-office-bridge.js',"CAP Delivery 6.2 · Office Bridge + Esselunga TP","window.capOfficeMarkSource('planning_excel'"]:
+for marker in ['cap-office-bridge.css','cap-office-core.js','cap-office-bridge.js',"window.capOfficeMarkSource('planning_excel'"]:
     if marker not in s: raise SystemExit('missing marker: '+marker)
+if "const APP_VERSION='CAP Delivery 6." not in s: raise SystemExit('missing CAP 6.x version marker')
 
 if s!=orig:
     p.write_text(s,encoding='utf-8')
     print('CAP Delivery 6.2 Office Bridge patch applied')
 else:
-    print('CAP Delivery 6.2 Office Bridge patch already applied')
+    print('CAP Delivery 6.2 base requirements already satisfied by newer version')
