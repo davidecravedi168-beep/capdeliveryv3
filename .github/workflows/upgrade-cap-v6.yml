@@ -12,10 +12,15 @@ on:
       - "cap-office-core.js"
       - "cap-office-bridge.js"
       - "cap-office-bridge.css"
+      - "cap-enterprise-core.js"
+      - "cap-enterprise-layer.js"
+      - "cap-enterprise-layer.css"
       - "tests/cap-ops-core.test.cjs"
       - "tests/cap-office-core.test.cjs"
+      - "tests/cap-enterprise-core.test.cjs"
       - "scripts/upgrade_cap_v6.py"
       - "scripts/upgrade_cap_v62.py"
+      - "scripts/upgrade_cap_v63.py"
       - ".github/workflows/upgrade-cap-v6.yml"
   workflow_dispatch:
 
@@ -43,10 +48,17 @@ jobs:
         run: |
           python scripts/upgrade_cap_v6.py
           python scripts/upgrade_cap_v62.py
-      - name: Regression tests
+          python scripts/upgrade_cap_v63.py
+      - name: Regression tests pass 1
         run: |
           node tests/cap-ops-core.test.cjs
           node tests/cap-office-core.test.cjs
+          node tests/cap-enterprise-core.test.cjs
+      - name: Regression tests pass 2
+        run: |
+          node tests/cap-enterprise-core.test.cjs
+          node tests/cap-office-core.test.cjs
+          node tests/cap-ops-core.test.cjs
       - name: Validate browser scripts
         run: |
           node --check cap-ops-core.js
@@ -54,18 +66,20 @@ jobs:
           node --check cap-tp-route-layer.js
           node --check cap-office-core.js
           node --check cap-office-bridge.js
+          node --check cap-enterprise-core.js
+          node --check cap-enterprise-layer.js
       - name: Validate integration contract
         run: |
           grep -q 'cap-ops-layer.css' index.html
-          grep -q 'cap-ops-core.js' index.html
-          grep -q 'cap-ops-layer.js' index.html
           grep -q 'cap-tp-route-layer.css' index.html
-          grep -q 'cap-tp-route-layer.js' index.html
           grep -q 'cap-office-bridge.css' index.html
-          grep -q 'cap-office-core.js' index.html
-          grep -q 'cap-office-bridge.js' index.html
-          grep -q 'CAP Delivery 6.2 · Office Bridge + Esselunga TP' index.html
-          grep -q "window.capOfficeMarkSource('planning_excel'" index.html
+          grep -q 'cap-enterprise-layer.css' index.html
+          grep -q 'cap-enterprise-core.js' index.html
+          grep -q 'cap-enterprise-layer.js' index.html
+          grep -q 'CAP Delivery 6.3 · Enterprise TP Control' index.html
+          grep -q 'window.CapEnterprise.confirmImportPreview' index.html
+          grep -q 'window.CapEnterprise.syncPlanningWorkload' index.html
+          grep -q '__planningEntries:plan' index.html
           git diff --check
       - name: Publish tested frontend upgrade
         run: |
@@ -76,5 +90,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'CAP Delivery 6.2 — Office Bridge control tower'
+          git commit -m 'CAP Delivery 6.3 — Enterprise TP Control'
           git push origin HEAD:main
