@@ -234,6 +234,7 @@ button,.nav div{touch-action:manipulation}
 </style>
 <link rel="stylesheet" href="cap-ops-layer.css">
 <link rel="stylesheet" href="cap-tp-route-layer.css">
+<link rel="stylesheet" href="cap-office-bridge.css">
 </head>
 <body>
 <div id="login">
@@ -287,7 +288,7 @@ const QUEUE_KEY='cap_session_queue_v1';
 let pendingQueue=[];
 try{sessionStorage.removeItem(QUEUE_KEY)}catch(e){}
 let syncInProgress=false;
-const APP_VERSION='CAP Delivery 6.1 · Esselunga TP Control';
+const APP_VERSION='CAP Delivery 6.2 · Office Bridge + Esselunga TP';
 const AUTO_REFRESH_MS=15*60*1000;
 const IDLE_LOGOUT_MS=8*60*60*1000;
 let lastActivity=Date.now(),saving=false;
@@ -1031,6 +1032,7 @@ async function importFile(){
    }
    if(statusEl)statusEl.textContent=`Completato: ${processed} record · ${created} nuovi · ${updated} aggiornati · 0 duplicati creati.`;
    toast(`Import completato: ${created} nuovi, ${updated} aggiornati`);
+   try{if(typeof window.capOfficeMarkSource==='function')await window.capOfficeMarkSource('planning_excel','RECEIVED',`Import Excel: ${names[entity]} · ${processed} record`)}catch(_e){}
    input.value='';await refresh();await admin();
  }catch(e){console.error('Import Excel:',e);if(statusEl)statusEl.textContent='Errore: '+(e?.message||'errore sconosciuto');toast('Import non riuscito: '+(e?.message||'errore sconosciuto'))}
  finally{if(btn){btn.disabled=false;btn.textContent=oldText||'Importa nel database'}}
@@ -1066,5 +1068,7 @@ document.addEventListener('visibilitychange',async()=>{
 <script src="cap-ops-core.js"></script>
 <script src="cap-ops-layer.js"></script>
 <script src="cap-tp-route-layer.js"></script>
+<script src="cap-office-core.js"></script>
+<script src="cap-office-bridge.js"></script>
 </body>
 </html>
