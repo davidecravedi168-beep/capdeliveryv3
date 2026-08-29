@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#10151A"><meta name="description" content="CAP Delivery Control — gestione operativa transit point"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>CAP Delivery Control</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/cap-icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/cap-icon-180.png">
+<meta name="apple-mobile-web-app-title" content="CAP Delivery">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://cap-backend.davidecravedi168-beep.deno.net; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
@@ -244,7 +248,7 @@ button,.nav div{touch-action:manipulation}
 <body>
 <div id="login">
   <div class="loginbox">
-    <div class="logo"><span class="mark"></span><h1>CAP Delivery Control</h1><div class="sub">Control Center</div></div>
+    <div class="logo"><img src="assets/cap-icon-192.png" alt="" width="44" height="44" style="border-radius:13px;display:block;margin:0 auto 10px"><h1>CAP Delivery Control</h1><div class="sub">Control Center</div></div>
     <div class="notice">Accesso riservato · dati aziendali · sessione protetta. Usa esclusivamente la tua utenza personale.</div>
     <label>Utente</label>
     <input id="login-name" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Nome utente">
