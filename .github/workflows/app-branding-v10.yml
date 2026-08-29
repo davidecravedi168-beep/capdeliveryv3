@@ -1,0 +1,37 @@
+name: CAP App Branding V10
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/app_branding_v10.py'
+      - '.github/workflows/app-branding-v10.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  branding:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check pillow
+      - run: python scripts/app_branding_v10.py
+      - name: Validate assets and wiring
+        run: |
+          test -s assets/cap-icon-180.png
+          test -s assets/cap-icon-192.png
+          test -s assets/cap-icon-512.png
+          grep -q 'apple-touch-icon' index.html
+          grep -q 'manifest.webmanifest' index.html
+          grep -q 'cap-icon-192.png' manifest.webmanifest
+          git diff --check
+      - name: Persist generated branding
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html manifest.webmanifest assets/cap-icon-180.png assets/cap-icon-192.png assets/cap-icon-512.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'feat: install CAP home-screen identity'
+          git pull --rebase origin main
+          git push origin HEAD:main
