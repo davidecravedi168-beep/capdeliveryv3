@@ -1,0 +1,101 @@
+name: Validate CAP Unified
+
+on:
+  push:
+    branches: [capdelivery-unified]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cap-unified-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Syntax
+        run: |
+          python -m py_compile scripts/*.py
+          node --check cap-ops-core.js
+          node --check cap-ops-layer.js
+          node --check cap-tp-route-layer.js
+          node --check cap-office-core.js
+          node --check cap-office-bridge.js
+          node --check cap-enterprise-core.js
+          node --check cap-enterprise-layer.js
+          node --check cap-planning-horizon.js
+          node --check cap-planning-horizon-layer.js
+          node --check cap-security-premium.js
+          node --check cap-live-status.js
+
+      - name: Regression pass A
+        run: |
+          node tests/cap-ops-core.test.cjs
+          node tests/cap-office-core.test.cjs
+          node tests/cap-enterprise-core.test.cjs
+          node tests/cap-planning-horizon.test.cjs
+          node tests/data-ownership-v64.test.cjs
+          node tests/security-premium-v641.test.cjs
+          node tests/resilience-v65.test.cjs
+
+      - name: Regression pass B reversed
+        run: |
+          node tests/resilience-v65.test.cjs
+          node tests/security-premium-v641.test.cjs
+          node tests/data-ownership-v64.test.cjs
+          node tests/cap-planning-horizon.test.cjs
+          node tests/cap-enterprise-core.test.cjs
+          node tests/cap-office-core.test.cjs
+          node tests/cap-ops-core.test.cjs
+
+      - name: CAP product contract
+        run: |
+          grep -q 'CAP Delivery 6.5 · Resilience + Operational Clarity' index.html
+          grep -q 'cap-live-status.css' index.html
+          grep -q 'cap-live-status.js' index.html
+          grep -q 'Content-Security-Policy' index.html
+          grep -q 'health/ready' cap-live-status.js
+          grep -q 'BACKEND LIVE · DATI CONFERMATI' cap-planning-horizon-layer.js
+          grep -q 'LOCAL_FALLBACK_NO_BACKEND' cap-planning-horizon-layer.js
+          ! grep -q "localStorage.getItem('cap_token')" cap-planning-horizon-layer.js
+          ! grep -q 'sessionStorage.setItem(SNAPSHOT_KEY' index.html
+          ! grep -q 'value="Amministratore"' index.html
+
+      - name: Product separation and iOS shell
+        run: |
+          test ! -d office
+          test ! -f .github/workflows/validate-office-v8.yml
+          if find tests -maxdepth 1 -type f -name 'office-*' | grep -q .; then
+            echo 'Legacy The Office tests are still present in CAP Delivery'
+            exit 1
+          fi
+          test -f ios/CAPDelivery/CAPDeliveryApp.swift
+          test -f ios/CAPDelivery/ContentView.swift
+          test -f ios/CAPDelivery/Info.plist
+          test -f ios/CAPDelivery/PrivacyInfo.xcprivacy
+          test -f ios/project.yml
+          python - <<'PY'
+          import plistlib
+          from pathlib import Path
+          for path in ['ios/CAPDelivery/Info.plist','ios/CAPDelivery/PrivacyInfo.xcprivacy']:
+              with Path(path).open('rb') as f:
+                  plistlib.load(f)
+          print('iOS plist manifests: OK')
+          PY
+
+      - name: Whitespace check
+        run: git diff --check
