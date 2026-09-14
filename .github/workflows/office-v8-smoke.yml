@@ -17,7 +17,24 @@ jobs:
           node --check office/state-v8.js
           node --check office/api-v8.js
           node --check office/app-v8.js
-      - name: Neon Function health
+      - name: Probe existing free runtime
+        run: |
+          set -u
+          BASE='https://br-floral-shadow-aygwywoy-officefree.compute.c-5.us-east-2.aws.neon.tech'
+          for path in / /health /models; do
+            echo "=== GET $path ==="
+            code=$(curl --silent --show-error "$BASE$path" -o /tmp/probe.txt -w '%{http_code}' || true)
+            echo "HTTP $code"
+            head -c 3000 /tmp/probe.txt || true
+            echo
+          done
+          echo '=== POST /chat messages ==='
+          code=$(curl --silent --show-error -X POST "$BASE/chat" -H 'Content-Type: application/json' --data '{"messages":[{"role":"user","content":"Rispondi solo OK"}]}' -o /tmp/chat1.txt -w '%{http_code}' || true)
+          echo "HTTP $code"; head -c 3000 /tmp/chat1.txt || true; echo
+          echo '=== POST /chat prompt ==='
+          code=$(curl --silent --show-error -X POST "$BASE/chat" -H 'Content-Type: application/json' --data '{"prompt":"Rispondi solo OK"}' -o /tmp/chat2.txt -w '%{http_code}' || true)
+          echo "HTTP $code"; head -c 3000 /tmp/chat2.txt || true; echo
+      - name: Neon V8 health
         run: |
           set -euo pipefail
           curl --fail --silent --show-error 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/health' -o /tmp/health.json
@@ -31,8 +48,6 @@ jobs:
             -H 'Content-Type: application/json' \
             --data '{"model":"gpt-5-mini","messages":[{"role":"user","content":"Rispondi soltanto con OK."}],"max_tokens":20}' \
             -o /tmp/ai.json -w '%{http_code}')
-          echo "HTTP $code"
-          cat /tmp/ai.json
-          echo
+          echo "HTTP $code"; cat /tmp/ai.json; echo
           test "$code" = "200"
           node -e "const x=require('/tmp/ai.json'); const c=x?.choices?.[0]?.message?.content; console.log(c||x); if(!c) process.exit(1)"
