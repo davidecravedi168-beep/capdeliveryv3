@@ -3,24 +3,18 @@ const KEY='theOfficeV8';
 const now=()=>new Date().toISOString();
 const AGENTS=[
 {id:'director',emoji:'🐶',name:'Director',animal:'Boxer',role:'Coordina, decide e sintetizza',provider:'OpenAI',on:true},
-{id:'scout',emoji:'🦮',name:'Scout',animal:'Retriever',role:'Ricerca web, fonti e benchmark',provider:'OpenAI',on:true},
-{id:'analyst',emoji:'🐱',name:'Analyst',animal:'Gatto',role:'Dati, confronti e scenari',provider:'Google',on:true},
+{id:'scout',emoji:'🦮',name:'Scout',animal:'Retriever',role:'Ricerca, fonti e benchmark',provider:'OpenAI',on:true},
+{id:'analyst',emoji:'🐱',name:'Analyst',animal:'Gatto',role:'Dati, confronti e scenari',provider:'OpenAI',on:true},
 {id:'skeptic',emoji:'🦉',name:'Skeptic',animal:'Gufo',role:'Dissenso, errori e qualità',provider:'Anthropic',on:true},
-{id:'builder',emoji:'🐻‍❄️',name:'Builder',animal:'Orso',role:'Piani, codice e implementazione',provider:'xAI',on:true},
+{id:'builder',emoji:'🐻‍❄️',name:'Builder',animal:'Orso',role:'Piani, codice e implementazione',provider:'OpenAI',on:true},
 {id:'sentinel',emoji:'🐕‍🦺',name:'Sentinel',animal:'Rottweiler',role:'Sicurezza, permessi e rischi',provider:'OpenAI',on:true},
-{id:'wildcard',emoji:'🦊',name:'Wildcard',animal:'Volpe',role:'Alternative e idee fuori schema',provider:'xAI',on:true},
-{id:'archivist',emoji:'🐢',name:'Archivist',animal:'Tartaruga',role:'Memoria, contesto e conoscenza',provider:'Auto',on:true},
+{id:'wildcard',emoji:'🦊',name:'Wildcard',animal:'Volpe',role:'Alternative e idee fuori schema',provider:'OpenAI',on:true},
+{id:'archivist',emoji:'🐢',name:'Archivist',animal:'Tartaruga',role:'Memoria, contesto e conoscenza',provider:'OpenAI',on:true},
 {id:'auditor',emoji:'🦔',name:'Auditor',animal:'Riccio',role:'Controllo finale e tracciabilità',provider:'Anthropic',on:true}
 ];
-const BASE={version:8,view:'home',agents:AGENTS,tasks:[],approvals:[],projects:[{id:'office',name:'The Office',stage:'Operational',progress:78},{id:'cap',name:'CAP Delivery',stage:'Operations',progress:68}],notes:[],events:[],results:[],audit:[],chat:[{id:'welcome',at:now(),by:'Director',me:false,txt:'Ufficio pronto. Collega il motore AI e assegnami un lavoro: vedrai quali agenti vengono scelti, cosa stanno facendo e il risultato finale.'}],round:[],runs:[],settings:{execution:'balanced',approval:'sensitive',maxAgents:4,autoWeb:true},improve:{cycles:0,proposals:[]}};
+const BASE={version:8,view:'home',agents:AGENTS,tasks:[],approvals:[],projects:[{id:'office',name:'The Office',stage:'Operational',progress:78},{id:'cap',name:'CAP Delivery',stage:'Operations',progress:68}],notes:[],events:[],results:[],audit:[],chat:[{id:'welcome',at:now(),by:'Director',me:false,txt:'Ufficio operativo. Assegnami un lavoro: vedrai il team scelto, lo stato del run e il deliverable reale. Se il motore AI non è disponibile, te lo segnalo senza simulare risultati.'}],round:[],runs:[],settings:{execution:'balanced',approval:'sensitive',maxAgents:4},improve:{cycles:0,proposals:[]}};
 const clone=o=>JSON.parse(JSON.stringify(o));
-function normalize(s){
- if(!s||s.version!==8)return clone(BASE);
- s.agents=Array.isArray(s.agents)?s.agents:clone(AGENTS);
- AGENTS.forEach(a=>{if(!s.agents.some(x=>x.id===a.id))s.agents.push(clone(a));});
- ['tasks','approvals','projects','notes','events','results','audit','chat','round','runs'].forEach(k=>{if(!Array.isArray(s[k]))s[k]=clone(BASE[k]);});
- s.settings=Object.assign({},BASE.settings,s.settings||{});s.improve=Object.assign({},BASE.improve,s.improve||{});s.view=s.view||'home';return s;
-}
+function normalize(s){if(!s||s.version!==8)return clone(BASE);s.agents=Array.isArray(s.agents)?s.agents:clone(AGENTS);AGENTS.forEach(a=>{if(!s.agents.some(x=>x.id===a.id))s.agents.push(clone(a));});['tasks','approvals','projects','notes','events','results','audit','chat','round','runs'].forEach(k=>{if(!Array.isArray(s[k]))s[k]=clone(BASE[k]);});s.settings=Object.assign({},BASE.settings,s.settings||{});s.improve=Object.assign({},BASE.improve,s.improve||{});s.view=s.view||'home';return s;}
 function load(){try{return normalize(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return clone(BASE)}}
 let data=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
