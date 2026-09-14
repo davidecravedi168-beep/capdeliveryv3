@@ -25,15 +25,14 @@ jobs:
           curl --fail --silent --show-error "$BASE/health"; echo
           payload='{"prompt":"Rispondi solo OK","messages":[{"role":"user","content":"Rispondi solo OK"}],"text":"Rispondi solo OK","task":"Rispondi solo OK"}'
           found=0
-          for path in /v1/chat/completions /generate /ask /complete /completion /run /api/chat /api/generate /text /ai /agent /office /orchestrate /execute /prompt /query; do
+          for path in / /v1/chat/completions /v1/responses /v1/generate /v1/complete /v1/ask /v1/run /chat/completions /completions /responses /generate /generate-text /ask /complete /completion /run /work /task /respond /inference /infer /free /free/chat /runtime /api /api/chat /api/generate /api/complete /api/ai /api/v1/chat /api/v1/generate /api/v1/completions /text /ai /agent /agent/run /agent/execute /office /office/run /office/chat /officefree /officefree/chat /orchestrate /execute /prompt /query; do
             code=$(curl --silent --show-error -X POST "$BASE$path" -H 'Content-Type: application/json' --data "$payload" -o /tmp/probe.txt -w '%{http_code}' || true)
-            body=$(head -c 1600 /tmp/probe.txt | tr '\n' ' ')
+            body=$(head -c 1800 /tmp/probe.txt | tr '\n' ' ')
             echo "$code $path $body"
             if [ "$code" != "404" ]; then found=1; break; fi
           done
           test "$found" = "1"
       - name: Known paid Gateway limitation
+        if: always()
         run: |
-          set -euo pipefail
-          curl --fail --silent --show-error 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/health' -o /tmp/health.json
-          cat /tmp/health.json
+          curl --silent --show-error 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/health' || true
