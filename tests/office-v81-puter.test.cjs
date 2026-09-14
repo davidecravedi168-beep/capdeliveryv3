@@ -1,22 +1,20 @@
 'use strict';
 const assert=require('assert');
+const calls=[];
+globalThis.puter={
+  ai:{chat:(messages,testMode,options)=>{calls.push({messages,testMode,options});return Promise.resolve({message:{content:'OFFICE_OK'}})}},
+  auth:{isSignedIn:()=>true,signIn:()=>Promise.resolve(true)}
+};
+globalThis.OfficeAI={
+  run:async(prompt)=>({text:'fallback',primary:{text:'fallback',gateway:'local',model:'fallback',provider:'local',degraded:true}}),
+  status:()=>({puter:{enabled:true,available:true},pollinations:{configured:false}}),
+  localFallback:(prompt,reason)=>({text:'fallback',gateway:'local',model:'fallback',provider:'local',degraded:true,reason})
+};
 const patch=require('../office/runtime-v81.js');
 
 (async()=>{
-  const calls=[];
-  const ctx={
-    puter:{
-      ai:{chat:(messages,testMode,options)=>{calls.push({messages,testMode,options});return Promise.resolve({message:{content:'OFFICE_OK'}})}},
-      auth:{isSignedIn:()=>true,signIn:()=>Promise.resolve(true)}
-    },
-    OfficeAI:{
-      run:async(prompt)=>({text:'fallback',primary:{text:'fallback',gateway:'local',model:'fallback',provider:'local',degraded:true}}),
-      status:()=>({puter:{enabled:true,available:true},pollinations:{configured:false}}),
-      localFallback:(prompt,reason)=>({text:'fallback',gateway:'local',model:'fallback',provider:'local',degraded:true,reason})
-    }
-  };
-  patch.install(ctx);
-  const r=await ctx.OfficeAI.__v81.fixedPuter('director','test',{history:[]});
+  assert.equal(globalThis.OfficeAI.__v81Installed,true);
+  const r=await globalThis.OfficeAI.__v81.fixedPuter('director','test',{history:[]});
   assert.equal(r.text,'OFFICE_OK');
   assert.equal(r.model,'gpt-5.6-luna');
   assert.equal(calls.length,1);
