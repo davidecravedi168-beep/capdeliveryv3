@@ -26,9 +26,13 @@ jobs:
       - name: Real AI Gateway call
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error -X POST 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/chat' \
+          code=$(curl --silent --show-error -X POST 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/chat' \
             -H 'Origin: https://davidecravedi168-beep.github.io' \
             -H 'Content-Type: application/json' \
             --data '{"model":"gpt-5-mini","messages":[{"role":"user","content":"Rispondi soltanto con OK."}],"max_tokens":20}' \
-            -o /tmp/ai.json
+            -o /tmp/ai.json -w '%{http_code}')
+          echo "HTTP $code"
+          cat /tmp/ai.json
+          echo
+          test "$code" = "200"
           node -e "const x=require('/tmp/ai.json'); const c=x?.choices?.[0]?.message?.content; console.log(c||x); if(!c) process.exit(1)"
