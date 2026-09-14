@@ -22,7 +22,9 @@ jobs:
       - run: node --check office/app-v8.js
       - run: node --check office/runtime-v81.js
       - run: node --check office/runtime-v82.js
+      - run: node --check office/runtime-v83.js
       - run: node tests/office-ai-core.test.cjs
       - run: node tests/office-v8-shell.test.cjs
       - run: node tests/office-v81-puter.test.cjs
       - run: node tests/office-v82-puter.test.cjs
+      - run: node tests/office-v83-exact.test.cjs
