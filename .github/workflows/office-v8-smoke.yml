@@ -17,17 +17,21 @@ jobs:
           node --check office/state-v8.js
           node --check office/api-v8.js
           node --check office/app-v8.js
-      - name: Discover free runtime route
+      - name: Discover free runtime POST contract
         run: |
           set -u
           BASE='https://br-floral-shadow-aygwywoy-officefree.compute.c-5.us-east-2.aws.neon.tech'
           echo '=== health ==='
           curl --fail --silent --show-error "$BASE/health"; echo
+          payload='{"prompt":"Rispondi solo OK","messages":[{"role":"user","content":"Rispondi solo OK"}],"text":"Rispondi solo OK","task":"Rispondi solo OK"}'
+          found=0
           for path in /v1/chat/completions /generate /ask /complete /completion /run /api/chat /api/generate /text /ai /agent /office /orchestrate /execute /prompt /query; do
-            code=$(curl --silent --show-error "$BASE$path" -o /tmp/probe.txt -w '%{http_code}' || true)
-            body=$(head -c 400 /tmp/probe.txt | tr '\n' ' ')
+            code=$(curl --silent --show-error -X POST "$BASE$path" -H 'Content-Type: application/json' --data "$payload" -o /tmp/probe.txt -w '%{http_code}' || true)
+            body=$(head -c 1600 /tmp/probe.txt | tr '\n' ' ')
             echo "$code $path $body"
+            if [ "$code" != "404" ]; then found=1; break; fi
           done
+          test "$found" = "1"
       - name: Known paid Gateway limitation
         run: |
           set -euo pipefail
