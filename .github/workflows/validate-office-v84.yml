@@ -1,0 +1,22 @@
+name: Validate The Office V8.4
+on:
+  push:
+    paths:
+      - 'office/**'
+      - 'tests/office-v84-canary.test.cjs'
+      - '.github/workflows/validate-office-v84.yml'
+  pull_request:
+    paths:
+      - 'office/**'
+      - 'tests/office-v84-canary.test.cjs'
+      - '.github/workflows/validate-office-v84.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check office/runtime-v83.js
+      - run: node tests/office-v84-canary.test.cjs
