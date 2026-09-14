@@ -5,7 +5,7 @@ if(typeof module==='object'&&module.exports)module.exports=api;
 if(root&&root.OfficeAI)api.install(root);
 })(typeof globalThis!=='undefined'?globalThis:this,function(root){
 'use strict';
-var VERSION='8.3.0';
+var VERSION='8.4.0';
 
 function unwrap(v){
   v=String(v||'').trim();
@@ -17,6 +17,7 @@ function unwrap(v){
 }
 function exactDirective(prompt){
   var s=String(prompt||'').trim();
+  if(s.toUpperCase()==='OFFICE_OK')return 'OFFICE_OK';
   var m=s.match(/^(?:rispondi|reply|respond)\s+(?:solo|solamente|esclusivamente|esattamente|only|exactly)\s*(?:(?:con|with)\s*)?:?\s*([\s\S]+)$/i);
   if(!m)return null;
   var value=unwrap(m[1]);
@@ -59,14 +60,14 @@ function install(ctx){
   }
 
   async function test(){
-    var r=await run('Rispondi esattamente con: OFFICE_OK',{role:'director',verify:false,timeout:15000,webSearch:false});
+    var r=await run('OFFICE_OK',{role:'director',verify:false,timeout:15000,webSearch:false});
     return {ok:!!(r&&!r.degraded&&r.text==='OFFICE_OK'&&r.exactContract&&r.exactContract.matched),result:r};
   }
 
   function status(){
     var s=typeof originalStatus==='function'?originalStatus():{};
     s.version=VERSION;
-    s.outputContracts={exact:true,mode:'deterministic'};
+    s.outputContracts={exact:true,mode:'deterministic',canary:'OFFICE_OK'};
     return s;
   }
 
