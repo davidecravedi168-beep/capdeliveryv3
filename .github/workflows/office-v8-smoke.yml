@@ -1,0 +1,34 @@
+name: Office V8 smoke
+on:
+  pull_request:
+    paths:
+      - 'office/**'
+      - '.github/workflows/office-v8-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check office/state-v8.js
+          node --check office/api-v8.js
+          node --check office/app-v8.js
+      - name: Neon Function health
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/health' -o /tmp/health.json
+          cat /tmp/health.json
+          node -e "const x=require('/tmp/health.json'); if(!x.ok||!x.gateway) process.exit(1)"
+      - name: Real AI Gateway call
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error -X POST 'https://br-floral-shadow-aygwywoy-officev8.compute.c-5.us-east-2.aws.neon.tech/chat' \
+            -H 'Origin: https://davidecravedi168-beep.github.io' \
+            -H 'Content-Type: application/json' \
+            --data '{"model":"gpt-5-mini","messages":[{"role":"user","content":"Rispondi soltanto con OK."}],"max_tokens":20}' \
+            -o /tmp/ai.json
+          node -e "const x=require('/tmp/ai.json'); const c=x?.choices?.[0]?.message?.content; console.log(c||x); if(!c) process.exit(1)"
